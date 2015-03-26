@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:wheel="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:background="@drawable/abc_btn_check_to_on_mtrl_000">
+  android:layout_height="match_parent">
+
+  <com.pnikosis.materialishprogress.ProgressWheel
+    android:id="@+id/progress_wheel"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_gravity="center"
+    wheel:matProg_barColor="#5588FF" />
 </FrameLayout>

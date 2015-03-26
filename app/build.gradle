@@ -30,4 +30,5 @@ dependencies {
   compile 'com.jakewharton.timber:timber:2.5.0'
   compile 'com.facebook.rebound:rebound:0.3.6'
   compile 'org.codehaus.groovy:groovy:2.4.1:grooid'
+  compile 'com.pnikosis:materialish-progress:1.5'
 }
