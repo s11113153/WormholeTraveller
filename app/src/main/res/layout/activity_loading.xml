@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:wheel="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
   android:layout_width="match_parent"
@@ -9,6 +9,17 @@
     android:id="@+id/progress_wheel"
     android:layout_width="80dp"
     android:layout_height="80dp"
-    android:layout_gravity="center"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"
     wheel:matProg_barColor="#009688" />
-</FrameLayout>
+
+  <TextView
+    android:id="@+id/textView"
+    android:layout_centerHorizontal="true"
+    android:layout_below="@+id/progress_wheel"
+    android:text="loading"
+    android:textSize="24sp"
+    android:singleLine="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+</RelativeLayout>

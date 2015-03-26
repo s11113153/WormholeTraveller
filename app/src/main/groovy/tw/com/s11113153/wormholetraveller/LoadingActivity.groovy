@@ -2,10 +2,12 @@ package tw.com.s11113153.wormholetraveller
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.util.TimeUtils
+import android.widget.ListView
+import android.widget.TextView
 import com.pnikosis.materialishprogress.ProgressWheel
 import groovy.transform.CompileStatic
 
@@ -15,12 +17,14 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 public class LoadingActivity extends Activity {
-  private static final String TAG = LoadingActivity.class.getSimpleName();
+  private static final String TAG = LoadingActivity.class.getSimpleName()
 
   static final float DURATION_TIME = 2.5f /** 2.5 sec **/
   static final float SPEED_TIME = 1.0f / DURATION_TIME as float
 
   private ProgressWheel mProgressWheel
+  TextView mTextView
+  Typeface mTypeface
 
   private static boolean isLaunch = false
 
@@ -30,6 +34,10 @@ public class LoadingActivity extends Activity {
     setContentView(R.layout.activity_loading)
 
     mProgressWheel = findViewById(R.id.progress_wheel) as ProgressWheel
+    mTextView = findViewById(R.id.textView) as TextView
+    mTypeface = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+    mTextView.setTypeface(mTypeface)
+
     mProgressWheel.setProgress(1.0f)
     mProgressWheel.setSpinSpeed(SPEED_TIME)
     mProgressWheel.setCallback([
@@ -38,7 +46,16 @@ public class LoadingActivity extends Activity {
           toMainActivity()
           isLaunch = true
         } else {
-          Log.v(TAG, "" + String.valueOf(val));
+          String content = '' + (mTextView.getText() as String)
+          content = content?.split(' ')[0]
+          switch (content.lastIndexOf('.')) {
+            case [-1, 7, 8] : content += '.'
+              break
+            case 9 : content = 'loading.'
+              break
+          }
+          int progress = val * 100 as int
+          mTextView.setText(String.format("%-14s %3d", content, progress))
         }
       }
     ] as ProgressWheel.ProgressCallback)
@@ -54,7 +71,6 @@ public class LoadingActivity extends Activity {
                 Intent.FLAG_ACTIVITY_NEW_TASK
             )
         startActivity(intent)
-        Log.d(TAG, "" + String.valueOf("Run"));
       }
     ] as Runnable)
   }
