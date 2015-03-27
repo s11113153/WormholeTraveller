@@ -51,7 +51,10 @@ public class SignUpActivity extends ActionBarActivity {
         String password = mEtPassword.text.toString().trim()
         String mail = mEtMail.text.toString().trim()
 
-        Log.v(TAG, "" + String.valueOf("$id, $password, $mail"));
+        if (id?.length() > 10 || password.length() > 10 || mail?.length() > 30) {
+          return
+        }
+
         ((mLoginImpl) as LoginImpl).show(true)
         ((mLoginImpl) as LoginImpl).check("", "", "")
       }

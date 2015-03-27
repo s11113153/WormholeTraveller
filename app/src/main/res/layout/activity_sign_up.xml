@@ -18,7 +18,7 @@
     <ImageView
       android:layout_width="@dimen/sign_up_icon_size"
       android:layout_height="@dimen/sign_up_icon_size"
-      android:src="@mipmap/ic_id_number"/>
+      android:src="@mipmap/ic_id"/>
     <com.rengwuxian.materialedittext.MaterialEditText
       android:layout_marginLeft="24dp"
       app:singleLineEllipsis="true"
