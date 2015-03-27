@@ -1,11 +1,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-  android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-  android:paddingRight="@dimen/activity_horizontal_margin"
-  android:paddingTop="@dimen/activity_vertical_margin"
-  android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/root"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".MainActivity">
 
-  <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"
+    android:elevation="@dimen/default_elevation">
+
+    <TextView
+      android:id="@+id/tvLogo"
+      android:textSize="24sp"
+      android:text="@string/app_name"
+      android:textColor="@color/default_color_title"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"/>
+  </android.support.v7.widget.Toolbar>
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/rvFeed"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/toolbar"
+    android:scrollbars="none" />
+
+  <ImageButton
+    android:id="@+id/btnAddAlbum"
+    android:layout_width="@dimen/btn_add_album_size"
+    android:layout_height="@dimen/btn_add_album_size"
+    android:layout_marginBottom="@dimen/btn_add_album_margins"
+    android:layout_marginRight="@dimen/btn_add_album_margins"
+    android:background="@drawable/btn_add_album_default"
+    android:elevation="@dimen/default_elevation"
+    android:src="@mipmap/ic_add_album"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:textSize="28sp" />
 
 </RelativeLayout>

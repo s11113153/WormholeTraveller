@@ -11,7 +11,7 @@
     android:layout_height="80dp"
     android:layout_centerVertical="true"
     android:layout_centerHorizontal="true"
-    wheel:matProg_barColor="#009688" />
+    wheel:matProg_barColor="@color/style_color_primary" />
 
   <TextView
     android:id="@+id/textView"

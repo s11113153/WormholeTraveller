@@ -1,12 +1,10 @@
 package tw.com.s11113153.wormholetraveller
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.widget.ListView
+import android.support.v7.app.ActionBarActivity
 import android.widget.TextView
 import com.pnikosis.materialishprogress.ProgressWheel
 import groovy.transform.CompileStatic
@@ -16,10 +14,10 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-public class LoadingActivity extends Activity {
+public class LoadingActivity extends ActionBarActivity {
   private static final String TAG = LoadingActivity.class.getSimpleName()
 
-  static final float DURATION_TIME = 2.5f /** 2.5 sec **/
+  static final float DURATION_TIME = 0.5f /** 2.5 sec **/
   static final float SPEED_TIME = 1.0f / DURATION_TIME as float
 
   private ProgressWheel mProgressWheel
@@ -43,7 +41,7 @@ public class LoadingActivity extends Activity {
     mProgressWheel.setCallback([
       onProgressUpdate : { float val ->
         if (val == 1.0f && !isLaunch) {
-          toMainActivity()
+          toSignUpActivity()
           isLaunch = true
         } else {
           String content = '' + (mTextView.getText() as String)
@@ -61,11 +59,11 @@ public class LoadingActivity extends Activity {
     ] as ProgressWheel.ProgressCallback)
   }
 
-  void toMainActivity() {
+  void toSignUpActivity() {
     new Handler().post([
       run : {
         Intent intent = new Intent()
-            .setClass(this, MainActivity.class)
+            .setClass(this, SignUpActivity.class)
             .addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_NEW_TASK
