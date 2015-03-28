@@ -1,12 +1,9 @@
 package tw.com.s11113153.wormholetraveller
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.ActionBarActivity
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import com.gc.materialdesign.views.ButtonRectangle
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.rengwuxian.materialedittext.MaterialEditText
@@ -34,8 +31,10 @@ public class SignUpActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_sign_up)
+    toMainActivity()
+    return
     init()
-    mBtnLogin.setOnClickListener(mLoginImpl as View.OnClickListener)
+    setConfig()
   }
 
   void init() {
@@ -51,7 +50,7 @@ public class SignUpActivity extends ActionBarActivity {
         String password = mEtPassword.text.toString().trim()
         String mail = mEtMail.text.toString().trim()
 
-        if (id?.length() > 10 || password.length() > 10 || mail?.length() > 30) {
+        if (id?.length() > 10 || password?.length() > 10 || mail?.length() > 30) {
           return
         }
 
@@ -83,8 +82,22 @@ public class SignUpActivity extends ActionBarActivity {
     ]
   }
 
+  void setConfig() {
+    mBtnLogin.setOnClickListener(mLoginImpl as View.OnClickListener)
+    setFontType()
+  }
+
+  void setFontType() {
+    mEtId.setTypeface(Utils.getFont(this, Utils.FontType.ROBOTO_REGULAR))
+    mEtId.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 12))
+    mEtPassword.setTypeface(Utils.getFont(this, Utils.FontType.ROBOTO_REGULAR))
+    mEtPassword.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 12))
+    mEtMail.setTypeface(Utils.getFont(this, Utils.FontType.ROBOTO_REGULAR))
+    mEtMail.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 12))
+  }
+
   void toMainActivity() {
-    startActivity(new Intent(this, MainActivity.class))
+    Utils.switchActivity(this, MainActivity.class)
   }
 }
 

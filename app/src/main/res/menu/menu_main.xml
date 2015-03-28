@@ -1,6 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   tools:context=".MainActivity">
-  <item android:id="@+id/action_settings" android:title="@string/action_settings"
-    android:orderInCategory="100" app:showAsAction="never" />
+
+  <item
+    android:id="@+id/action_line_article"
+    android:icon="@mipmap/ic_line_article"
+    android:title="line article"
+    app:showAsAction="always"
+    android:visible="true"/>
+  <item
+    android:id="@+id/action_square_article"
+    android:icon="@mipmap/ic_square_article"
+    android:title="square article"
+    app:showAsAction="always"
+    android:visible="false"/>
 </menu>
