@@ -31,8 +31,8 @@ public class SignUpActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_sign_up)
-    toMainActivity()
-    return
+//    toMainActivity()
+//    return
     init()
     setConfig()
   }
@@ -89,11 +89,11 @@ public class SignUpActivity extends ActionBarActivity {
 
   void setFontType() {
     mEtId.setTypeface(Utils.getFont(this, Utils.FontType.ROBOTO_REGULAR))
-    mEtId.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 12))
+    mEtId.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 8))
     mEtPassword.setTypeface(Utils.getFont(this, Utils.FontType.ROBOTO_REGULAR))
-    mEtPassword.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 12))
+    mEtPassword.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 8))
     mEtMail.setTypeface(Utils.getFont(this, Utils.FontType.ROBOTO_REGULAR))
-    mEtMail.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 12))
+    mEtMail.setTextSize(Utils.doPx(this, Utils.PxType.SP_TO_PX, 8))
   }
 
   void toMainActivity() {

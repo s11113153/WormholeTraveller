@@ -9,28 +9,41 @@
     android:orientation="horizontal"
     android:paddingBottom="5dp"
     android:paddingTop="7dp">
-    <ImageView
-      android:id="@+id/ivUser"
-      android:layout_gravity="bottom"
-      android:layout_width="@dimen/iv_user_size"
-      android:layout_height="@dimen/iv_user_size"
-      android:layout_marginLeft="16dp"
-      android:layout_marginRight="16dp"
-      android:src="@mipmap/ic_default_comment_people" />
+    <FrameLayout
+      android:layout_gravity="center"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+      <ImageView
+        android:layout_gravity="top|left"
+        android:id="@+id/ivUser"
+        android:layout_width="@dimen/iv_user_size"
+        android:layout_height="@dimen/iv_user_size"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+      <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/ivLoading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/animation_loading"/>
+    </FrameLayout>
     <TextView
       android:id="@+id/tvComment"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_gravity="top|left"
+      android:layout_gravity="center_vertical|left"
       android:layout_marginRight="16dp"
       android:layout_weight="1"
+      android:textSize="14sp"
       android:text="Lorem ipsum dolor sit amet" />
   </LinearLayout>
 
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:layout_gravity="bottom"
-    android:layout_marginLeft="88dp"
-    android:background="#cccccc" />
+  <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_gravity="bottom"-->
+    <!--android:layout_marginLeft="88dp"-->
+    <!--android:background="#cccccc" />-->
 </FrameLayout>

@@ -117,8 +117,9 @@ public class MainActivity
   }
 
   private void startIntroAnimation() {
-    int paddingSize = (int) Utils
-      .doPx(this, Utils.PxType.DP_TO_PX, (int) Utils.AnimationAttribute.PADDING.getVal());
+    int paddingSize = (int) Utils.doPx(
+            this, Utils.PxType.DP_TO_PX, (int) Utils.AnimationAttribute.PADDING.getVal());
+
     mIbAddAlbum
       .setTranslationY(3 * getResources().getDimensionPixelOffset(R.dimen.btn_add_album_size));
     mToolbar.setTranslationY(-paddingSize);
@@ -147,11 +148,15 @@ public class MainActivity
 
     @Override
   public void onCommentsClick(View v, int position) {
-    final Intent intent = new Intent(this, CommentsActivity.class);
+    // ivBottom 在整個螢幕的座標
     int[] startingLocation = new int[2];
     v.getLocationOnScreen(startingLocation);
+
+    final Intent intent = new Intent(this, CommentsActivity.class);
     intent.putExtra(CommentsActivity.ARG_DRAWING_START_LOCATION, startingLocation[1]);
     startActivity(intent);
+
+    // no anim when finish and ready to change activity
     overridePendingTransition(0, 0);
   }
 

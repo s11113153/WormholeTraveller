@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.util.Log
 import android.util.TypedValue
 import android.view.Display
+import android.view.View
 import android.view.WindowManager
 import groovy.transform.CompileStatic;
 
@@ -87,5 +88,9 @@ final public class Utils {
       screenWidth = size.x;
     }
     return screenWidth;
+  }
+
+  public static void clearBackground(View v) {
+    v.setBackground(null)
   }
 }

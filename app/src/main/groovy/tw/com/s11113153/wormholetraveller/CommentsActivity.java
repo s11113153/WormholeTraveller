@@ -28,10 +28,6 @@ import butterknife.InjectView;
 public class CommentsActivity extends ActionBarActivity {
   public static final String ARG_DRAWING_START_LOCATION = "arg_drawing_start_location";
 
-  private static final int ANIM_PADDING = 80;
-  private static final int ANIM_DURATION_SHORT = 400;
-  private static final int ANIM_DURATION_LONG = 800;
-  private static final int ANIM_DELAY_START = 200;
 
   @InjectView(R.id.toolbar) Toolbar mToolbar;
   @InjectView(R.id.rvComments) RecyclerView mRecyclerView;
