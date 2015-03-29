@@ -120,8 +120,7 @@ public class MainActivity
     int paddingSize = (int) Utils.doPx(
             this, Utils.PxType.DP_TO_PX, (int) Utils.AnimationAttribute.PADDING.getVal());
 
-    mIbAddAlbum
-      .setTranslationY(3 * getResources().getDimensionPixelOffset(R.dimen.btn_add_album_size));
+    mIbAddAlbum.setTranslationY(3 * getResources().getDimensionPixelOffset(R.dimen.btn_add_album_size));
     mToolbar.setTranslationY(-paddingSize);
     mTvLogo.setTranslationY(-paddingSize);
 

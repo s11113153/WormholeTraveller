@@ -31,8 +31,8 @@ public class SignUpActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_sign_up)
-//    toMainActivity()
-//    return
+    toMainActivity()
+    return
     init()
     setConfig()
   }

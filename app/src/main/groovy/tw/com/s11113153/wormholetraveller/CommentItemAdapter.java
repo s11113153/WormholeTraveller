@@ -6,7 +6,6 @@ import com.squareup.picasso.Picasso;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,7 +45,7 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
     runEnterAnimation(viewHolder.itemView, position);
     final ViewHolder holder = (ViewHolder) viewHolder;
-    AnimationDrawable drawable = (AnimationDrawable) holder.ivLoading.getBackground();
+    final AnimationDrawable drawable = (AnimationDrawable) holder.ivLoading.getBackground();
     String url = "https://www.facebook.com/xu.y.jen";
 
     switch (position % 3) {
@@ -68,16 +67,17 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
       .resize(userIconSize, userIconSize)
       .error(R.mipmap.ic_default_comment_people)
       .transform(new RoundedTransformation()).into(holder.ivUser, new Callback() {
-      @Override
-      public void onSuccess() {
+        @Override
+        public void onSuccess() {
         Utils.clearBackground(holder.ivLoading);
       }
 
-      @Override
-      public void onError() {
+        @Override
+        public void onError() {
         Utils.clearBackground(holder.ivLoading);
       }
-    });
+      });
+
     drawable.start();
   }
 
