@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 public class MainActivity
         extends ActionBarActivity
-        implements RecycleItemAdapter.OnItemClickListener {
+        implements RecycleItemAdapter.OnBottomClickListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -36,8 +36,6 @@ public class MainActivity
 
   private boolean isLine = true;
 
-  private static final int ANIM_PADDING = 80;
-
 
   private static boolean loadAnimation;
 
@@ -50,13 +48,6 @@ public class MainActivity
 
     if (savedInstanceState == null)
       loadAnimation = true;
-
-//    new Handler().postDelayed(new Runnable() {
-//      @Override
-//      public void run() {
-//        Utils.switchActivity(MainActivity.this, CommentsActivity.class);
-//      }
-//    }, 1000);
   }
 
   private void init() {
@@ -78,7 +69,7 @@ public class MainActivity
 
   private void setUpRecycleAdapter() {
     mAdapter = new RecycleItemAdapter(this);
-    mAdapter.setOnItemClickListener(this);
+    mAdapter.setOnBottomClickListener(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     mRecyclerView.setAdapter(mAdapter);
   }

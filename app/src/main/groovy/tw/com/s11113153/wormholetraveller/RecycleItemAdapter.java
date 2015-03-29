@@ -2,7 +2,6 @@ package tw.com.s11113153.wormholetraveller;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ public class RecycleItemAdapter
 
   private boolean isAnimation = false;
 
-  private OnItemClickListener mOnItemClickListener;
+  private OnBottomClickListener mBottomClickListener;
 
   public RecycleItemAdapter(Context context) {
     this.context = context;
@@ -65,14 +64,13 @@ public class RecycleItemAdapter
   @Override
   public void onClick(View v) {
     if (v.getId() == R.id.ivBottom) {
-      if (mOnItemClickListener != null)
-        Log.v("TA", "" + String.valueOf("@@@"));
-          mOnItemClickListener.onCommentsClick(v, (Integer) v.getTag());
+      if (mBottomClickListener != null)
+          mBottomClickListener.onCommentsClick(v, (Integer) v.getTag());
     }
   }
 
-  public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-    mOnItemClickListener = onItemClickListener;
+  public void setOnBottomClickListener(OnBottomClickListener bottomClickListener) {
+    mBottomClickListener = bottomClickListener;
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
@@ -86,7 +84,7 @@ public class RecycleItemAdapter
     }
   }
 
-  public interface OnItemClickListener {
+  public interface OnBottomClickListener {
     void onCommentsClick(View v, int position);
   }
 }
