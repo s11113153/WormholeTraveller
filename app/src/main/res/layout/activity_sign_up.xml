@@ -60,11 +60,11 @@
       android:layout_height="@dimen/sign_up_icon_size"
       android:src="@mipmap/ic_email"/>
     <com.rengwuxian.materialedittext.MaterialEditText
+      android:id="@+id/etMail"
       android:layout_marginLeft="24dp"
       app:singleLineEllipsis="true"
       app:maxCharacters="30"
       app:errorColor="@color/default_error_color"
-      android:id="@+id/etMail"
       android:inputType="textEmailAddress"
       android:hint="please input email"
       android:layout_width="match_parent"

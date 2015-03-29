@@ -4,15 +4,18 @@
   <color name="style_color_primary">#009688</color>
   <color name="style_color_primary_dark">#00796B</color>
 
-  <!--title color-->
+  <!--app background-->
+  <color name="style_color_background">#FAFAFA</color>
+
+  <!--app title color-->
   <color name="default_color_title">#FAFAFA</color>
+
 
   <!--ImageButton : btnAddAlbum-->
   <color name="add_album_color_shadow">#9E9E9E</color>
   <color name="add_album_color_pressed">#00695C</color>
   <color name="style_color_accent">#009688</color>
 
+  <!--MaterialEditText-->
   <color name="default_error_color">#FF5722</color>
-  <!--<color name="btn_default_light_normal">#00000000</color>-->
-  <!--<color name="btn_default_light_pressed">#40ffffff</color>-->
 </resources>

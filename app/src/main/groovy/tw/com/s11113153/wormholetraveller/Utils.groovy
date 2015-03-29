@@ -1,15 +1,33 @@
 package tw.com.s11113153.wormholetraveller
 
 import android.content.Context
-import android.content.Intent;
+import android.content.Intent
+import android.graphics.Point;
 import android.graphics.Typeface
 import android.util.Log
-import android.util.TypedValue;
+import android.util.TypedValue
+import android.view.Display
+import android.view.WindowManager
+import groovy.transform.CompileStatic;
 
 /**
  * Created by xuyouren on 15/3/27.
  */
+@CompileStatic
 final public class Utils {
+  private Utils() {}
+
+  static enum AnimationAttribute {
+    PADDING(80),
+    DURATION_SHORT(400),
+    DURATION_LONG(800),
+    DELAY_START(200)
+
+    final long val
+    AnimationAttribute(long val) {
+      this.val = val
+    }
+  }
 
   static enum FontType {
     ROBOTO_LIGHT  ("Roboto-Light.ttf"),
@@ -44,5 +62,30 @@ final public class Utils {
 
   public static void switchActivity(Context context, Class<?> cls) {
     context.startActivity(new Intent(context, cls))
+  }
+
+
+  static int screenHeight = 0;
+  public static int getScreenHeight(Context c) {
+    if (screenHeight == 0) {
+      WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      Point size = new Point();
+      display.getSize(size);
+      screenHeight = size.y;
+    }
+    return screenHeight;
+  }
+
+  static int screenWidth = 0;
+  public static int getScreenWidth(Context c) {
+    if (screenWidth == 0) {
+      WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      Point size = new Point();
+      display.getSize(size);
+      screenWidth = size.x;
+    }
+    return screenWidth;
   }
 }

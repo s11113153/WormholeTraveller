@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'groovyx.grooid.groovy-android'
 android {
-  compileSdkVersion 22
-  buildToolsVersion "22.0.0"
+  compileSdkVersion 21
+  buildToolsVersion "21.1"
 
   defaultConfig {
     applicationId "tw.com.s11113153.wormholetraveller"
@@ -39,4 +39,5 @@ dependencies {
   compile 'com.pnikosis:materialish-progress:1.5'
   compile 'com.rengwuxian.materialedittext:library:1.8.3'
   compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
+  compile 'com.squareup.picasso:picasso:2.4.0'
 }

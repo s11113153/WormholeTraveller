@@ -2,13 +2,14 @@
   <dimen name="default_elevation">8dp</dimen>
 
   <dimen name="sign_up_margin_top">80dp</dimen>
-  <dimen name="sign_up_margin_right">22dp</dimen>
   <dimen name="sign_up_margin_left">22dp</dimen>
+  <dimen name="sign_up_margin_right">22dp</dimen>
   <dimen name="sign_up_linear_margin_top">15dp</dimen>
   <dimen name="sign_up_icon_size">48dp</dimen>
   <dimen name="sign_up_icon_margins">16dp</dimen>
 
   <dimen name="btn_add_album_margins">16dp</dimen>
   <dimen name="btn_add_album_size">64dp</dimen>
-  <!--<dimen name="sign_size">48dp</dimen>-->
+
+  <dimen name="iv_user_size">56dp</dimen>
 </resources>

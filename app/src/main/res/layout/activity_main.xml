@@ -30,7 +30,7 @@
     android:scrollbars="none" />
 
   <ImageButton
-    android:id="@+id/btnAddAlbum"
+    android:id="@+id/ibAddAlbum"
     android:layout_width="@dimen/btn_add_album_size"
     android:layout_height="@dimen/btn_add_album_size"
     android:layout_marginBottom="@dimen/btn_add_album_margins"

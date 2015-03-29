@@ -53,7 +53,7 @@ public class LoadingActivity extends ActionBarActivity {
               break
           }
           int progress = val * 100 as int
-          mTextView.setText(String.format("%-14s %3d", content, progress))
+         mTextView.setText(String.format("%-14s %3d", content, progress))
         }
       }
     ] as ProgressWheel.ProgressCallback)
