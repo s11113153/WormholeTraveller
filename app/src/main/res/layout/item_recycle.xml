@@ -24,7 +24,8 @@
       android:layout_height="wrap_content" />
 
     <ImageView
-      android:id="@+id/ivBottom"
+      android:id="@+id/ivComments"
+      android:src="@mipmap/ic_comments"
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
 

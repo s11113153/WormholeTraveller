@@ -39,9 +39,8 @@ public class RecycleItemAdapter
         runEnterAnimation(viewHolder.itemView, position);
 
     ViewHolder holder = (ViewHolder) viewHolder;
-    holder.ivBottom.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_id));
-    holder.ivBottom.setOnClickListener(this);
-    holder.ivBottom.setTag(position);
+    holder.ivComments.setOnClickListener(this);
+    holder.ivComments.setTag(position);
   }
 
   @Override
@@ -63,7 +62,7 @@ public class RecycleItemAdapter
 
   @Override
   public void onClick(View v) {
-    if (v.getId() == R.id.ivBottom) {
+    if (v.getId() == R.id.ivComments) {
       if (mBottomClickListener != null)
           mBottomClickListener.onCommentsClick(v, (Integer) v.getTag());
     }
@@ -74,13 +73,13 @@ public class RecycleItemAdapter
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
-    final SquaredImageView ivSquare;
-    final ImageView ivBottom;
+    final SquaredImageView ivSquare; // photo image
+    final ImageView ivComments;
 
     ViewHolder(View itemView) {
       super(itemView);
       ivSquare = (SquaredImageView)itemView.findViewById(R.id.ivSquare);
-      ivBottom = (ImageView)itemView.findViewById(R.id.ivBottom);
+      ivComments = (ImageView)itemView.findViewById(R.id.ivComments);
     }
   }
 

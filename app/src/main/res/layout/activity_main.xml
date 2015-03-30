@@ -27,7 +27,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/toolbar"
-    android:scrollbars="none" />
+    android:scrollbars="none"/>
 
   <ImageButton
     android:id="@+id/ibAddAlbum"
@@ -41,5 +41,4 @@
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:textSize="28sp" />
-
 </RelativeLayout>

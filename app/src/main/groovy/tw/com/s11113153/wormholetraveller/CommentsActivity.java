@@ -57,7 +57,6 @@ public class CommentsActivity extends ActionBarActivity {
   }
 
   private void startIntroAnimation() {
-    Toast.makeText(CommentsActivity.this, String.valueOf("Hello"), Toast.LENGTH_LONG).show();
     // 動畫準備
     mContentRoot.setScaleY(0.1f); // 設置縮放起始點為0.1倍
     mContentRoot.setPivotY(drawingStartLocation); // 當 view 設置 setScaleY, 此函數必須使用

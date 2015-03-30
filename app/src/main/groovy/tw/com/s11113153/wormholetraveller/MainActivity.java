@@ -147,7 +147,7 @@ public class MainActivity
 
     @Override
   public void onCommentsClick(View v, int position) {
-    // ivBottom 在整個螢幕的座標
+    // ivComments 在整個螢幕的座標
     int[] startingLocation = new int[2];
     v.getLocationOnScreen(startingLocation);
 
