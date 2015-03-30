@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -98,6 +99,8 @@ public class CommentsActivity extends ActionBarActivity {
     mAdapter = new CommentItemAdapter(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     mRecyclerView.setAdapter(mAdapter);
+    // 清除滑動到底部OR頂端時所出現的陰影
+    mRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
     mRecyclerView.setHasFixedSize(true); //告知 View Content為固定 Size, 優化RecycleView
     // 防止滑動出現動畫
     mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {

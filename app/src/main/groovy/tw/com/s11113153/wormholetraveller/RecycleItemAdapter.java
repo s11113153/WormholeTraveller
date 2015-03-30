@@ -49,7 +49,7 @@ public class RecycleItemAdapter
   }
 
   private void runEnterAnimation(View view, int position) {
-    if (position > NO_INIT_POSITION) {
+    if (!isAnimation && position > NO_INIT_POSITION) {
       view.setTranslationY(Utils.getScreenHeight(context));
       view.animate()
         .translationY(0)

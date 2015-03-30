@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity
         extends ActionBarActivity
@@ -36,6 +37,7 @@ public class MainActivity
 
   private boolean isLine = true;
 
+  private static int EXTRA_LAYOUT_SPACE = 500;
 
   private static boolean loadAnimation;
 
@@ -70,7 +72,14 @@ public class MainActivity
   private void setUpRecycleAdapter() {
     mAdapter = new RecycleItemAdapter(this);
     mAdapter.setOnBottomClickListener(this);
-    mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    // 提高使用者效能體驗
+    mRecyclerView.setLayoutManager(new LinearLayoutManager(this) {
+      @Override
+      protected int getExtraLayoutSpace(RecyclerView.State state) {
+        return EXTRA_LAYOUT_SPACE;
+      }
+    });
     mRecyclerView.setAdapter(mAdapter);
   }
 
@@ -91,11 +100,21 @@ public class MainActivity
     switch (item.getItemId()) {
       case R.id.action_square_article:
         isLine = false;
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2) {
+          @Override
+          protected int getExtraLayoutSpace(RecyclerView.State state) {
+            return EXTRA_LAYOUT_SPACE;
+          }
+        });
         break;
       case R.id.action_line_article:
         isLine = true;
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this) {
+          @Override
+          protected int getExtraLayoutSpace(RecyclerView.State state) {
+            return EXTRA_LAYOUT_SPACE;
+          }
+        });
         break;
     }
     mRecyclerView.invalidate();
