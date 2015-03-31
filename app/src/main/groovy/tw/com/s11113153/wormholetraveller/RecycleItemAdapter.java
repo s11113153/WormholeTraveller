@@ -1,12 +1,18 @@
 package tw.com.s11113153.wormholetraveller;
 
+import com.squareup.picasso.Picasso;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
+import android.widget.ImageButton;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import tw.com.s11113153.wormholetraveller.view.SquaredImageView;
 
 /**
  * Created by xuyouren on 15/3/29.
@@ -39,8 +45,38 @@ public class RecycleItemAdapter
         runEnterAnimation(viewHolder.itemView, position);
 
     ViewHolder holder = (ViewHolder) viewHolder;
-    holder.ivComments.setOnClickListener(this);
-    holder.ivComments.setTag(position);
+    holder.ibComments.setOnClickListener(this);
+    holder.ibComments.setTag(position);
+    holder.ibMore.setOnClickListener(this);
+    holder.ibMore.setTag(position);
+
+
+    String url = "";
+    switch (position) {
+      case 0:
+        url = "http://i.imgur.com/zzyrC10.jpg";
+        break;
+      case 1:
+        url = "http://i.imgur.com/iemg6nQ.jpg";
+        break;
+      case 2:
+        url = "http://i.imgur.com/VSOssOW.jpg";
+        break;
+      case 3:
+        url = "http://i.imgur.com/vWVsQIi.jpg";
+        break;
+      case 4:
+        break;
+    }
+    if (url == null || url.equals("")) {
+      holder.ivSquare.setImageDrawable(null);
+      return;
+    }
+
+    Picasso.with(context)
+      .load(url)
+      .fit()
+      .into(holder.ivSquare);
   }
 
   @Override
@@ -62,9 +98,17 @@ public class RecycleItemAdapter
 
   @Override
   public void onClick(View v) {
-    if (v.getId() == R.id.ivComments) {
-      if (mBottomClickListener != null)
+    switch (v.getId()) {
+      case R.id.ibComments:
+        if (mBottomClickListener != null)
           mBottomClickListener.onCommentsClick(v, (Integer) v.getTag());
+        break;
+      case R.id.ibLike:
+        break;
+      case R.id.ibMore:
+        if (mBottomClickListener != null)
+          mBottomClickListener.onMoreClick(v, (Integer) v.getTag());
+        break;
     }
   }
 
@@ -73,17 +117,20 @@ public class RecycleItemAdapter
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
-    final SquaredImageView ivSquare; // photo image
-    final ImageView ivComments;
+    @InjectView(R.id.ivSquare)
+    SquaredImageView ivSquare; // photo image
+    @InjectView(R.id.ibLike) ImageButton ibLike;
+    @InjectView(R.id.ibComments) ImageButton ibComments;
+    @InjectView(R.id.ibMore) ImageButton ibMore;
 
-    ViewHolder(View itemView) {
-      super(itemView);
-      ivSquare = (SquaredImageView)itemView.findViewById(R.id.ivSquare);
-      ivComments = (ImageView)itemView.findViewById(R.id.ivComments);
+    ViewHolder(View view) {
+      super(view);
+      ButterKnife.inject(this, view);
     }
   }
 
   public interface OnBottomClickListener {
     void onCommentsClick(View v, int position);
+    void onMoreClick(View v, int position);
   }
 }

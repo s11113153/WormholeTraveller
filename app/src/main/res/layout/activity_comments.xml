@@ -5,23 +5,9 @@
   android:layout_height="match_parent"
   tools:context=".CommentsActivity">
 
-  <android.support.v7.widget.Toolbar
+  <include
     android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="?attr/colorPrimary"
-    android:elevation="@dimen/default_elevation"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <TextView
-      android:id="@+id/tvLogo"
-      android:textSize="24sp"
-      android:text="@string/app_name"
-      android:textColor="@color/default_color_title"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:gravity="center"/>
-  </android.support.v7.widget.Toolbar>
+    layout="@layout/view_feed_toolbar"/>
 
   <LinearLayout
     android:id="@+id/contentRoot"
@@ -48,6 +34,7 @@
       android:elevation="@dimen/default_elevation">
 
       <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/etMessage"
         android:layout_marginLeft="8dp"
         android:layout_gravity="bottom"
         android:layout_width="0dp"
@@ -56,6 +43,7 @@
         app:singleLineEllipsis="true"
         app:maxCharacters="30"
         app:errorColor="@color/default_error_color"
+        android:elevation="@dimen/default_elevation"
         android:inputType="text"/>
 
       <com.gc.materialdesign.views.ButtonRectangle
@@ -64,7 +52,8 @@
         android:layout_height="60dp"
         android:background="@color/style_color_primary"
         android:text="@string/send"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom"
+        android:elevation="@dimen/default_elevation"/>
     </LinearLayout>
   </LinearLayout>
 </RelativeLayout>

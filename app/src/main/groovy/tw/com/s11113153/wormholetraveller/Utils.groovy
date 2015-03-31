@@ -2,14 +2,13 @@ package tw.com.s11113153.wormholetraveller
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Point;
+import android.graphics.Point
 import android.graphics.Typeface
-import android.util.Log
 import android.util.TypedValue
 import android.view.Display
 import android.view.View
 import android.view.WindowManager
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
 
 /**
  * Created by xuyouren on 15/3/27.

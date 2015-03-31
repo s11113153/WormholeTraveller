@@ -1,5 +1,7 @@
 package tw.com.s11113153.wormholetraveller;
 
+import com.gc.materialdesign.views.ButtonRectangle;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
@@ -7,13 +9,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,11 +27,14 @@ import butterknife.OnClick;
  */
 public class CommentsActivity extends ActionBarActivity {
   public static final String ARG_DRAWING_START_LOCATION = "arg_drawing_start_location";
+  private static final int MESSAGE_CHARACTER_LIMIT = 30;
 
   @InjectView(R.id.toolbar) Toolbar mToolbar;
   @InjectView(R.id.contentRoot) LinearLayout mContentRoot;
   @InjectView(R.id.rvComments) RecyclerView mRecyclerView;
   @InjectView(R.id.llAddComment) LinearLayout mllAddComments;
+  @InjectView(R.id.btnSendComment) ButtonRectangle mButtonRectangle;
+  @InjectView(R.id.etMessage) EditText mEtMessage;
 
   private CommentItemAdapter mAdapter;
 
@@ -136,6 +142,19 @@ public class CommentsActivity extends ActionBarActivity {
     mRecyclerView.smoothScrollBy(
       0, mRecyclerView.getChildAt(0).getHeight() * mAdapter.getItemCount()
     );
-    Toast.makeText(this, "No implements function", Toast.LENGTH_SHORT).show();
+
+    if (!isValidComments())
+        mButtonRectangle.startAnimation(
+          AnimationUtils.loadAnimation(CommentsActivity.this, R.anim.shake_error)
+        );
+
+
   }
+
+  private boolean isValidComments() {
+    if (TextUtils.isEmpty(mEtMessage.getText())) return false;
+    if (mEtMessage.getText().length() > MESSAGE_CHARACTER_LIMIT) return false;
+    return true;
+  }
+
 }

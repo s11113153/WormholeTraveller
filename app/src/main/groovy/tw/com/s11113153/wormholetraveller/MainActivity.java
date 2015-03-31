@@ -9,13 +9,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class MainActivity
         extends ActionBarActivity
@@ -23,21 +27,18 @@ public class MainActivity
 
   private static final String TAG = MainActivity.class.getSimpleName();
 
-  private Toolbar mToolbar;
-
-  private TextView mTvLogo;
+  @InjectView(R.id.toolbar) Toolbar mToolbar;
+  @InjectView(R.id.rvFeed) RecyclerView mRecyclerView;
+  @InjectView(R.id.ibAddAlbum) ImageButton mIbAddAlbum;
+  @InjectView(R.id.tvLogo) TextView mTvLogo;
 
   private MenuItem lineMenuItem, squareMenuItem;
 
-  private RecyclerView mRecyclerView;
-
   private RecycleItemAdapter mAdapter;
-
-  private ImageButton mIbAddAlbum;
 
   private boolean isLine = true;
 
-  private static int EXTRA_LAYOUT_SPACE = 500;
+  private static int EXTRA_LAYOUT_SPACE = 800;
 
   private static boolean loadAnimation;
 
@@ -45,18 +46,10 @@ public class MainActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    init();
+    ButterKnife.inject(this);
     setConfig();
-
     if (savedInstanceState == null)
       loadAnimation = true;
-  }
-
-  private void init() {
-    mToolbar = (Toolbar) findViewById(R.id.toolbar);
-    mTvLogo = (TextView) findViewById(R.id.tvLogo);
-    mRecyclerView = (RecyclerView) findViewById(R.id.rvFeed);
-    mIbAddAlbum = (ImageButton) findViewById(R.id.ibAddAlbum);
   }
 
   private void setConfig() {
@@ -96,7 +89,7 @@ public class MainActivity
   }
 
   @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  public boolean onOptionsItemSelected(final MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_square_article:
         isLine = false;
@@ -104,6 +97,14 @@ public class MainActivity
           @Override
           protected int getExtraLayoutSpace(RecyclerView.State state) {
             return EXTRA_LAYOUT_SPACE;
+          }
+
+          /* TODO Grid Layout error */
+          @Override
+          public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state,
+            int widthSpec,
+            int heightSpec) {
+            super.onMeasure(recycler, state, widthSpec, heightSpec);
           }
         });
         break;
@@ -176,6 +177,10 @@ public class MainActivity
 
     // no anim when finish and ready to change activity
     overridePendingTransition(0, 0);
+  }
+
+  @Override
+  public void onMoreClick(View v, int position) {
   }
 
   @Override
