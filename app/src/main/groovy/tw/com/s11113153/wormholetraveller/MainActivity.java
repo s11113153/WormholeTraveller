@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
 
 public class MainActivity
         extends ActionBarActivity
@@ -48,8 +49,12 @@ public class MainActivity
     setContentView(R.layout.activity_main);
     ButterKnife.inject(this);
     setConfig();
-    if (savedInstanceState == null)
+    if (savedInstanceState == null) {
       loadAnimation = true;
+      Log.v(TAG, "" + String.valueOf("savedInstanceState == null"));
+    }
+    else
+        mAdapter.updateItems(false);
   }
 
   private void setConfig() {
@@ -74,6 +79,12 @@ public class MainActivity
       }
     });
     mRecyclerView.setAdapter(mAdapter);
+    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override
+      public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        FeedContextMenuManager.getInstance().onScrolled(recyclerView, dx, dy);
+      }
+    });
   }
 
   @Override
@@ -156,13 +167,18 @@ public class MainActivity
       .setListener(new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
-          mIbAddAlbum.animate()
-            .translationY(0)
-            .setInterpolator(new OvershootInterpolator(3.0f))
-            .setStartDelay(Utils.AnimationAttribute.DELAY_START.getVal())
-            .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal());
+          startContentAnimation();
         }
       });
+  }
+
+  private void startContentAnimation() {
+    mIbAddAlbum.animate()
+      .translationY(0)
+      .setInterpolator(new OvershootInterpolator(3.0f))
+      .setStartDelay(Utils.AnimationAttribute.DELAY_START.getVal())
+      .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal());
+    mAdapter.updateItems(true);
   }
 
     @Override

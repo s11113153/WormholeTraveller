@@ -18,10 +18,26 @@
       android:layout_height="wrap_content"
       android:src="@mipmap/ic_recycle_top" />
 
-    <tw.com.s11113153.wormholetraveller.view.SquaredImageView
-      android:id="@+id/ivSquare"
+    <tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content">
+      <ImageView
+        android:id="@+id/ivFeedCenter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+      <View
+        android:id="@+id/vBgLike"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_like_circle_background" />
+      <ImageView
+        android:id="@+id/ivLove"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:src="@mipmap/ic_heart_outline_white"/>
+      </tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout>
 
     <LinearLayout
       android:id="@+id/llBottom"
@@ -73,7 +89,7 @@
           <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="123 likes" />
+            android:text="1 likes" />
           <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
