@@ -1,5 +1,5 @@
 <resources>
-  <!-- Base application theme. -->
+  <!-- Base application theme -->
   <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorPrimary">@color/style_color_primary</item>
     <item name="colorPrimaryDark">@color/style_color_primary_dark</item>
@@ -13,7 +13,7 @@
     <item name="android:gravity">left|center_vertical</item>
     <item name="android:paddingLeft">20dp</item>
     <item name="android:paddingRight">20dp</item>
-    <item name="android:textColor">?attr/colorPrimary</item>
+    <item name="android:textColor">@color/style_color_primary</item>
     <item name="android:textSize">14sp</item>
   </style>
 </resources>

@@ -5,10 +5,8 @@ import com.gc.materialdesign.views.ButtonRectangle;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -18,18 +16,16 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
  * Created by xuyouren on 15/3/29.
  */
-public class CommentsActivity extends ActionBarActivity {
+public class CommentsActivity extends BaseActivity {
   public static final String ARG_DRAWING_START_LOCATION = "arg_drawing_start_location";
   private static final int MESSAGE_CHARACTER_LIMIT = 30;
 
-  @InjectView(R.id.toolbar) Toolbar mToolbar;
   @InjectView(R.id.contentRoot) LinearLayout mContentRoot;
   @InjectView(R.id.rvComments) RecyclerView mRecyclerView;
   @InjectView(R.id.llAddComment) LinearLayout mllAddComments;
@@ -40,13 +36,11 @@ public class CommentsActivity extends ActionBarActivity {
 
   private int drawingStartLocation;
 
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_comments);
-    ButterKnife.inject(this);
-    setConfig();
+    setUpComments();
 
     drawingStartLocation = getIntent().getIntExtra(ARG_DRAWING_START_LOCATION, 0);
     if (savedInstanceState == null) {
@@ -89,16 +83,6 @@ public class CommentsActivity extends ActionBarActivity {
       .setInterpolator(new DecelerateInterpolator())
       .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal())
       .start();
-  }
-
-  private void setConfig() {
-    setUpToolbar();
-    setUpComments();
-  }
-
-  private void setUpToolbar() {
-    setSupportActionBar(mToolbar);
-    mToolbar.setNavigationIcon(R.mipmap.ic_menu);
   }
 
   private void setUpComments() {

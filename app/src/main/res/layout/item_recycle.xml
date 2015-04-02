@@ -32,11 +32,11 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_like_circle_background" />
       <ImageView
-        android:id="@+id/ivLove"
+        android:id="@+id/ivPersonTravel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="center"
-        android:src="@mipmap/ic_heart_outline_white"/>
+        android:src="@mipmap/ic_person_travel"/>
       </tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout>
 
     <LinearLayout
@@ -52,7 +52,7 @@
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:scaleType="centerInside"
-        android:src="@mipmap/ic_like"
+        android:src="@mipmap/ic_like_white"
         android:background="@drawable/btn_feed_action"/>
       <ImageButton
         android:id="@+id/ibComments"
@@ -76,21 +76,27 @@
         android:gravity="center_vertical|right">
 
         <ImageView
-          android:scaleType="centerInside"
-          android:layout_width="52dp"
-          android:layout_height="52dp"
-          android:src="@mipmap/ic_love"/>
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@mipmap/ic_good"/>
         <TextSwitcher
+          android:inAnimation="@anim/slide_in_likes_counter"
+          android:outAnimation="@anim/slide_out_likes_counter"
+          android:layout_gravity="bottom"
           android:id="@+id/tsLikesCounter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="8dp"
           android:layout_marginRight="8dp">
           <TextView
+            android:textSize="14sp"
+            android:gravity="left|bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1 likes" />
           <TextView
+            android:textSize="14sp"
+            android:gravity="left|bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         </TextSwitcher>

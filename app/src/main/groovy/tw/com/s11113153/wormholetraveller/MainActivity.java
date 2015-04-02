@@ -4,34 +4,30 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
+import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
 
 public class MainActivity
-        extends ActionBarActivity
-        implements RecycleItemAdapter.OnBottomClickListener {
+        extends BaseActivity
+        implements RecycleItemAdapter.OnBottomClickListener,
+                   FeedContextMenu.OnFeedContextMenuItemClickListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
 
-  @InjectView(R.id.toolbar) Toolbar mToolbar;
   @InjectView(R.id.rvFeed) RecyclerView mRecyclerView;
   @InjectView(R.id.ibAddAlbum) ImageButton mIbAddAlbum;
-  @InjectView(R.id.tvLogo) TextView mTvLogo;
 
   private MenuItem lineMenuItem, squareMenuItem;
 
@@ -47,24 +43,14 @@ public class MainActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    ButterKnife.inject(this);
-    setConfig();
+    setUpRecycleAdapter();
+
     if (savedInstanceState == null) {
       loadAnimation = true;
       Log.v(TAG, "" + String.valueOf("savedInstanceState == null"));
     }
     else
         mAdapter.updateItems(false);
-  }
-
-  private void setConfig() {
-    setUpToolbar();
-    setUpRecycleAdapter();
-  }
-
-  private void setUpToolbar() {
-    setSupportActionBar(mToolbar);
-    mToolbar.setNavigationIcon(R.mipmap.ic_menu);
   }
 
   private void setUpRecycleAdapter() {
@@ -152,15 +138,15 @@ public class MainActivity
             this, Utils.PxType.DP_TO_PX, (int) Utils.AnimationAttribute.PADDING.getVal());
 
     mIbAddAlbum.setTranslationY(3 * getResources().getDimensionPixelOffset(R.dimen.btn_add_album_size));
-    mToolbar.setTranslationY(-paddingSize);
-    mTvLogo.setTranslationY(-paddingSize);
+    getToolbar().setTranslationY(-paddingSize);
+    getTvLogo().setTranslationY(-paddingSize);
 
-    mToolbar.animate()
+    getToolbar().animate()
       .translationY(0)
       .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal())
       .setStartDelay(Utils.AnimationAttribute.DELAY_START.getVal());
 
-    mTvLogo.animate()
+    getTvLogo().animate()
       .translationY(0)
       .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal())
       .setStartDelay(Utils.AnimationAttribute.DELAY_START.getVal())
@@ -181,8 +167,9 @@ public class MainActivity
     mAdapter.updateItems(true);
   }
 
-    @Override
+  @Override
   public void onCommentsClick(View v, int position) {
+    Log.d(TAG, "" + String.valueOf(position));
     // ivComments 在整個螢幕的座標
     int[] startingLocation = new int[2];
     v.getLocationOnScreen(startingLocation);
@@ -197,6 +184,27 @@ public class MainActivity
 
   @Override
   public void onMoreClick(View v, int position) {
+    FeedContextMenuManager.getInstance().toggleContextMenuFromView(v, position, this);
+  }
+
+  @Override
+  public void onReportClick(int feedItem) {
+    Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show();
+  }
+
+  @Override
+  public void onSharePhotoClick(int feedItem) {
+
+  }
+
+  @Override
+  public void onCopyShareUrlClick(int feedItem) {
+
+  }
+
+  @Override
+  public void onCancelClick(int feedItem) {
+
   }
 
   @Override

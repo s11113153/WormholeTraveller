@@ -1,11 +1,13 @@
 package tw.com.s11113153.wormholetraveller.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
 
@@ -23,12 +25,18 @@ public class FeedContextMenu extends LinearLayout {
 
   public FeedContextMenu(Context context) {
     super(context);
-    CONTEXT_MENU_WIDTH = (int) Utils.doPx(context, Utils.PxType.DP_TO_PX, 240);
+    CONTEXT_MENU_WIDTH = (int) Utils.doPx(context, Utils.PxType.DP_TO_PX, 180);
     init();
   }
 
+  public void setOnFeedMenuItemClickListener(
+          OnFeedContextMenuItemClickListener onItemClickListener
+  ) {
+    this.onItemClickListener = onItemClickListener;
+  }
+
+  /** FeedContextMenu add elements from view_context_menu.xml  **/
   private void init() {
-    // 把 view_context_menu.xml 增加到 FeedContextMenu
     LayoutInflater.from(getContext()).inflate(R.layout.view_context_menu, this, true);
     setBackgroundResource(R.mipmap.bg_container_shadow);
     setOrientation(VERTICAL);
@@ -45,7 +53,18 @@ public class FeedContextMenu extends LinearLayout {
     ButterKnife.inject(this);
   }
 
+  public void dismiss() {
+    Log.v(TAG, "" + String.valueOf(this));
+    Log.v(TAG, "" + String.valueOf(getParent()));
+    ((ViewGroup) getParent()).removeView(FeedContextMenu.this);
+  }
 
+
+  @OnClick(R.id.btnReport)
+  public void onReportClick() {
+    if (onItemClickListener != null)
+        onItemClickListener.onReportClick(feedItem);
+  }
 
   public interface OnFeedContextMenuItemClickListener {
     public void onReportClick(int feedItem);
