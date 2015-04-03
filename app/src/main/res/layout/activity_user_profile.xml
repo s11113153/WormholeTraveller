@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <tw.com.s11113153.wormholetraveller.view.RevealBackgroundView
+    android:id="@+id/vRevealBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <include
+    android:id="@+id/toolbar"
+    layout="@layout/view_feed_toolbar" />
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/rvUserProfile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="?attr/actionBarSize" />
+
+  <ImageButton
+    android:id="@+id/btnCreate"
+    android:layout_width="@dimen/user_profile_btn_size"
+    android:layout_height="@dimen/user_profile_btn_size"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="@dimen/user_profile_margins"
+    android:layout_marginRight="@dimen/user_profile_margins"
+    android:background="@drawable/btn_add_album_default"
+    android:elevation="@dimen/default_elevation"
+    android:src="@drawable/btn_add_album_default"
+    android:textSize="28sp" />
+</RelativeLayout>

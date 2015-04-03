@@ -11,5 +11,10 @@
   <dimen name="btn_add_album_margins">16dp</dimen>
   <dimen name="btn_add_album_size">64dp</dimen>
 
+  <dimen name="user_profile_btn_size">56dp</dimen>
+  <dimen name="user_profile_margins">16dp</dimen>
+
+  <dimen name="user_profile_photo_size">88dp</dimen>
+
   <dimen name="iv_user_size">48dp</dimen>
 </resources>

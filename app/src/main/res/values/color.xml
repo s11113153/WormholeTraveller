@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!--app theme color-->
-  <color name="style_color_primary">#009688</color>
-  <color name="style_color_primary_dark">#00796B</color>
+  <color name="style_color_primary_thin_color">#80CBC4</color> <!-- 100 -->
+  <color name="style_color_primary">#009688</color>            <!-- 500 -->
+  <color name="style_color_primary_dark">#00796B</color>       <!-- 700 -->
+  <color name="style_color_primary_deep_dark">#004D40</color>  <!-- 900 -->
 
   <!--app background-->
   <color name="style_color_background">#FAFAFA</color>

@@ -45,8 +45,7 @@ public class RecycleItemAdapter
   private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR
           = new OvershootInterpolator(4);
 
-  private static final int ANIMATED_ITEMS_COUNT = 2;
-
+  /* TODO */
   private boolean animateItems = false;
 
   private final Map<Integer, Integer> likesCount = new HashMap();
@@ -72,27 +71,31 @@ public class RecycleItemAdapter
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     final View view = LayoutInflater.from(context).inflate(R.layout.item_recycle, parent, false);
-    return new ViewHolder(view);
+    final RecycleItemViewHolder holder = new RecycleItemViewHolder(view);
+      holder.ibComments.setOnClickListener(this);
+      holder.ibMore.setOnClickListener(this);
+      holder.ivFeedCenter.setOnClickListener(this);
+      holder.ibLike.setOnClickListener(this);
+      holder.ivUserProfile.setOnClickListener(this);
+    return holder;
   }
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    /* TODO */
     if (!isInitAnimation && position == 0)
         runEnterAnimation(viewHolder.itemView, position);
 
-    ViewHolder holder = (ViewHolder) viewHolder;
+    RecycleItemViewHolder holder = (RecycleItemViewHolder) viewHolder;
+
     updateLikesCounter(holder, false);
     updateHeartButton(holder, false);
 
-    /** register click listener **/
-    holder.ibComments.setOnClickListener(this);
     holder.ibComments.setTag(position);
-    holder.ibMore.setOnClickListener(this);
     holder.ibMore.setTag(position);
-    holder.ivFeedCenter.setOnClickListener(this);
     holder.ivFeedCenter.setTag(holder);
-    holder.ibLike.setOnClickListener(this);
     holder.ibLike.setTag(holder);
+
 
     if (likeAnimations.containsKey(holder))
         likeAnimations.get(holder).cancel();
@@ -125,6 +128,13 @@ public class RecycleItemAdapter
       .load(url)
       .fit()
       .into(holder.ivFeedCenter);
+
+    Picasso.with(context)
+      .load("http://www.youxituoluo.com/wp-content/uploads/2013/11/264_4a561152e5358.jpg")
+      .centerCrop()
+      .resize(96, 96)
+      .transform(new RoundedTransformation())
+      .into(holder.ivUserProfile);
   }
 
   @Override
@@ -156,7 +166,7 @@ public class RecycleItemAdapter
           mBottomClickListener.onMoreClick(v, (Integer) v.getTag());
         break;
       case R.id.ibLike: {
-        RecycleItemAdapter.ViewHolder holder = (RecycleItemAdapter.ViewHolder) v.getTag();
+        RecycleItemViewHolder holder = (RecycleItemViewHolder) v.getTag();
         if (!likedPositions.contains(holder.getLayoutPosition())) {
           likedPositions.add(holder.getLayoutPosition());
           updateLikesCounter(holder, true);
@@ -173,6 +183,11 @@ public class RecycleItemAdapter
 //          updateHeartButton(holder, false);
 //        }
       } break;
+
+      case R.id.ivUserProfile: {
+        if (mBottomClickListener != null)
+            mBottomClickListener.onProfileClick(v);
+      }
     }
   }
 
@@ -180,7 +195,7 @@ public class RecycleItemAdapter
     mBottomClickListener = bottomClickListener;
   }
 
-  static class ViewHolder extends RecyclerView.ViewHolder {
+  static class RecycleItemViewHolder extends RecyclerView.ViewHolder{
     @InjectView(R.id.ivFeedCenter) ImageView ivFeedCenter;
     @InjectView(R.id.ibComments) ImageButton ibComments;
     @InjectView(R.id.ibLike) ImageButton ibLike;
@@ -188,8 +203,9 @@ public class RecycleItemAdapter
     @InjectView(R.id.vBgLike) View vBgLike;
     @InjectView(R.id.ivPersonTravel) ImageView ivPersonTravel;
     @InjectView(R.id.tsLikesCounter) TextSwitcher tsLikesCounter;
+    @InjectView(R.id.ivUserProfile) ImageView ivUserProfile;
 
-    public ViewHolder(View view) {
+    public RecycleItemViewHolder(View view) {
       super(view);
       ButterKnife.inject(this, view);
     }
@@ -200,7 +216,7 @@ public class RecycleItemAdapter
    *  @param animated true,   Update Likes value
    *                  false,  initial Likes value
    */
-  private void updateLikesCounter(ViewHolder holder, boolean animated) {
+  private void updateLikesCounter(RecycleItemViewHolder holder, boolean animated) {
     /* TODO +1 ? */
     int currentLikesCount = likesCount.get(holder.getLayoutPosition() + 1);
     /**
@@ -220,7 +236,7 @@ public class RecycleItemAdapter
     likesCount.put(holder.getLayoutPosition(), currentLikesCount);
   }
 
-  private void updateHeartButton(final RecycleItemAdapter.ViewHolder holder, boolean animated) {
+  private void updateHeartButton(final RecycleItemViewHolder holder, boolean animated) {
     if (animated) {
         if (!likeAnimations.containsKey(holder)) {
           AnimatorSet animatorSet = new AnimatorSet();
@@ -265,7 +281,7 @@ public class RecycleItemAdapter
     }
   }
 
-  private void resetLikeAnimationState(RecycleItemAdapter.ViewHolder holder) {
+  private void resetLikeAnimationState(RecycleItemViewHolder holder) {
     likeAnimations.remove(holder);
     holder.vBgLike.setVisibility(View.GONE);
     holder.ivPersonTravel.setVisibility(View.GONE);
@@ -288,7 +304,7 @@ public class RecycleItemAdapter
     notifyDataSetChanged();
   }
 
-  private void animatePhotoLike(final RecycleItemAdapter.ViewHolder holder) {
+  private void animatePhotoLike(final RecycleItemViewHolder holder) {
     if (!likeAnimations.containsKey(holder)) {
       holder.vBgLike.setVisibility(View.VISIBLE);
       holder.ivPersonTravel.setVisibility(View.VISIBLE);
@@ -344,5 +360,6 @@ public class RecycleItemAdapter
   public interface OnBottomClickListener {
     void onCommentsClick(View v, int position);
     void onMoreClick(View v, int position);
+    void onProfileClick(View v);
   }
 }

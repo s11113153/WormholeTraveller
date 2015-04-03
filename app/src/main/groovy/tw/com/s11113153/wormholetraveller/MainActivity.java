@@ -163,7 +163,8 @@ public class MainActivity
       .translationY(0)
       .setInterpolator(new OvershootInterpolator(3.0f))
       .setStartDelay(Utils.AnimationAttribute.DELAY_START.getVal())
-      .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal());
+      .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal())
+      .start();
     mAdapter.updateItems(true);
   }
 
@@ -185,6 +186,15 @@ public class MainActivity
   @Override
   public void onMoreClick(View v, int position) {
     FeedContextMenuManager.getInstance().toggleContextMenuFromView(v, position, this);
+  }
+
+  @Override
+  public void onProfileClick(View v) {
+    int [] startingLocation = new int[2];
+    v.getLocationOnScreen(startingLocation);
+    startingLocation[0] += v.getWidth() / 2;
+    UserProfileActivity.startUserProfileFromLocation(startingLocation, this);
+    overridePendingTransition(0, 0);
   }
 
   @Override

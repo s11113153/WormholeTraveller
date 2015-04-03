@@ -13,10 +13,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:src="@mipmap/ic_recycle_top" />
+    <LinearLayout
+      android:padding="3dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/ivUserProfile"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+      </LinearLayout>
 
     <tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout
       android:layout_width="match_parent"
@@ -49,23 +56,23 @@
       android:gravity="center_vertical">
       <ImageButton
         android:id="@+id/ibLike"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:scaleType="centerInside"
         android:src="@mipmap/ic_like_white"
         android:background="@drawable/btn_feed_action"/>
       <ImageButton
         android:id="@+id/ibComments"
         android:src="@mipmap/ic_comments"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:scaleType="centerInside"
         android:background="@drawable/btn_feed_action"/>
       <ImageButton
         android:id="@+id/ibMore"
         android:src="@mipmap/ic_more"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:scaleType="centerInside"
         android:background="@drawable/btn_feed_action"/>
 
@@ -76,6 +83,7 @@
         android:gravity="center_vertical|right">
 
         <ImageView
+          android:scaleType="centerInside"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:src="@mipmap/ic_good"/>
