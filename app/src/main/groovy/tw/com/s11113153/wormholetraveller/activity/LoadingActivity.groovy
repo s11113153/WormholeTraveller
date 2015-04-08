@@ -1,4 +1,4 @@
-package tw.com.s11113153.wormholetraveller
+package tw.com.s11113153.wormholetraveller.activity
 
 import android.content.Intent
 import android.graphics.Typeface
@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity
 import android.widget.TextView
 import com.pnikosis.materialishprogress.ProgressWheel
 import groovy.transform.CompileStatic
+import tw.com.s11113153.wormholetraveller.R
 
 /**
  * Created by xuyouren on 15/3/26.

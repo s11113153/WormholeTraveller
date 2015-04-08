@@ -7,7 +7,9 @@ import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Display
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+
 import groovy.transform.CompileStatic
 
 /**
@@ -15,7 +17,9 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 final public class Utils {
-  private Utils() {}
+  private Utils() {
+    // do nothing
+  }
 
   static enum AnimationAttribute {
     PADDING(80),

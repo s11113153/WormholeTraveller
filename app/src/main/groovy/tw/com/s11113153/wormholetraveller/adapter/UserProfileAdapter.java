@@ -1,4 +1,4 @@
-package tw.com.s11113153.wormholetraveller;
+package tw.com.s11113153.wormholetraveller.adapter;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -23,6 +23,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import tw.com.s11113153.wormholetraveller.utils.CircleTransformation;
+import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.Utils;
 
 /**
  * Created by xuyouren on 15/4/3.

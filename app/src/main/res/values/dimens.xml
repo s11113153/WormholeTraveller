@@ -17,4 +17,6 @@
   <dimen name="user_profile_photo_size">88dp</dimen>
 
   <dimen name="iv_user_size">48dp</dimen>
+
+  <dimen name="global_menu_avatar_size">64dp</dimen>
 </resources>

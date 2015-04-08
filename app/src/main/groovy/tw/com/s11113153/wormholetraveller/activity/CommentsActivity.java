@@ -1,4 +1,4 @@
-package tw.com.s11113153.wormholetraveller;
+package tw.com.s11113153.wormholetraveller.activity;
 
 import com.gc.materialdesign.views.ButtonRectangle;
 
@@ -18,6 +18,9 @@ import android.widget.LinearLayout;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import tw.com.s11113153.wormholetraveller.adapter.CommentItemAdapter;
+import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.Utils;
 
 /**
  * Created by xuyouren on 15/3/29.

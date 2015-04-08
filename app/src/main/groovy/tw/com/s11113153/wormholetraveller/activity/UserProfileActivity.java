@@ -1,15 +1,16 @@
-package tw.com.s11113153.wormholetraveller;
+package tw.com.s11113153.wormholetraveller.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
 import butterknife.InjectView;
+import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.adapter.UserProfileAdapter;
 import tw.com.s11113153.wormholetraveller.view.RevealBackgroundView;
 
 /**
@@ -72,8 +73,8 @@ public class UserProfileActivity
         }
       });
     } else {
-      userPhotosAdapter.setLockedAnimations(true);
       vRevealBackground.setToFinishedFrame();
+      userPhotosAdapter.setLockedAnimations(true);
     }
   }
 

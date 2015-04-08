@@ -33,7 +33,7 @@ public class RevealBackgroundView extends View {
   public static final int STATE_FINISHED = 2;
   @IntDef({STATE_NOT_STARTED, STATE_FILL_STARTED, STATE_FINISHED})
   @Retention(RetentionPolicy.SOURCE)
-  public @interface Duration {}
+  private  @interface Duration {}
 
   private static final Interpolator INTERPOLATOR = new AccelerateInterpolator();
 
@@ -48,11 +48,10 @@ public class RevealBackgroundView extends View {
   ObjectAnimator revealAnimator;
 
   private int startLocationX;
+
   private int startLocationY;
 
   private OnStateChangeListener onStateChangeListener;
-
-
 
   public RevealBackgroundView(Context context) {
     super(context);
@@ -83,7 +82,7 @@ public class RevealBackgroundView extends View {
   private void init() {
     fillPaint = new Paint();
     fillPaint.setStyle(Paint.Style.FILL);
-    fillPaint.setColor(Color.WHITE);
+    fillPaint.setColor(getResources().getColor(R.color.style_color_primary_thin_color));
     fillPaint.setAntiAlias(true);
   }
 
@@ -98,7 +97,7 @@ public class RevealBackgroundView extends View {
     startLocationY = tapLocationOnScreen[1];
     Log.e("" + startLocationX, "" + startLocationY);
     revealAnimator = ObjectAnimator.ofInt(
-                this, "currentRadius", 0, getWidth() + getHeight());
+        this, "currentRadius", 0, getWidth() + getHeight());
     revealAnimator.setDuration(FILL_TILE);
     revealAnimator.setInterpolator(INTERPOLATOR);
     revealAnimator.addListener(new AnimatorListenerAdapter() {
@@ -110,6 +109,10 @@ public class RevealBackgroundView extends View {
     revealAnimator.start();
   }
 
+  public void setFillPaintColor(int color) {
+    fillPaint.setColor(color);
+  }
+
   public void setToFinishedFrame() {
     changeState(STATE_FINISHED);
     invalidate();
@@ -117,10 +120,11 @@ public class RevealBackgroundView extends View {
 
   @Override
   protected void onDraw(Canvas canvas) {
-    if (state == STATE_FINISHED)
-        canvas.drawRect(0, 0, getWidth(), getHeight(), fillPaint);
-    else
-      canvas.drawCircle(startLocationX, startLocationY, currentRadius, fillPaint);
+    if (state == STATE_FINISHED) {
+      fillPaint.setColor(Color.WHITE);
+      canvas.drawRect(0, 0, getWidth(), getHeight(), fillPaint);
+    }
+    else canvas.drawCircle(startLocationX, startLocationY, currentRadius, fillPaint);
   }
 
   private void changeState(@Duration int state) {
@@ -130,10 +134,11 @@ public class RevealBackgroundView extends View {
     if (onStateChangeListener != null)
         onStateChangeListener.onStateChange(state);
     else
-        Log.d(TAG, "" + String.valueOf("no set OnStateChangeListener"));
+        Log.e(TAG, "" + String.valueOf("no set OnStateChangeListener"));
   }
 
-  /** setting for propertyName **/
+
+  /** @hide setting for propertyName **/
   public void setCurrentRadius(int radius) {
     this.currentRadius = radius;
     invalidate();

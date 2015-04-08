@@ -1,4 +1,4 @@
-package tw.com.s11113153.wormholetraveller;
+package tw.com.s11113153.wormholetraveller.adapter;
 
 import com.squareup.picasso.Picasso;
 
@@ -7,17 +7,22 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,25 +30,29 @@ import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.utils.RoundedTransformation;
+import tw.com.s11113153.wormholetraveller.view.SendingProgressView;
 
 /**
  * Created by xuyouren on 15/3/29.
  */
 public class RecycleItemAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements View.OnClickListener {
+  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+  implements View.OnClickListener {
 
   private static final String TAG = RecycleItemAdapter.class.getSimpleName();
 
   /** 動畫開始比較快, 然後逐漸減速 **/
   private static final DecelerateInterpolator DECCELERATE_INTERPOLATOR
-          = new DecelerateInterpolator();
+    = new DecelerateInterpolator();
   /** 動畫開始比較慢, 然後逐漸加速 **/
   private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR
-          = new AccelerateInterpolator();
+    = new AccelerateInterpolator();
   /** 向前甩一定的值, 再回到原來位置 **/
   private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR
-          = new OvershootInterpolator(4);
+    = new OvershootInterpolator(4);
 
   /* TODO */
   private boolean animateItems = false;
@@ -64,29 +73,81 @@ public class RecycleItemAdapter
 
   private OnBottomClickListener mBottomClickListener;
 
+
+  private static final int VIEW_TYPE_DEFAULT = 1;
+  private static final int VIEW_TYPE_LOADER = 2;
+
+  @IntDef({VIEW_TYPE_DEFAULT, VIEW_TYPE_LOADER})
+  @Retention(RetentionPolicy.SOURCE)
+  private @interface ViewType {}
+
+  private boolean showloadingView = false;
+
+  private int loadingViewSize;
+
   public RecycleItemAdapter(Context context) {
     this.context = context;
+    loadingViewSize = (int)Utils.doPx(context, Utils.PxType.DP_TO_PX, 200);
+  }
+
+  @Override
+  public int getItemViewType(int position) {
+    if (showloadingView && position == 0)
+      return VIEW_TYPE_LOADER;
+    else
+      return VIEW_TYPE_DEFAULT;
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     final View view = LayoutInflater.from(context).inflate(R.layout.item_recycle, parent, false);
     final RecycleItemViewHolder holder = new RecycleItemViewHolder(view);
-      holder.ibComments.setOnClickListener(this);
-      holder.ibMore.setOnClickListener(this);
-      holder.ivFeedCenter.setOnClickListener(this);
-      holder.ibLike.setOnClickListener(this);
-      holder.ivUserProfile.setOnClickListener(this);
-    return holder;
+    switch (viewType) {
+      case VIEW_TYPE_DEFAULT:
+        holder.ibComments.setOnClickListener(this);
+        holder.ibMore.setOnClickListener(this);
+        holder.ivFeedCenter.setOnClickListener(this);
+        holder.ibLike.setOnClickListener(this);
+        holder.ivUserProfile.setOnClickListener(this);
+        return holder;
+      case VIEW_TYPE_LOADER:
+        View bgView = new View(context);
+        bgView.setBackgroundColor(0x77ffffff);
+        bgView.setLayoutParams(new FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        holder.vImageRoot.addView(bgView);
+        holder.vProgressBg = bgView;
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(loadingViewSize, loadingViewSize);
+        params.gravity = Gravity.CENTER;
+        SendingProgressView sendingProgressView = new SendingProgressView(context);
+        sendingProgressView.setLayoutParams(params);
+        holder.vImageRoot.addView(sendingProgressView);
+        holder.vSendingProgress = sendingProgressView;
+        return holder;
+      default:
+        throw new RuntimeException(TAG + " : line by 114, viewType is error");
+    }
   }
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
     /* TODO */
     if (!isInitAnimation && position == 0)
-        runEnterAnimation(viewHolder.itemView, position);
+      runEnterAnimation(viewHolder.itemView, position);
 
-    RecycleItemViewHolder holder = (RecycleItemViewHolder) viewHolder;
+    final RecycleItemViewHolder holder = (RecycleItemViewHolder)viewHolder;
+
+    switch (getItemViewType(position)) {
+      case VIEW_TYPE_DEFAULT:
+        bindDefaultRecycleItem(holder, position);
+        break;
+      case VIEW_TYPE_LOADER:
+        bindLoadingRecycleItem(holder);
+        break;
+    }
+  }
+
+  private void bindDefaultRecycleItem(RecycleItemViewHolder holder, int position) {
 
     updateLikesCounter(holder, false);
     updateHeartButton(holder, false);
@@ -98,7 +159,7 @@ public class RecycleItemAdapter
 
 
     if (likeAnimations.containsKey(holder))
-        likeAnimations.get(holder).cancel();
+      likeAnimations.get(holder).cancel();
 
     resetLikeAnimationState(holder);
 
@@ -136,6 +197,11 @@ public class RecycleItemAdapter
       .transform(new RoundedTransformation())
       .into(holder.ivUserProfile);
   }
+
+  private void bindLoadingRecycleItem(final RecycleItemViewHolder holder) {
+
+  }
+
 
   @Override
   public int getItemCount() {
@@ -186,7 +252,7 @@ public class RecycleItemAdapter
 
       case R.id.ivUserProfile: {
         if (mBottomClickListener != null)
-            mBottomClickListener.onProfileClick(v);
+          mBottomClickListener.onProfileClick(v);
       }
     }
   }
@@ -204,6 +270,10 @@ public class RecycleItemAdapter
     @InjectView(R.id.ivPersonTravel) ImageView ivPersonTravel;
     @InjectView(R.id.tsLikesCounter) TextSwitcher tsLikesCounter;
     @InjectView(R.id.ivUserProfile) ImageView ivUserProfile;
+    @InjectView(R.id.vImageRoot) FrameLayout vImageRoot;
+
+    SendingProgressView vSendingProgress;
+    View vProgressBg;
 
     public RecycleItemViewHolder(View view) {
       super(view);
@@ -218,7 +288,7 @@ public class RecycleItemAdapter
    */
   private void updateLikesCounter(RecycleItemViewHolder holder, boolean animated) {
     /* TODO +1 ? */
-    int currentLikesCount = likesCount.get(holder.getLayoutPosition() + 1);
+    int currentLikesCount = likesCount.get(holder.getLayoutPosition());
     /**
      *  param2 == 1, use one(quantity) and set value
      *          > 1, then use other(quantity) and set value
@@ -238,46 +308,46 @@ public class RecycleItemAdapter
 
   private void updateHeartButton(final RecycleItemViewHolder holder, boolean animated) {
     if (animated) {
-        if (!likeAnimations.containsKey(holder)) {
-          AnimatorSet animatorSet = new AnimatorSet();
-          likeAnimations.put(holder, animatorSet);
+      if (!likeAnimations.containsKey(holder)) {
+        AnimatorSet animatorSet = new AnimatorSet();
+        likeAnimations.put(holder, animatorSet);
 
-          ObjectAnimator rotationAnim = ObjectAnimator.ofFloat(holder.ibLike, "rotation", 360f, 0f);
-          rotationAnim.setDuration(300);
-          rotationAnim.setInterpolator(ACCELERATE_INTERPOLATOR);
+        ObjectAnimator rotationAnim = ObjectAnimator.ofFloat(holder.ibLike, "rotation", 360f, 0f);
+        rotationAnim.setDuration(300);
+        rotationAnim.setInterpolator(ACCELERATE_INTERPOLATOR);
 
-          ObjectAnimator bounceAnimX = ObjectAnimator.ofFloat(holder.ibLike, "scaleX", 0.1f, 1f);
-          bounceAnimX.setDuration(600);
-          bounceAnimX.setInterpolator(OVERSHOOT_INTERPOLATOR);
+        ObjectAnimator bounceAnimX = ObjectAnimator.ofFloat(holder.ibLike, "scaleX", 0.1f, 1f);
+        bounceAnimX.setDuration(600);
+        bounceAnimX.setInterpolator(OVERSHOOT_INTERPOLATOR);
 
-          ObjectAnimator bounceAnimY = ObjectAnimator.ofFloat(holder.ibLike, "scaleY", 0.1f, 1f);
-          bounceAnimY.setDuration(600);
-          bounceAnimY.setInterpolator(OVERSHOOT_INTERPOLATOR);
-          bounceAnimY.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-              holder.ibLike.setImageResource(R.mipmap.ic_like_red);
-            }
-          });
+        ObjectAnimator bounceAnimY = ObjectAnimator.ofFloat(holder.ibLike, "scaleY", 0.1f, 1f);
+        bounceAnimY.setDuration(600);
+        bounceAnimY.setInterpolator(OVERSHOOT_INTERPOLATOR);
+        bounceAnimY.addListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationStart(Animator animation) {
+            holder.ibLike.setImageResource(R.mipmap.ic_like_red);
+          }
+        });
 
-          animatorSet.play(rotationAnim);
-          animatorSet.play(bounceAnimX).with(bounceAnimY).after(rotationAnim);
+        animatorSet.play(rotationAnim);
+        animatorSet.play(bounceAnimX).with(bounceAnimY).after(rotationAnim);
 
-          animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-              resetLikeAnimationState(holder);
-            }
-          });
-          animatorSet.start();
-        }
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            resetLikeAnimationState(holder);
+          }
+        });
+        animatorSet.start();
+      }
     }
     else {
-        if (likedPositions.contains(holder.getLayoutPosition())) {
-          holder.ibLike.setImageResource(R.mipmap.ic_like_red);
-        } else {
-          holder.ibLike.setImageResource(R.mipmap.ic_like_white);
-        }
+      if (likedPositions.contains(holder.getLayoutPosition())) {
+        holder.ibLike.setImageResource(R.mipmap.ic_like_red);
+      } else {
+        holder.ibLike.setImageResource(R.mipmap.ic_like_white);
+      }
     }
   }
 
@@ -290,7 +360,7 @@ public class RecycleItemAdapter
   /** people of one article, set Like Value **/
   private void fillLikesWithRandomValues() {
     for (int i = 0; i < getItemCount(); i++)
-        likesCount.put(i, new Random().nextInt(100));
+      likesCount.put(i, new Random().nextInt(100));
   }
 
   /**
@@ -354,6 +424,10 @@ public class RecycleItemAdapter
       });
       animatorSet.start();
     }
+  }
+
+
+  public void showLoadingView() {
   }
 
 

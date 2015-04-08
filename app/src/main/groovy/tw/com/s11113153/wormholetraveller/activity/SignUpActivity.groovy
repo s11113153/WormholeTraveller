@@ -1,4 +1,4 @@
-package tw.com.s11113153.wormholetraveller
+package tw.com.s11113153.wormholetraveller.activity
 
 import android.os.Bundle
 import android.os.Handler
@@ -8,6 +8,8 @@ import com.gc.materialdesign.views.ButtonRectangle
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.rengwuxian.materialedittext.MaterialEditText
 import groovy.transform.CompileStatic
+import tw.com.s11113153.wormholetraveller.R
+import tw.com.s11113153.wormholetraveller.Utils
 
 /**
  * Created by xuyouren on 15/3/28.

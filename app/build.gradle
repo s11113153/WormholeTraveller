@@ -8,8 +8,8 @@ android {
     applicationId "tw.com.s11113153.wormholetraveller"
     minSdkVersion 18
     targetSdkVersion 22
-    versionCode 1
-    versionName "1.0"
+    versionCode 2
+    versionName "2.0.1"
   }
   buildTypes {
     release {
@@ -30,7 +30,7 @@ dependencies {
   compile 'com.android.support:appcompat-v7:22.0.0'
   compile 'com.android.support:cardview-v7:21.0.3'
   compile 'com.jakewharton:butterknife:6.1.0'
-  compile 'com.jakewharton.timber:timber:2.5.0'
+  compile 'com.jakewharton.timber:timber:2.5.1'
   compile 'com.facebook.rebound:rebound:0.3.6'
   compile 'org.codehaus.groovy:groovy:2.4.1:grooid'
   compile 'com.pnikosis:materialish-progress:1.5'
@@ -41,4 +41,5 @@ dependencies {
   compile 'com.android.support:support-v13:22.0.0'
   compile 'com.android.support:palette-v7:22.0.0'
   compile 'com.android.support:support-v4:22.0.0'
+  compile 'com.commonsware.cwac:camera:0.6.12'
 }

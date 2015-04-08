@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <tw.com.s11113153.wormholetraveller.view.RevealBackgroundView
+    android:id="@+id/vRevealBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ViewSwitcher
+      android:id="@+id/vUpperPanel"
+      android:layout_width="match_parent"
+      android:layout_height="66dp">
+
+      <LinearLayout
+        android:background="@color/style_color_primary_super_thin_color"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp">
+
+        <ImageButton
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          android:src="@mipmap/ic_close"
+          android:background="@drawable/btn_capture_options"/>
+
+        <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+
+        <!--<ImageButton-->
+          <!--android:layout_width="40dp"-->
+          <!--android:layout_height="40dp"-->
+          <!--android:background="@drawable/btn_capture_options"-->
+          <!--android:src="@mipmap/ic_grid" />-->
+
+        <ImageButton
+          android:src="@mipmap/ic_camera"
+          android:background="@drawable/btn_capture_options"
+          android:layout_marginLeft="24dp"
+          android:layout_width="40dp"
+          android:layout_height="40dp" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:gravity="center_vertical"
+        android:background="#111111"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+          android:id="@+id/btnBack"
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          android:background="@drawable/btn_context_menu"
+          android:src="@mipmap/ic_back"/>
+
+        <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1" />
+
+        <!--<ImageButton-->
+          <!--android:src="@mipmap/ic_edit"-->
+          <!--android:background="@drawable/btn_context_menu"-->
+          <!--android:layout_width="40dp"-->
+          <!--android:layout_height="40dp" />-->
+
+        <!--<ImageButton-->
+          <!--android:src="@mipmap/ic_edit"-->
+          <!--android:background="@drawable/btn_context_menu"-->
+          <!--android:layout_marginRight="8dp"-->
+          <!--android:layout_marginLeft="8dp"-->
+          <!--android:layout_width="40dp"-->
+          <!--android:layout_height="40dp" />-->
+
+        <!--<ImageButton-->
+          <!--android:src="@mipmap/ic_edit"-->
+          <!--android:background="@drawable/btn_context_menu"-->
+          <!--android:layout_width="40dp"-->
+          <!--android:layout_height="40dp" />-->
+
+        <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1" />
+
+        <ImageButton
+          android:id="@+id/btnAccept"
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          android:background="@drawable/btn_context_menu"
+          android:src="@mipmap/ic_next" />
+      </LinearLayout>
+
+    </ViewSwitcher>
+
+    <FrameLayout
+      android:layout_weight="5"
+      android:id="@+id/vPhotoRoot"
+      android:layout_width="match_parent"
+      android:layout_height="0dp">
+
+      <com.commonsware.cwac.camera.CameraView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical" />
+
+      <ImageButton
+        android:id="@+id/ivTakenPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+      <View
+        android:id="@+id/vShutter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:visibility="gone" />
+
+    </FrameLayout>
+
+    <ViewSwitcher
+      android:id="@+id/vLowerPanel"
+      android:layout_height="66dp"
+      android:layout_width="match_parent">
+
+      <LinearLayout
+        android:background="@color/style_color_primary_super_thin_color"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <ImageButton
+            android:layout_gravity="center"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_capture_options"
+            android:src="@mipmap/ic_collections"/>
+        </FrameLayout>
+
+        <FrameLayout
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <Button
+            android:id="@+id/btnTakePhoto"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_capture"/>
+        </FrameLayout>
+
+        <FrameLayout
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+          <ImageButton
+            android:src="@mipmap/ic_video"
+            android:background="@drawable/btn_capture_options"
+            android:layout_gravity="center"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+        </FrameLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+          android:id="@+id/rvFilters"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scrollbars="none" />
+      </LinearLayout>
+
+    </ViewSwitcher>
+
+  </LinearLayout>
+
+</FrameLayout>

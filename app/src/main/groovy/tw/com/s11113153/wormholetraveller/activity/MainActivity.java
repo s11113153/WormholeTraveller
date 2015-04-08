@@ -1,9 +1,11 @@
-package tw.com.s11113153.wormholetraveller;
+package tw.com.s11113153.wormholetraveller.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,15 +18,21 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
+import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
+import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
 
 public class MainActivity
-        extends BaseActivity
-        implements RecycleItemAdapter.OnBottomClickListener,
-                   FeedContextMenu.OnFeedContextMenuItemClickListener {
+  extends BaseActivity
+  implements RecycleItemAdapter.OnBottomClickListener,
+             FeedContextMenu.OnFeedContextMenuItemClickListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
+
+  public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
 
   @InjectView(R.id.rvFeed) RecyclerView mRecyclerView;
   @InjectView(R.id.ibAddAlbum) ImageButton mIbAddAlbum;
@@ -50,7 +58,7 @@ public class MainActivity
       Log.v(TAG, "" + String.valueOf("savedInstanceState == null"));
     }
     else
-        mAdapter.updateItems(false);
+      mAdapter.updateItems(false);
   }
 
   private void setUpRecycleAdapter() {
@@ -135,7 +143,7 @@ public class MainActivity
 
   private void startIntroAnimation() {
     int paddingSize = (int) Utils.doPx(
-            this, Utils.PxType.DP_TO_PX, (int) Utils.AnimationAttribute.PADDING.getVal());
+      this, Utils.PxType.DP_TO_PX, (int) Utils.AnimationAttribute.PADDING.getVal());
 
     mIbAddAlbum.setTranslationY(3 * getResources().getDimensionPixelOffset(R.dimen.btn_add_album_size));
     getToolbar().setTranslationY(-paddingSize);
@@ -197,14 +205,22 @@ public class MainActivity
     overridePendingTransition(0, 0);
   }
 
+
+  @OnClick(R.id.ibAddAlbum)
+  public void onTakePhotoClick() {
+    int[] startingLocation = new int[2];
+    mIbAddAlbum.getLocationOnScreen(startingLocation);
+    startingLocation[0] += mIbAddAlbum.getWidth() / 2;
+    TakePhotoActivity.startCameraFromLocation(startingLocation, this);
+    overridePendingTransition(0, 0);
+  }
+
   @Override
   public void onReportClick(int feedItem) {
-    Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show();
   }
 
   @Override
   public void onSharePhotoClick(int feedItem) {
-
   }
 
   @Override
@@ -220,5 +236,22 @@ public class MainActivity
   @Override
   public void onBackPressed() {
     moveTaskToBack(true);
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    if (ACTION_SHOW_LOADING_ITEM.equals(intent.getAction()))
+        showRecycleLoadingItemDelayed();
+  }
+
+  private void showRecycleLoadingItemDelayed() {
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        mRecyclerView.smoothScrollToPosition(0);
+        mAdapter.showLoadingView();
+      }
+    }, 500);
   }
 }
