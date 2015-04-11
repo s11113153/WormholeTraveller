@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
@@ -113,7 +112,7 @@ public class PublishActivity extends BaseActivity {
   private void bringMainActivityToTop() {
     Intent intent = new Intent(this, MainActivity.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    intent.setAction(MainActivity.ACTION_SHOW_LOADING_ITEM);
+    intent.setAction(MainActivity.ACTION_SHOW_LOADING_PHOTO);
     startActivity(intent);
   }
 

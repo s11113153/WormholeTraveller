@@ -3,7 +3,6 @@ package tw.com.s11113153.wormholetraveller.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -32,7 +30,7 @@ public class MainActivity
 
   private static final String TAG = MainActivity.class.getSimpleName();
 
-  public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
+  public static final String ACTION_SHOW_LOADING_PHOTO = "action_show_loading_item";
 
   @InjectView(R.id.rvFeed) RecyclerView mRecyclerView;
   @InjectView(R.id.ibAddAlbum) ImageButton mIbAddAlbum;
@@ -241,7 +239,7 @@ public class MainActivity
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
-    if (ACTION_SHOW_LOADING_ITEM.equals(intent.getAction()))
+    if (ACTION_SHOW_LOADING_PHOTO.equals(intent.getAction()))
         showRecycleLoadingItemDelayed();
   }
 

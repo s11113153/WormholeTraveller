@@ -4,15 +4,19 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.support.annotation.IntDef;
+import android.os.Build;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -20,84 +24,81 @@ import android.view.animation.OvershootInterpolator;
 
 import tw.com.s11113153.wormholetraveller.R;
 
+
 /**
- * Created by xuyouren on 15/4/10.
+ * Created by Miroslaw Stanek on 28.02.15.
  */
 public class SendingProgressView extends View {
-
   public static final int STATE_NOT_STARTED = 0;
   public static final int STATE_PROGRESS_STARTED = 1;
   public static final int STATE_DONE_STARTED = 2;
   public static final int STATE_FINISHED = 3;
-  @IntDef({STATE_NOT_STARTED, STATE_PROGRESS_STARTED, STATE_DONE_STARTED, STATE_FINISHED})
-  @interface State {}
-
-  private int state = STATE_NOT_STARTED;
-
-  private float currentProgress = 0;
 
   private static final int PROGRESS_STROKE_SIZE = 10;
-
   private static final int INNER_CIRCLE_PADDING = 30;
-
   private static final int MAX_DONE_BG_OFFSET = 800;
-
   private static final int MAX_DONE_IMG_OFFSET = 400;
 
+  private int state = STATE_NOT_STARTED;
+  private float currentProgress = 0;
   private float currentDoneBgOffset = MAX_DONE_BG_OFFSET;
-
   private float currentCheckmarkOffset = MAX_DONE_IMG_OFFSET;
 
   private Paint progressPaint;
-
   private Paint doneBgPaint;
-
   private Paint maskPaint;
 
   private RectF progressBounds;
 
   private Bitmap checkmarkBitmap;
-
   private Bitmap innerCircleMaskBitmap;
 
   private int checkmarkXPosition = 0;
   private int checkmarkYPosition = 0;
 
   private Paint checkmarkPaint;
-
   private Bitmap tempBitmap;
-
   private Canvas tempCanvas;
 
   private ObjectAnimator simulateProgressAnimator;
-
   private ObjectAnimator doneBgAnimator;
-
   private ObjectAnimator checkmarkAnimator;
 
   private OnLoadingFinishedListener onLoadingFinishedListener;
 
   public SendingProgressView(Context context) {
     super(context);
+    init();
   }
 
-  public void setOnLoadingFinishedListener(
-    OnLoadingFinishedListener onLoadingFinishedListener) {
-    this.onLoadingFinishedListener = onLoadingFinishedListener;
+  public SendingProgressView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    init();
+  }
+
+  public SendingProgressView(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init();
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  public SendingProgressView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
+    init();
   }
 
   private void init() {
-    setUpProgressPaint();
-    setUpDonePaints();
+    setupProgressPaint();
+    setupDonePaints();
     setupSimulateProgressAnimator();
     setupDoneAnimators();
   }
 
-  private void setUpProgressPaint() {
+  private void setupProgressPaint() {
     progressPaint = new Paint();
     progressPaint.setAntiAlias(true);
     progressPaint.setStyle(Paint.Style.STROKE);
-    progressPaint.setColor(0xffffffff);
+    progressPaint.setColor(getResources().getColor(R.color.style_color_primary_thin_color));
     progressPaint.setStrokeWidth(PROGRESS_STROKE_SIZE);
   }
 
@@ -112,30 +113,11 @@ public class SendingProgressView extends View {
     });
   }
 
-  private void setCurrentProgress(float currentProgress) {
-    this.currentProgress = currentProgress;
-    postInvalidate();
-  }
-
-  private void setCurrentDoneBgOffset(float currentDoneBgOffset) {
-    this.currentDoneBgOffset = currentDoneBgOffset;
-    postInvalidate();
-  }
-
-  public void setCurrentCheckmarkOffset(float currentCheckmarkOffset) {
-    this.currentCheckmarkOffset = currentCheckmarkOffset;
-    postInvalidate();
-  }
-
-  private void simulateProgress() {
-    changeState(STATE_PROGRESS_STARTED);
-  }
-
-  private void setUpDonePaints() {
+  private void setupDonePaints() {
     doneBgPaint = new Paint();
     doneBgPaint.setAntiAlias(true);
     doneBgPaint.setStyle(Paint.Style.FILL);
-    doneBgPaint.setColor(0xff39cb72);
+    doneBgPaint.setColor(getResources().getColor(R.color.style_color_primary));
 
     checkmarkPaint = new Paint();
 
@@ -161,36 +143,28 @@ public class SendingProgressView extends View {
   protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     super.onSizeChanged(w, h, oldw, oldh);
     updateProgressBounds();
-    setUpCheckmarkBitmap();
-    setUpDoneMaskBitmap();
+    setupCheckmarkBitmap();
+    setupDoneMaskBitmap();
     resetTempCanvas();
   }
 
   private void updateProgressBounds() {
     progressBounds = new RectF(
-      PROGRESS_STROKE_SIZE,
-      PROGRESS_STROKE_SIZE,
-      getWidth() - PROGRESS_STROKE_SIZE,
-      getWidth() - PROGRESS_STROKE_SIZE
+      PROGRESS_STROKE_SIZE, PROGRESS_STROKE_SIZE,
+      getWidth() - PROGRESS_STROKE_SIZE, getWidth() - PROGRESS_STROKE_SIZE
     );
   }
 
-  private void setUpCheckmarkBitmap() {
+  private void setupCheckmarkBitmap() {
     checkmarkBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_done_white_48dp);
     checkmarkXPosition = getWidth() / 2 - checkmarkBitmap.getWidth() / 2;
     checkmarkYPosition = getWidth() / 2 - checkmarkBitmap.getHeight() / 2;
   }
 
-
-  private void setUpDoneMaskBitmap() {
+  private void setupDoneMaskBitmap() {
     innerCircleMaskBitmap = Bitmap.createBitmap(getWidth(), getWidth(), Bitmap.Config.ARGB_8888);
     Canvas srcCanvas = new Canvas(innerCircleMaskBitmap);
-    srcCanvas.drawCircle(
-      getWidth() / 2,
-      getWidth() / 2,
-      getWidth() / 2 - INNER_CIRCLE_PADDING,
-      new Paint()
-    );
+    srcCanvas.drawCircle(getWidth() / 2, getWidth() / 2, getWidth() / 2 - INNER_CIRCLE_PADDING, new Paint());
   }
 
   private void resetTempCanvas() {
@@ -229,8 +203,10 @@ public class SendingProgressView extends View {
     tempCanvas.drawArc(progressBounds, 0, 360f, false, progressPaint);
   }
 
-  private void changeState(@State int state) {
-    if (this.state == state) return;
+  private void changeState(int state) {
+    if (this.state == state) {
+      return;
+    }
 
     tempBitmap.recycle();
     resetTempCanvas();
@@ -250,10 +226,37 @@ public class SendingProgressView extends View {
         onLoadingFinishedListener.onLoadingFinished();
       }
     }
+  }
 
+  public void simulateProgress() {
+    changeState(STATE_PROGRESS_STARTED);
+  }
+
+  public void dismiss() {
+    tempBitmap.eraseColor(android.graphics.Color.TRANSPARENT);
+    postInvalidate();
+  }
+
+  public void setCurrentProgress(float currentProgress) {
+    this.currentProgress = currentProgress;
+    postInvalidate();
+  }
+
+  public void setCurrentDoneBgOffset(float currentDoneBgOffset) {
+    this.currentDoneBgOffset = currentDoneBgOffset;
+    postInvalidate();
+  }
+
+  public void setCurrentCheckmarkOffset(float currentCheckmarkOffset) {
+    this.currentCheckmarkOffset = currentCheckmarkOffset;
+    postInvalidate();
+  }
+
+  public void setOnLoadingFinishedListener(OnLoadingFinishedListener onLoadingFinishedListener) {
+    this.onLoadingFinishedListener = onLoadingFinishedListener;
   }
 
   public interface OnLoadingFinishedListener {
-    void onLoadingFinished();
+    public void onLoadingFinished();
   }
 }

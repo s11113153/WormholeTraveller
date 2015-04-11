@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -73,7 +74,6 @@ public class RecycleItemAdapter
 
   private OnBottomClickListener mBottomClickListener;
 
-
   private static final int VIEW_TYPE_DEFAULT = 1;
   private static final int VIEW_TYPE_LOADER = 2;
 
@@ -81,7 +81,7 @@ public class RecycleItemAdapter
   @Retention(RetentionPolicy.SOURCE)
   private @interface ViewType {}
 
-  private boolean showloadingView = false;
+  private boolean showLoadingView = false;
 
   private int loadingViewSize;
 
@@ -92,7 +92,7 @@ public class RecycleItemAdapter
 
   @Override
   public int getItemViewType(int position) {
-    if (showloadingView && position == 0)
+    if (showLoadingView && position == 0)
       return VIEW_TYPE_LOADER;
     else
       return VIEW_TYPE_DEFAULT;
@@ -109,24 +109,26 @@ public class RecycleItemAdapter
         holder.ivFeedCenter.setOnClickListener(this);
         holder.ibLike.setOnClickListener(this);
         holder.ivUserProfile.setOnClickListener(this);
-        return holder;
+        break;
       case VIEW_TYPE_LOADER:
         View bgView = new View(context);
-        bgView.setBackgroundColor(0x77ffffff);
         bgView.setLayoutParams(new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        bgView.setBackgroundColor(0x77ffffff);
+
         holder.vImageRoot.addView(bgView);
         holder.vProgressBg = bgView;
+
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(loadingViewSize, loadingViewSize);
         params.gravity = Gravity.CENTER;
+
         SendingProgressView sendingProgressView = new SendingProgressView(context);
         sendingProgressView.setLayoutParams(params);
         holder.vImageRoot.addView(sendingProgressView);
         holder.vSendingProgress = sendingProgressView;
-        return holder;
-      default:
-        throw new RuntimeException(TAG + " : line by 114, viewType is error");
+        break;
     }
+    return holder;
   }
 
   @Override
@@ -199,7 +201,35 @@ public class RecycleItemAdapter
   }
 
   private void bindLoadingRecycleItem(final RecycleItemViewHolder holder) {
+//    holder.ivFeedCenter.setImageResource(R.drawable.ic_launcher);
+//    holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_1);
+    holder.vSendingProgress.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+      @Override
+      public boolean onPreDraw() {
+        holder.vSendingProgress.getViewTreeObserver().removeOnPreDrawListener(this);
+        holder.vSendingProgress.simulateProgress();
+        return true;
+      }
+    });
+    holder.vSendingProgress.setOnLoadingFinishedListener(new SendingProgressView.OnLoadingFinishedListener() {
+      @Override
+      public void onLoadingFinished() {
+        holder.vSendingProgress.animate().scaleY(0).scaleX(0).setDuration(2000).setStartDelay(100);
 
+        holder.vProgressBg.animate().alpha(0.f).setDuration(200).setStartDelay(100)
+          .setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+              showLoadingView = false;
+              holder.vSendingProgress.setScaleX(1);
+              holder.vSendingProgress.setScaleY(1);
+              holder.vProgressBg.setAlpha(1);
+              notifyItemChanged(0);
+            }
+          })
+          .start();
+      }
+    });
   }
 
 
@@ -428,6 +458,8 @@ public class RecycleItemAdapter
 
 
   public void showLoadingView() {
+    showLoadingView = true;
+    notifyItemChanged(0);
   }
 
 

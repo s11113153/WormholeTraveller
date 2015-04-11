@@ -37,6 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="center"
+        android:visibility="gone"
         android:src="@mipmap/ic_person_travel"/>
     </tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout>
     <LinearLayout
