@@ -194,6 +194,7 @@ public class RecycleItemAdapter
 
     Picasso.with(context)
       .load("http://www.youxituoluo.com/wp-content/uploads/2013/11/264_4a561152e5358.jpg")
+//      .load("https://graph.facebook.com/yo.wu.148/picture?type=large")
       .centerCrop()
       .resize(96, 96)
       .transform(new RoundedTransformation())

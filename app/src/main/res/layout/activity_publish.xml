@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/tools"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:orientation="vertical"
   android:background="#ffffff">
 
   <LinearLayout
@@ -103,22 +104,61 @@
         </LinearLayout>
 
 
-        <Switch
-          android:textSize="18sp"
-          android:layout_marginLeft="16dp"
-          android:layout_marginRight="16dp"
-          android:textColor="@color/switch_blue_color"
-          android:text="add Lat Lng"
-          android:thumb="@color/switch_green_color"
-          android:textOn="on"
-          android:textOff="off"
+        <!--<Switch-->
+        <!--android:textSize="18sp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:textColor="@color/switch_blue_color"-->
+        <!--android:text="add Lat Lng"-->
+        <!--android:thumb="@color/switch_green_color"-->
+        <!--android:textOn="on"-->
+        <!--android:textOff="off"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
+
+        <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content">
 
+          <TextView
+            android:textColor="@color/switch_blue_color"
+            android:text="address"
+            android:paddingLeft="8dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            android:textColor="@color/switch_green_color"
+            android:paddingRight="8dp"
+            android:gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="date"/>
+
+        </LinearLayout>
       </LinearLayout>
-
     </android.support.v7.widget.CardView>
-
   </LinearLayout>
 
-</ScrollView>
+
+  <android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:layout_margin="12dp"
+    card_view:cardCornerRadius="8dp">
+
+    <EditText
+      android:paddingLeft="8dp"
+      android:paddingRight="8dp"
+      android:textSize="18sp"
+      android:background="#00000000"
+      android:hint="what are you thinking ?"
+      android:textColorHint="@color/switch_red_color"
+      android:textColor="@color/style_color_primary"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </android.support.v7.widget.CardView>
+</LinearLayout>
