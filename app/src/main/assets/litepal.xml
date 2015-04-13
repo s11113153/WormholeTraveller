@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+  <dbname value="wormhole_traveller" ></dbname>
+
+  <version value="1" ></version>
+
+  <list>
+    <mapping class="tw.com.s11113153.wormholetraveller.db.table.Comments"></mapping>
+    <mapping class="tw.com.s11113153.wormholetraveller.db.table.User"></mapping>
+    <mapping class="tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller"></mapping>
+  </list>
+</litepal>

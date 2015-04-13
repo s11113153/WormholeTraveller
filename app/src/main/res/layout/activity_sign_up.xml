@@ -25,7 +25,7 @@
       app:singleLineEllipsis="true"
       app:maxCharacters="10"
       app:errorColor="@color/default_error_color"
-      android:id="@+id/etId"
+      android:id="@+id/etAccount"
       android:inputType="text"
       android:hint="please input Id"
       android:layout_width="match_parent"

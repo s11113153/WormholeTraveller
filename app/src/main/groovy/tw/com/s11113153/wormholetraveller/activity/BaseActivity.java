@@ -1,6 +1,8 @@
 package tw.com.s11113153.wormholetraveller.activity;
 
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import tw.com.s11113153.wormholetraveller.db.DataBaseManager;
 import tw.com.s11113153.wormholetraveller.utils.DrawerLayoutInstaller;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;

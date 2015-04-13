@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -252,4 +253,22 @@ public class MainActivity
       }
     }, 500);
   }
+
+//  private boolean checkPlayServices() {
+//    int resultCode = GooglePlayServicesUtil
+//      .isGooglePlayServicesAvailable(this);
+//    if (resultCode != ConnectionResult.SUCCESS) {
+//      if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+//        GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+//          PLAY_SERVICES_RESOLUTION_REQUEST).show();
+//      } else {
+//        Toast.makeText(getApplicationContext(),
+//          "This device is not supported.", Toast.LENGTH_LONG)
+//          .show();
+//        finish();
+//      }
+//      return false;
+//    }
+//    return true;
+//  }
 }

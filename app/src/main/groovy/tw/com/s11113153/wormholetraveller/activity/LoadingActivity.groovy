@@ -14,6 +14,7 @@ import tw.com.s11113153.wormholetraveller.R
  * Created by xuyouren on 15/3/26.
  */
 
+@Deprecated
 @CompileStatic
 public class LoadingActivity extends ActionBarActivity {
   private static final String TAG = LoadingActivity.class.getSimpleName()
@@ -64,7 +65,7 @@ public class LoadingActivity extends ActionBarActivity {
     new Handler().post([
       run : {
         Intent intent = new Intent()
-            .setClass(this, SignUpActivity.class)
+            .setClass(this, SignUpActivity2.class)
             .addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_NEW_TASK

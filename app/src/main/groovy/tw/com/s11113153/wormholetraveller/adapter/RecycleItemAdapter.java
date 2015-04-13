@@ -2,6 +2,8 @@ package tw.com.s11113153.wormholetraveller.adapter;
 
 import com.squareup.picasso.Picasso;
 
+import org.litepal.crud.DataSupport;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -26,6 +28,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -33,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 import tw.com.s11113153.wormholetraveller.utils.RoundedTransformation;
 import tw.com.s11113153.wormholetraveller.view.SendingProgressView;
 
@@ -77,18 +81,22 @@ public class RecycleItemAdapter
   private static final int VIEW_TYPE_DEFAULT = 1;
   private static final int VIEW_TYPE_LOADER = 2;
 
-  @IntDef({VIEW_TYPE_DEFAULT, VIEW_TYPE_LOADER})
-  @Retention(RetentionPolicy.SOURCE)
-  private @interface ViewType {}
-
   private boolean showLoadingView = false;
 
   private int loadingViewSize;
 
+  private List<WormholeTraveller> traveller = new ArrayList();
+
   public RecycleItemAdapter(Context context) {
     this.context = context;
     loadingViewSize = (int)Utils.doPx(context, Utils.PxType.DP_TO_PX, 200);
+    updateTravel();
   }
+
+  private void updateTravel() {
+
+  }
+
 
   @Override
   public int getItemViewType(int position) {

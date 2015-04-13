@@ -12,6 +12,8 @@ import android.view.WindowManager
 
 import groovy.transform.CompileStatic
 
+import java.text.SimpleDateFormat
+
 /**
  * Created by xuyouren on 15/3/27.
  */
@@ -95,5 +97,10 @@ final public class Utils {
 
   public static void clearBackground(View v) {
     v.setBackground(null)
+  }
+
+  public static String getDate() {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    return sdf.format(new Date());
   }
 }
