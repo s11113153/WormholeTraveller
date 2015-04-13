@@ -1,5 +1,7 @@
 package tw.com.s11113153.wormholetraveller.adapter;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import com.squareup.picasso.Picasso;
 
 import org.litepal.crud.DataSupport;
@@ -138,6 +140,8 @@ public class RecycleItemAdapter
     }
     return holder;
   }
+
+
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {

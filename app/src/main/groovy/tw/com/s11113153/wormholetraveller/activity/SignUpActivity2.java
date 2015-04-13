@@ -40,8 +40,6 @@ public class SignUpActivity2 extends Activity {
 
   private Animation animtionShakeError;
 
-  private static boolean isLogIn = false;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -50,9 +48,7 @@ public class SignUpActivity2 extends Activity {
     animtionShakeError = AnimationUtils.loadAnimation(this, R.anim.shake_error);
     setFontType();
     DataBaseManager.open();
-
-    LoginStatus();
-    if (isLogIn) toSignUpActivity();
+    IsLogin();
   }
 
   @OnClick(R.id.btnLogin)
@@ -112,15 +108,13 @@ public class SignUpActivity2 extends Activity {
     }, DELAY_TIME);
   }
 
-  private void LoginStatus() {
+  private void IsLogin() {
     new Thread(new Runnable() {
       @Override
       public void run() {
         User user = UserInfo.getUser(SignUpActivity2.this);
-        if (user.getAccount().equals("") && user.getPassword().equals(""))
-            isLogIn = false;
-        else
-            isLogIn = true;
+        if (user.getAccount().equals("") && user.getPassword().equals("")){}
+        else  toSignUpActivity();
       }
     }).start();
   }
