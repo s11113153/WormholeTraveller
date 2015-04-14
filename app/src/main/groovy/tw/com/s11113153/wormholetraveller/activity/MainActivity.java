@@ -2,6 +2,7 @@ package tw.com.s11113153.wormholetraveller.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,13 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import tw.com.s11113153.wormholetraveller.R;
-import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
 import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
@@ -223,7 +223,12 @@ public class MainActivity
   }
 
   @Override
-  public void onShowMap(int feedItem) {
+  public void onShow(int feedItem) {
+//    mRecyclerView.smoothScrollToPosition(feedItem);
+//    FeedContextMenuManager.getInstance().hideContextMenu();
+//    Dialog dialog = new Dialog(this, R.style.selectorDialog);
+//    dialog.setContentView(R.layout.dialog_travel);
+//    dialog.show();
   }
 
   @Override
@@ -261,22 +266,4 @@ public class MainActivity
       }
     }, 500);
   }
-
-//  private boolean checkPlayServices() {
-//    int resultCode = GooglePlayServicesUtil
-//      .isGooglePlayServicesAvailable(this);
-//    if (resultCode != ConnectionResult.SUCCESS) {
-//      if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-//        GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-//          PLAY_SERVICES_RESOLUTION_REQUEST).show();
-//      } else {
-//        Toast.makeText(getApplicationContext(),
-//          "This device is not supported.", Toast.LENGTH_LONG)
-//          .show();
-//        finish();
-//      }
-//      return false;
-//    }
-//    return true;
-//  }
 }

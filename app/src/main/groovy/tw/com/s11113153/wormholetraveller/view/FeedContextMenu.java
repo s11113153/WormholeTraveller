@@ -61,10 +61,10 @@ public class FeedContextMenu extends LinearLayout {
   }
 
 
-  @OnClick(R.id.btnShowMap)
+  @OnClick(R.id.btnShow)
   void onShowMapClick() {
     if (onItemClickListener != null)
-        onItemClickListener.onShowMap(feedItem);
+        onItemClickListener.onShow(feedItem);
   }
 
   @OnClick(R.id.btnPlay)
@@ -86,7 +86,7 @@ public class FeedContextMenu extends LinearLayout {
   }
 
   public interface OnFeedContextMenuItemClickListener {
-    public void onShowMap(int feedItem);
+    public void onShow(int feedItem);
     public void onPlay(int feedItem);
     public void onAddFavorite(int feedItem);
     public void onReturn(int feedItem);

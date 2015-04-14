@@ -82,7 +82,19 @@ public class DataBaseManager {
       .setDate(Utils.getDate()).setGoods(178)
       .setLat(22.53816f).setLng(120.5416f)
       .setUser(userId_1)
-      .setTitle("First Blood").setContent("搶到首殺")
+      .setTitle("First Blood").setContent("搶到首殺feffewflwef"
+      + "fkewkf[ojwefwefewf"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "wefewfwefwefwefwefew"
+      + "ffewfewf"
+      + "wefwefewfwefewfwef")
       .save();
 
     User userId_2 = DataSupport.find(User.class, 2);

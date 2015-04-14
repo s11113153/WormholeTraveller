@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -23,8 +24,10 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +36,8 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTouch;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.db.DataBaseManager;
@@ -46,7 +51,7 @@ import tw.com.s11113153.wormholetraveller.view.SendingProgressView;
  */
 public class RecycleItemAdapter
   extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-  implements View.OnClickListener {
+  implements View.OnClickListener , View.OnTouchListener {
 
   private static final String TAG = RecycleItemAdapter.class.getSimpleName();
 
@@ -90,6 +95,9 @@ public class RecycleItemAdapter
 
   private float curLng;
   private static Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
+  private static Typeface TYPEFACE_ROBOTO_THIN;
+
+  private final int SCREEN_WIDTH;
 
   public RecycleItemAdapter(Context context, float lat, float lng) {
     this.context = context;
@@ -98,6 +106,8 @@ public class RecycleItemAdapter
     curLng = lng;
     updateTravel();
     TYPEFACE_ROBOTO_BOLD_ITALIC = Utils.getFont(context, Utils.FontType.ROBOTO_BOLD_ITALIC);
+    TYPEFACE_ROBOTO_THIN = Utils.getFont(context, Utils.FontType.ROBOTO_LIGHT);
+    SCREEN_WIDTH = Utils.getScreenWidth(context);
   }
 
   private void updateTravel() {
@@ -136,6 +146,7 @@ public class RecycleItemAdapter
         holder.ivFeedCenter.setOnClickListener(this);
         holder.ibLike.setOnClickListener(this);
         holder.ivUserProfile.setOnClickListener(this);
+        holder.scroll.setOnTouchListener(this);
         break;
       case VIEW_TYPE_LOADER:
         View bgView = new View(context);
@@ -188,6 +199,7 @@ public class RecycleItemAdapter
     holder.ivFeedCenter.setTag(holder);
     holder.ibLike.setTag(holder);
     holder.ivUserProfile.setTag(holder);
+    holder.scroll.setTag(holder.tvContent);
 
     if (likeAnimations.containsKey(holder))
       likeAnimations.get(holder).cancel();
@@ -206,6 +218,11 @@ public class RecycleItemAdapter
     bindTitle(holder, wt);
     bindDate(holder, wt);
     bindAdress(holder, wt);
+    bindContent(holder, wt);
+  }
+
+  private void bindContent(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
+    holder.tvContent.setText(wt.getContent());
   }
 
   private void bindWormholeTraveller(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
@@ -304,6 +321,24 @@ public class RecycleItemAdapter
     }
   }
 
+  /** RecycleView 包含 scrollView
+   *  當 tvContent 高度 < scroll 跳過
+   *  當使用者 touch scroll, 要求不允許攔截計算這個scroll高度
+   **/
+  @Override
+  public boolean onTouch(View v, MotionEvent event) {
+    TextView tvContent = (TextView)v.getTag();
+    if (tvContent.getHeight() < v.getHeight()) return true;
+
+    float x =  Utils.doPx(context, Utils.PxType.DP_TO_PX, 50);
+    float right = 2 * x;
+    if (event.getX() < right) {
+      v.getParent().getParent().getParent().requestDisallowInterceptTouchEvent(true);
+      return false;
+    }
+    return true;
+  }
+
   @Override
   public void onClick(View v) {
     switch (v.getId()) {
@@ -340,6 +375,7 @@ public class RecycleItemAdapter
           User u = wormholeTravellers.get(holder.getLayoutPosition()).getUser();
           mBottomClickListener.onProfileClick(v, u);
         }
+        break;
       }
     }
   }
@@ -361,6 +397,8 @@ public class RecycleItemAdapter
     @InjectView(R.id.tvTitle) TextView tvTitle;
     @InjectView(R.id.tvDate) TextView tvDate;
     @InjectView(R.id.tvAddress) TextView tvAddress;
+    @InjectView(R.id.scroll) ScrollView scroll;
+    @InjectView(R.id.tvContent) TextView tvContent;
 
     SendingProgressView vSendingProgress;
     View vProgressBg;
@@ -371,6 +409,7 @@ public class RecycleItemAdapter
       tvTitle.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
       tvDate.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
       tvAddress.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
+      tvContent.setTypeface(TYPEFACE_ROBOTO_THIN);
     }
   }
 
@@ -526,12 +565,10 @@ public class RecycleItemAdapter
     }
   }
 
-
   public void showLoadingView() {
     showLoadingView = true;
     notifyItemChanged(0);
   }
-
 
   public interface OnBottomClickListener {
     void onCommentsClick(View v, int position);

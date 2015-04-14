@@ -28,7 +28,7 @@
         android:textColor="@android:color/black"
         android:layout_gravity="center"
         android:gravity="left"
-       android:layout_width="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
       <LinearLayout
@@ -57,10 +57,10 @@
     </LinearLayout>
 
 
-    <tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout
+    <FrameLayout
       android:id="@+id/vImageRoot"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="250dp">
       <ImageView
         android:id="@+id/ivFeedCenter"
         android:layout_width="match_parent"
@@ -78,7 +78,24 @@
         android:scaleType="center"
         android:visibility="gone"
         android:src="@mipmap/ic_person_travel"/>
-    </tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout>
+    </FrameLayout>
+
+    <ScrollView
+      android:layout_marginTop="5dp"
+      android:paddingLeft="12dp"
+      android:paddingRight="12dp"
+      android:scrollbars="none"
+      android:id="@+id/scroll"
+      android:layout_width="match_parent"
+      android:layout_height="90dp">
+      <TextView
+        android:id="@+id/tvContent"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    </ScrollView>
+
     <LinearLayout
       android:id="@+id/llBottom"
       android:layout_width="match_parent"

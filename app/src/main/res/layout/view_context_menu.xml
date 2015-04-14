@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
   <Button
-    android:id="@+id/btnShowMap"
+    android:id="@+id/btnShow"
     style="@style/ContextMenuButton"
     android:text="show map"/>
 
