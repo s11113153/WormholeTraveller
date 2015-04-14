@@ -3,6 +3,7 @@ package tw.com.s11113153.wormholetraveller.view;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -60,16 +61,34 @@ public class FeedContextMenu extends LinearLayout {
   }
 
 
-  @OnClick(R.id.btnReport)
-  public void onReportClick() {
+  @OnClick(R.id.btnShowMap)
+  void onShowMapClick() {
     if (onItemClickListener != null)
-        onItemClickListener.onReportClick(feedItem);
+        onItemClickListener.onShowMap(feedItem);
+  }
+
+  @OnClick(R.id.btnPlay)
+  void onPlay(View v) {
+    if (onItemClickListener != null)
+        onItemClickListener.onPlay(feedItem);
+  }
+
+  @OnClick(R.id.btnAddFavorite)
+  void onAddFavorite(View v) {
+    if (onItemClickListener != null)
+        onItemClickListener.onAddFavorite(feedItem);
+  }
+
+  @OnClick(R.id.btnReturn)
+  void onReturn(View v) {
+    if (onItemClickListener != null)
+        onItemClickListener.onReturn(feedItem);
   }
 
   public interface OnFeedContextMenuItemClickListener {
-    public void onReportClick(int feedItem);
-    public void onSharePhotoClick(int feedItem);
-    public void onCopyShareUrlClick(int feedItem);
-    public void onCancelClick(int feedItem);
+    public void onShowMap(int feedItem);
+    public void onPlay(int feedItem);
+    public void onAddFavorite(int feedItem);
+    public void onReturn(int feedItem);
   }
 }

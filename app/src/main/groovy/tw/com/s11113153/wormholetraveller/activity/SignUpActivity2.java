@@ -47,7 +47,7 @@ public class SignUpActivity2 extends Activity {
     ButterKnife.inject(this);
     animtionShakeError = AnimationUtils.loadAnimation(this, R.anim.shake_error);
     setFontType();
-    DataBaseManager.open();
+    DataBaseManager.open().InitialSample(this);
     IsLogin();
   }
 
@@ -120,6 +120,7 @@ public class SignUpActivity2 extends Activity {
   }
 
   private void toSignUpActivity() {
+    finish();
     Intent intent = new Intent()
       .setClass(this, MainActivity.class)
       .addFlags(

@@ -6,6 +6,7 @@
   android:layout_height="wrap_content"
   android:layout_gravity="center"
   android:layout_margin="8dp"
+  card_view:cardBackgroundColor="@color/style_color_primary_super_thin_color"
   card_view:cardCornerRadius="4dp">
 
   <LinearLayout
@@ -13,10 +14,48 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
-      android:id="@+id/ivUserProfile"
-      android:layout_width="48dp"
-      android:layout_height="48dp" />
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <ImageView
+        android:id="@+id/ivUserProfile"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+      <TextView
+        android:id="@+id/tvTitle"
+        android:paddingLeft="8dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center"
+        android:gravity="left"
+       android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:gravity="right"
+        android:padding="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+          android:id="@+id/tvAddress"
+          android:textSize="12sp"
+          android:textColor="@color/switch_green_color"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+        <TextView
+          android:id="@+id/tvDate"
+          android:textSize="12sp"
+          android:textColor="@color/switch_blue_color"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+      </LinearLayout>
+
+
+
+    </LinearLayout>
+
 
     <tw.com.s11113153.wormholetraveller.view.SquaredFrameLayout
       android:id="@+id/vImageRoot"

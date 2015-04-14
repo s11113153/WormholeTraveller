@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver;
 import butterknife.InjectView;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.adapter.UserProfileAdapter;
+import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.view.RevealBackgroundView;
 
 /**
@@ -29,7 +30,7 @@ public class UserProfileActivity
 
   private UserProfileAdapter userPhotosAdapter;
 
-
+  private static User mUser;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +41,12 @@ public class UserProfileActivity
   }
 
   public static void startUserProfileFromLocation(
-          int[] startingLocation, Activity startingActivity
+          int[] startingLocation, Activity startingActivity, User user
   ) {
     final Intent intent = new Intent(startingActivity, UserProfileActivity.class);
     intent.putExtra(ARG_REVEAL_START_LOCATION, startingLocation);
     startingActivity.startActivity(intent);
+    mUser = user;
   }
 
 
@@ -81,7 +83,7 @@ public class UserProfileActivity
   @Override
   public void onStateChange(int state) {
     if (RevealBackgroundView.STATE_FINISHED == state) {
-      userPhotosAdapter = new UserProfileAdapter(this);
+      userPhotosAdapter = new UserProfileAdapter(this, mUser);
       rvUserProfile.setAdapter(userPhotosAdapter);
       rvUserProfile.setVisibility(View.VISIBLE);
     } else

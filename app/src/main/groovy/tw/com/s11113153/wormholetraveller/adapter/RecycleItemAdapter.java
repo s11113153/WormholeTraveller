@@ -1,7 +1,5 @@
 package tw.com.s11113153.wormholetraveller.adapter;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import com.squareup.picasso.Picasso;
 
 import org.litepal.crud.DataSupport;
@@ -11,8 +9,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.support.annotation.IntDef;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,21 +24,21 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
+import android.widget.TextView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.db.DataBaseManager;
+import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
-import tw.com.s11113153.wormholetraveller.utils.RoundedTransformation;
+import tw.com.s11113153.wormholetraveller.utils.CircleTransformation;
 import tw.com.s11113153.wormholetraveller.view.SendingProgressView;
 
 /**
@@ -64,15 +63,13 @@ public class RecycleItemAdapter
   /* TODO */
   private boolean animateItems = false;
 
-  private final Map<Integer, Integer> likesCount = new HashMap();
-
   private final Map<RecyclerView.ViewHolder, AnimatorSet> likeAnimations = new HashMap();
 
   private final ArrayList<Integer> likedPositions = new ArrayList();
 
   private Context context;
 
-  private int itemsCount = 0;
+//  private int itemsCount = 0;
 
   private static final int NO_INIT_POSITION = -1;
 
@@ -87,16 +84,36 @@ public class RecycleItemAdapter
 
   private int loadingViewSize;
 
-  private List<WormholeTraveller> traveller = new ArrayList();
+  private List<WormholeTraveller> wormholeTravellers = new ArrayList();
 
-  public RecycleItemAdapter(Context context) {
+  private float curLat;
+
+  private float curLng;
+  private static Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
+
+  public RecycleItemAdapter(Context context, float lat, float lng) {
     this.context = context;
     loadingViewSize = (int)Utils.doPx(context, Utils.PxType.DP_TO_PX, 200);
+    curLat = lat;
+    curLng = lng;
     updateTravel();
+    TYPEFACE_ROBOTO_BOLD_ITALIC = Utils.getFont(context, Utils.FontType.ROBOTO_BOLD_ITALIC);
   }
 
   private void updateTravel() {
-
+    Log.e("curLat" + curLat, "curLng" + curLng);
+    List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
+    for (WormholeTraveller wt : travellers) {
+      float lat = wt.getLat();
+      float lng = wt.getLng();
+      double distance = Utils.calculateDistance(curLat, curLng, lat, lng);
+      Log.e("lat" + lat, "lng" + lng);
+      Log.e("distance", ": " + distance);
+      if (distance <= 500) {
+        wormholeTravellers.add(wt);
+      }
+    }
+    Log.e("wt.size = ", "" + wormholeTravellers.size());
   }
 
 
@@ -123,7 +140,7 @@ public class RecycleItemAdapter
       case VIEW_TYPE_LOADER:
         View bgView = new View(context);
         bgView.setLayoutParams(new FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         bgView.setBackgroundColor(0x77ffffff);
 
         holder.vImageRoot.addView(bgView);
@@ -161,7 +178,7 @@ public class RecycleItemAdapter
     }
   }
 
-  private void bindDefaultRecycleItem(RecycleItemViewHolder holder, int position) {
+  private void bindDefaultRecycleItem(final RecycleItemViewHolder holder, final int position) {
 
     updateLikesCounter(holder, false);
     updateHeartButton(holder, false);
@@ -170,47 +187,71 @@ public class RecycleItemAdapter
     holder.ibMore.setTag(position);
     holder.ivFeedCenter.setTag(holder);
     holder.ibLike.setTag(holder);
-
+    holder.ivUserProfile.setTag(holder);
 
     if (likeAnimations.containsKey(holder))
       likeAnimations.get(holder).cancel();
 
     resetLikeAnimationState(holder);
 
-    String url = "";
-    switch (position) {
-      case 0:
-        url = "http://i.imgur.com/zzyrC10.jpg";
-        break;
-      case 1:
-        url = "http://i.imgur.com/iemg6nQ.jpg";
-        break;
-      case 2:
-        url = "http://i.imgur.com/VSOssOW.jpg";
-        break;
-      case 3:
-        url = "http://i.imgur.com/vWVsQIi.jpg";
-        break;
-      case 4:
-        break;
-    }
-    if (url.equals("")) {
+    WormholeTraveller wt = wormholeTravellers.get(position);
+    User user = wt.getUser();
+    if (wt.getTravelPhotoPath().equals("")) {
       holder.ivFeedCenter.setImageDrawable(null);
       return;
     }
+    bindWormholeTraveller(holder, wt);
+    bindUserProfile(holder, user);
+    bindIsLike(holder, wt.isLike());
+    bindTitle(holder, wt);
+    bindDate(holder, wt);
+    bindAdress(holder, wt);
+  }
 
+  private void bindWormholeTraveller(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
     Picasso.with(context)
-      .load(url)
+      .load(wt.getTravelPhotoPath())
       .fit()
       .into(holder.ivFeedCenter);
+  }
 
+  private void bindUserProfile(final RecycleItemViewHolder holder, final User user) {
     Picasso.with(context)
-      .load("http://www.youxituoluo.com/wp-content/uploads/2013/11/264_4a561152e5358.jpg")
-//      .load("https://graph.facebook.com/yo.wu.148/picture?type=large")
-      .centerCrop()
+      .load(user.getIconPath())
       .resize(96, 96)
-      .transform(new RoundedTransformation())
+      .placeholder(R.drawable.img_circle_placeholder)
+      .centerCrop()
+      .transform(new CircleTransformation())
       .into(holder.ivUserProfile);
+  }
+
+  private void bindTitle(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
+    holder.tvTitle.setText(wt.getTitle());
+  }
+
+  private void bindDate(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
+    holder.tvDate.setText(wt.getDate());
+  }
+
+  private void bindAdress(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
+    String address;
+    address = wt.getAddress();
+    if (address == null) {
+      address = Utils.getLocationInfo2(wt.getLat(), wt.getLng());
+      wt.setAddress(address);
+      DataBaseManager.updateWormholeTraveller(wt);
+    }
+    holder.tvAddress.setText(address);
+  }
+
+  /** 若已經點讚，變成紅愛心，並移除該愛心事件 **/
+  private void bindIsLike(RecycleItemViewHolder holder, boolean b) {
+    if (b) {
+      holder.ibLike.setImageResource(R.mipmap.ic_like_red);
+      holder.ibLike.setOnClickListener(null);
+    }
+    else
+      holder.ibLike.setImageResource(R.mipmap.ic_like_white);
   }
 
   private void bindLoadingRecycleItem(final RecycleItemViewHolder holder) {
@@ -248,7 +289,7 @@ public class RecycleItemAdapter
 
   @Override
   public int getItemCount() {
-    return itemsCount;
+    return wormholeTravellers.size();
   }
 
   private void runEnterAnimation(View view, int position) {
@@ -294,8 +335,11 @@ public class RecycleItemAdapter
       } break;
 
       case R.id.ivUserProfile: {
-        if (mBottomClickListener != null)
-          mBottomClickListener.onProfileClick(v);
+        if (mBottomClickListener != null) {
+          RecycleItemViewHolder holder = (RecycleItemViewHolder) v.getTag();
+          User u = wormholeTravellers.get(holder.getLayoutPosition()).getUser();
+          mBottomClickListener.onProfileClick(v, u);
+        }
       }
     }
   }
@@ -314,6 +358,9 @@ public class RecycleItemAdapter
     @InjectView(R.id.tsLikesCounter) TextSwitcher tsLikesCounter;
     @InjectView(R.id.ivUserProfile) ImageView ivUserProfile;
     @InjectView(R.id.vImageRoot) FrameLayout vImageRoot;
+    @InjectView(R.id.tvTitle) TextView tvTitle;
+    @InjectView(R.id.tvDate) TextView tvDate;
+    @InjectView(R.id.tvAddress) TextView tvAddress;
 
     SendingProgressView vSendingProgress;
     View vProgressBg;
@@ -321,6 +368,9 @@ public class RecycleItemAdapter
     public RecycleItemViewHolder(View view) {
       super(view);
       ButterKnife.inject(this, view);
+      tvTitle.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
+      tvDate.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
+      tvAddress.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
     }
   }
 
@@ -330,24 +380,30 @@ public class RecycleItemAdapter
    *                  false,  initial Likes value
    */
   private void updateLikesCounter(RecycleItemViewHolder holder, boolean animated) {
-    /* TODO +1 ? */
-    int currentLikesCount = likesCount.get(holder.getLayoutPosition());
+    int likesCount = wormholeTravellers.get(holder.getLayoutPosition()).getGoods();
+    if (animated) likesCount += 1;
+
     /**
      *  param2 == 1, use one(quantity) and set value
      *          > 1, then use other(quantity) and set value
+     *  ex : currentLikesCount == 1, use one   quantity
+     *       currentLikesCount  > 1, use other quantity
+     *  param3 : set value
      **/
     String likesCountText = context.getResources()
-      .getQuantityString(R.plurals.likes_count, currentLikesCount, currentLikesCount);
+      .getQuantityString(R.plurals.likes_count, likesCount, likesCount);
 
     if (animated) {
       holder.tsLikesCounter.setText(likesCountText);
+      WormholeTraveller w = wormholeTravellers.get(holder.getLayoutPosition());
+      w.setLike(true).setGoods(likesCount);
+      DataBaseManager.updateWormholeTraveller(w);
     } else {
       holder.tsLikesCounter.setCurrentText(likesCountText);
     }
-
-    // update values
-    likesCount.put(holder.getLayoutPosition(), currentLikesCount);
   }
+
+
 
   private void updateHeartButton(final RecycleItemViewHolder holder, boolean animated) {
     if (animated) {
@@ -400,20 +456,21 @@ public class RecycleItemAdapter
     holder.ivPersonTravel.setVisibility(View.GONE);
   }
 
-  /** people of one article, set Like Value **/
-  private void fillLikesWithRandomValues() {
-    for (int i = 0; i < getItemCount(); i++)
-      likesCount.put(i, new Random().nextInt(100));
-  }
+//  /** people of one article, set Like Value **/
+//  private void fillLikesWithRandomValues() {
+//    for (int i = 0; i < getItemCount(); i++)
+//      likesCount.put(i, new Random().nextInt(100));
+//  }
 
   /**
    * initial Items, play animation
    * update Items. don't play animation
    * */
   public void updateItems(boolean animated) {
-    itemsCount = 10;
+//    itemsCount = 10;
+    /* TODO */
     animateItems = animated;
-    fillLikesWithRandomValues();
+//    fillLikesWithRandomValues();
     notifyDataSetChanged();
   }
 
@@ -479,6 +536,6 @@ public class RecycleItemAdapter
   public interface OnBottomClickListener {
     void onCommentsClick(View v, int position);
     void onMoreClick(View v, int position);
-    void onProfileClick(View v);
+    void onProfileClick(View v, User user);
   }
 }

@@ -20,6 +20,7 @@ public class UserInfo {
   private static final String PASSWORD = "password";
   private static final String MAIL = "mail";
   private static final String ICON_PATH = "iconPath";
+  private static final String OUTLINE = "outline";
 
 
   public static void setUser(Context context, User user) {
@@ -31,6 +32,7 @@ public class UserInfo {
     editor.putString(PASSWORD, user.getPassword());
     editor.putString(MAIL, user.getMail());
     editor.putString(ICON_PATH, user.getIconPath());
+    editor.putString(OUTLINE, user.getOutline());
     editor.apply();
   }
 
@@ -42,6 +44,7 @@ public class UserInfo {
         .setAccount(sharedPref.getString(ACCOUNT, ""))
         .setPassword(sharedPref.getString(PASSWORD, ""))
         .setMail(sharedPref.getString(MAIL, ""))
+        .setOutline(sharedPref.getString(OUTLINE, ""))
         .setIconPath(sharedPref.getString(ICON_PATH, ""));
     return user;
   }

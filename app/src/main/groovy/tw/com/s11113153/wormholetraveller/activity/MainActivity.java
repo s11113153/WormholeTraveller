@@ -21,13 +21,15 @@ import butterknife.OnClick;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
 
 public class MainActivity
   extends BaseActivity
   implements RecycleItemAdapter.OnBottomClickListener,
-             FeedContextMenu.OnFeedContextMenuItemClickListener {
+             FeedContextMenu.OnFeedContextMenuItemClickListener,
+             BaseActivity.OnLatLngGetListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -50,8 +52,8 @@ public class MainActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    setUpRecycleAdapter();
-
+    setOnLatLngGetListener(this);
+//    setUpRecycleAdapter();
     if (savedInstanceState == null) {
       loadAnimation = true;
       Log.v(TAG, "" + String.valueOf("savedInstanceState == null"));
@@ -60,8 +62,14 @@ public class MainActivity
       mAdapter.updateItems(false);
   }
 
-  private void setUpRecycleAdapter() {
-    mAdapter = new RecycleItemAdapter(this);
+  @Override
+  public void get(float lat, float lng) {
+    setUpRecycleAdapter(lat, lng);
+    removeOnLatLngGetListener();
+  }
+
+  private void setUpRecycleAdapter(float lat, float lng) {
+    mAdapter = new RecycleItemAdapter(this, lat, lng);
     mAdapter.setOnBottomClickListener(this);
 
     // 提高使用者效能體驗
@@ -196,11 +204,11 @@ public class MainActivity
   }
 
   @Override
-  public void onProfileClick(View v) {
+  public void onProfileClick(View v, User u) {
     int [] startingLocation = new int[2];
     v.getLocationOnScreen(startingLocation);
     startingLocation[0] += v.getWidth() / 2;
-    UserProfileActivity.startUserProfileFromLocation(startingLocation, this);
+    UserProfileActivity.startUserProfileFromLocation(startingLocation, this, u);
     overridePendingTransition(0, 0);
   }
 
@@ -215,21 +223,21 @@ public class MainActivity
   }
 
   @Override
-  public void onReportClick(int feedItem) {
+  public void onShowMap(int feedItem) {
   }
 
   @Override
-  public void onSharePhotoClick(int feedItem) {
+  public void onPlay(int feedItem) {
   }
 
   @Override
-  public void onCopyShareUrlClick(int feedItem) {
+  public void onAddFavorite(int feedItem) {
 
   }
 
   @Override
-  public void onCancelClick(int feedItem) {
-
+  public void onReturn(int feedItem) {
+    FeedContextMenuManager.getInstance().hideContextMenu();
   }
 
   @Override

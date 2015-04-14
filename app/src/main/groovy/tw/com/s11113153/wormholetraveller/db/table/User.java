@@ -15,6 +15,8 @@ public class User extends DataSupport {
   private String password;
   private String mail;
   private String iconPath;
+  private String outline = "what do you thinking ？";
+
   private List<WormholeTraveller> wormholeTravellers = new ArrayList();
 
   public User setId(int id) {
@@ -44,6 +46,11 @@ public class User extends DataSupport {
 
   public User setIconPath(String iconPath) {
     this.iconPath = iconPath;
+    return this;
+  }
+
+  public User setOutline(String outline) {
+    this.outline = outline;
     return this;
   }
 
@@ -78,5 +85,9 @@ public class User extends DataSupport {
 
   public List<WormholeTraveller> getWormholeTravellers() {
     return wormholeTravellers;
+  }
+
+  public String getOutline() {
+    return outline;
   }
 }

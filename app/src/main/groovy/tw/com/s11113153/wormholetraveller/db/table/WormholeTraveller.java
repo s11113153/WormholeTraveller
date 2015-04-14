@@ -21,6 +21,7 @@ public class WormholeTraveller extends DataSupport {
   private String title;
   private String content;
   private int goods;
+  private String address;
 
 
   private List<Comments> comments = new ArrayList();
@@ -85,6 +86,11 @@ public class WormholeTraveller extends DataSupport {
     return this;
   }
 
+  public WormholeTraveller setAddress(String address) {
+    this.address = address;
+    return this;
+  }
+
   public int getId() {
     return id;
   }
@@ -131,5 +137,9 @@ public class WormholeTraveller extends DataSupport {
 
   public String getContent() {
     return content;
+  }
+
+  public String getAddress() {
+    return address;
   }
 }

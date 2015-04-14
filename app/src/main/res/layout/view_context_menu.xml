@@ -2,17 +2,17 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
   <Button
-    android:id="@+id/btnReport"
+    android:id="@+id/btnShowMap"
     style="@style/ContextMenuButton"
     android:text="show map"/>
 
   <Button
-    android:id="@+id/btnSharePhoto"
+    android:id="@+id/btnPlay"
     style="@style/ContextMenuButton"
     android:text="play" />
 
   <Button
-    android:id="@+id/btnCopyShareUrl"
+    android:id="@+id/btnAddFavorite"
     style="@style/ContextMenuButton"
     android:text="add favorite" />
 
@@ -22,7 +22,7 @@
     android:background="#eeeeee" />
 
   <Button
-    android:id="@+id/btnCancel"
+    android:id="@+id/btnReturn"
     style="@style/ContextMenuButton"
     android:text="return" />
 

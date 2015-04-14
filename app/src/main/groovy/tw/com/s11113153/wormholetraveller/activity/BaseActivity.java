@@ -7,6 +7,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import tw.com.s11113153.wormholetraveller.UserInfo;
 import tw.com.s11113153.wormholetraveller.db.DataBaseManager;
 import tw.com.s11113153.wormholetraveller.utils.DrawerLayoutInstaller;
 import tw.com.s11113153.wormholetraveller.R;
@@ -39,10 +41,6 @@ public class BaseActivity extends ActionBarActivity implements
     LocationListener {
 
   private static final String TAG = BaseActivity.class.getSimpleName();
-
-  private float lat;
-
-  private float lng;
 
   @Optional
   @InjectView(R.id.toolbar) Toolbar mToolbar;
@@ -64,6 +62,8 @@ public class BaseActivity extends ActionBarActivity implements
   private static int FATEST_INTERVAL = 5000; // 5 sec
   private static int DISPLACEMENT = 10; // 10 meters
 
+  private Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
+
   @Override
   public void setContentView(int layoutResID) {
     super.setContentView(layoutResID);
@@ -75,7 +75,7 @@ public class BaseActivity extends ActionBarActivity implements
 
   protected void setUpToolbar() {
     if (mToolbar == null) return;
-
+    if (mTvLogo != null) mTvLogo.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
     setSupportActionBar(mToolbar);
     mToolbar.setNavigationIcon(R.mipmap.ic_menu);
   }
@@ -113,7 +113,8 @@ public class BaseActivity extends ActionBarActivity implements
         int[] startingLocation = new int[2];
         v.getLocationOnScreen(startingLocation);
         startingLocation[0] += v.getWidth() / 2;
-        UserProfileActivity.startUserProfileFromLocation(startingLocation, BaseActivity.this);
+        UserProfileActivity.startUserProfileFromLocation(startingLocation, BaseActivity.this,
+            UserInfo.getUser(BaseActivity.this));
       }
     }, 200);
   }
@@ -125,6 +126,7 @@ public class BaseActivity extends ActionBarActivity implements
       buildGoogleApiClient();
       createLocationRequest();
     }
+    TYPEFACE_ROBOTO_BOLD_ITALIC = Utils.getFont(this, Utils.FontType.ROBOTO_BOLD_ITALIC);
   }
 
   @Override
@@ -163,10 +165,12 @@ public class BaseActivity extends ActionBarActivity implements
     mLastLocation = LocationServices.FusedLocationApi
       .getLastLocation(mGoogleApiClient);
     if (mLastLocation != null) {
-      lat = (float) mLastLocation.getLatitude();
-      lng = (float) mLastLocation.getLongitude();
+      float lat = (float) mLastLocation.getLatitude();
+      float lng = (float) mLastLocation.getLongitude();
       Log.e(TAG, "lat = " + String.valueOf(lat));
       Log.e(TAG, "lng =" + String.valueOf(lng));
+      if (mOnLatLngGetListener != null)
+          mOnLatLngGetListener.get(lat, lng);
     } else {
       Log.e("", "mLastLocation is null");
     }
@@ -179,7 +183,6 @@ public class BaseActivity extends ActionBarActivity implements
   protected void stopLocationUpdates() {
     LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
   }
-
 
   private synchronized void buildGoogleApiClient() {
     mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -236,11 +239,20 @@ public class BaseActivity extends ActionBarActivity implements
     displayLocation();
   }
 
-  public float getLat() {
-    return lat;
+  private OnLatLngGetListener mOnLatLngGetListener;
+
+  public void setOnLatLngGetListener(OnLatLngGetListener onLatLngGetListener) {
+    mOnLatLngGetListener = onLatLngGetListener;
   }
 
-  public float getLng() {
-    return lng;
+  public void removeOnLatLngGetListener() {
+    if (mOnLatLngGetListener != null)
+        mOnLatLngGetListener = null;
+    stopLocationUpdates();
+    mGoogleApiClient.disconnect();
+  }
+
+  public interface OnLatLngGetListener {
+    void get(float lat, float lng);
   }
 }

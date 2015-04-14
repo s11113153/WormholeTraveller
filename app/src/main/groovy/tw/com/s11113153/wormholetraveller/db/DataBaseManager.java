@@ -3,6 +3,8 @@ package tw.com.s11113153.wormholetraveller.db;
 import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import tw.com.s11113153.wormholetraveller.Utils;
@@ -16,6 +18,9 @@ public class DataBaseManager {
   private static final String FACEBOOK_ICON_URL = "https://graph.facebook.com/UID/picture?type=large";
   private static final String UID = "UID";
 
+  private static final String DEMO = "demo";
+  private static final String IS_INITIAL_SAMPLE = "is_initial_sample";
+
   private DataBaseManager() {
 
   }
@@ -24,9 +29,16 @@ public class DataBaseManager {
 
   private void init() {
     Connector.getDatabase();
-//    createUser();
-//    createTravel();
-//    query();
+  }
+
+  public void InitialSample(Context context) {
+    SharedPreferences sharedPref = context.getSharedPreferences(DEMO, Context.MODE_PRIVATE);
+    boolean b = sharedPref.getBoolean(IS_INITIAL_SAMPLE, false);
+    if (b) return;
+
+    createUser();
+    createTravel();
+    sharedPref.edit().putBoolean(IS_INITIAL_SAMPLE, true).apply();
   }
 
   public static DataBaseManager open() {
@@ -40,6 +52,7 @@ public class DataBaseManager {
     User s11113153 = new User()
       .setName("XuYouRen").setAccount("s11113153")
       .setPassword("123456").setMail("s11113153@stu.edu.tw")
+      .setOutline("提供最棒的旅程，Every Things in Every Day")
       .setIconPath(FACEBOOK_ICON_URL.replace(UID, "xu.y.jen"));
     Log.e("", "" + s11113153.save());
 
@@ -64,15 +77,48 @@ public class DataBaseManager {
 
   public void createTravel() {
     User userId_1 = DataSupport.find(User.class, 1);
-    WormholeTraveller wormholeTraveller = new WormholeTraveller()
+    new WormholeTraveller()
       .setTravelPhotoPath("http://i.imgur.com/zzyrC10.jpg")
-      .setDate(Utils.getDate()).setGoods(362)
-      .setLat(22.82816f).setLng(120.3416f)
+      .setDate(Utils.getDate()).setGoods(178)
+      .setLat(22.53816f).setLng(120.5416f)
       .setUser(userId_1)
-      .setTitle("HelloWorld").setContent("Say Good Bye");
+      .setTitle("First Blood").setContent("搶到首殺")
+      .save();
 
-    boolean b = wormholeTraveller.save();
-    Log.e("b = ", "" + b);
+    User userId_2 = DataSupport.find(User.class, 2);
+    new WormholeTraveller()
+      .setTravelPhotoPath("http://i.imgur.com/iemg6nQ.jpg")
+      .setDate(Utils.getDate()).setGoods(685)
+      .setLat(22.53816f).setLng(120.5416f)
+      .setUser(userId_2)
+      .setTitle("Double Kill").setContent("完成雙殺")
+      .save();
+
+    User userId_3 = DataSupport.find(User.class, 3);
+    new WormholeTraveller()
+      .setTravelPhotoPath("http://i.imgur.com/VSOssOW.jpg")
+      .setDate(Utils.getDate()).setGoods(4563)
+      .setLat(22.53816f).setLng(120.5416f)
+      .setUser(userId_3)
+      .setTitle("Triple Kill").setContent("人品爆發")
+      .save();
+
+    User userId_4 = DataSupport.find(User.class, 4);
+    new WormholeTraveller()
+      .setTravelPhotoPath("http://i.imgur.com/vWVsQIi.jpg")
+      .setDate(Utils.getDate()).setGoods(1525)
+      .setLat(22.53816f).setLng(120.5416f)
+      .setUser(userId_4)
+      .setTitle("Quadra Kill").setContent("尾刀王")
+      .save();
+
+    new WormholeTraveller()
+      .setTravelPhotoPath("http://i.imgur.com/vWVsQIi.jpg")
+      .setDate(Utils.getDate()).setGoods(362)
+      .setLat(22.53816f).setLng(120.5416f)
+      .setUser(userId_1)
+      .setTitle("Penta Kill").setContent("Good Hand")
+      .save();
   }
 
   private void query() {
@@ -90,5 +136,9 @@ public class DataBaseManager {
 
     Log.e("", "" + u.getName());
 
+  }
+
+  public static void updateWormholeTraveller(WormholeTraveller w) {
+    w.update(w.getId());
   }
 }

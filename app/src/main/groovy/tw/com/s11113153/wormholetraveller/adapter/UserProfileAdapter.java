@@ -3,7 +3,12 @@ package tw.com.s11113153.wormholetraveller.adapter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.litepal.crud.DataSupport;
+
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -17,12 +22,15 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import tw.com.s11113153.wormholetraveller.db.table.User;
+import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 import tw.com.s11113153.wormholetraveller.utils.CircleTransformation;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
@@ -44,25 +52,31 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   private static final int MIN_ITEMS_COUNT = 2;
   private static final Interpolator INTERPOLATOR = new DecelerateInterpolator();
 
-  private final Context context;
+  private static Context context;
   private final int cellSize;
   private final int avatarSize;
 
   private final String profilePhoto;
-  private final List<String> photos;
+  private final List<String> photos = new ArrayList();
 
   private boolean lockedAnimations = false;
   private long profileHeaderAnimationStartTime = 0;
   private int lastAnimatedItem = 0;
 
+  private static User user;
 
+  private List<WormholeTraveller> wormholeTravellers;
 
-  public UserProfileAdapter(Context context) {
+  public UserProfileAdapter(Context context, User user) {
     this.context = context;
     this.cellSize = Utils.getScreenWidth(context) / 3;
     this.avatarSize = 300;
     this.profilePhoto = context.getString(R.string.user_profile_photo);
-    this.photos = Arrays.asList(context.getResources().getStringArray(R.array.user_photos));
+//    this.photos = Arrays.asList(context.getResources().getStringArray(R.array.user_photos));
+    this.user = user;
+    wormholeTravellers = DataSupport.find(User.class, user.getId(), true).getWormholeTravellers();
+    for (WormholeTraveller w : wormholeTravellers)
+      photos.add(w.getTravelPhotoPath());
   }
 
   @Override
@@ -111,7 +125,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     final int viewType = getItemViewType(position);
     switch (viewType) {
       case TYPE_PROFILE_HEADER:
-        bindProfileHeader((ProfileHeaderViewHolder)holder);
+        bindProfileHeader((ProfileHeaderViewHolder) holder);
         break;
       case TYPE_PROFILE_OPTIONS:
         bindProfileOptions((ProfileOptionsViewHolder)holder);
@@ -125,12 +139,18 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   /** bind User Photo Icon **/
   private void bindProfileHeader(final ProfileHeaderViewHolder holder) {
     Picasso.with(context)
-      .load("http://www.youxituoluo.com/wp-content/uploads/2013/11/264_4a561152e5358.jpg")
-      .placeholder(R.drawable.img_circle_placeholder)
+      .load(user.getIconPath())
       .resize(avatarSize, avatarSize)
+      .placeholder(R.drawable.img_circle_placeholder)
       .centerCrop()
       .transform(new CircleTransformation())
       .into(holder.ivUserProfilePhoto);
+
+    holder.tvUserName.setText(user.getName());
+    holder.tvUserMail.setText(user.getMail());
+    holder.tvOutline.setText(user.getOutline());
+    setPosts(holder);
+    setTotalLikes(holder);
 
     holder.vUserProfileRoot.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
       @Override
@@ -140,6 +160,18 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return true;
       }
     });
+  }
+
+  private void setPosts(final ProfileHeaderViewHolder holder) {
+    holder.tvPosts.setText(String.valueOf(wormholeTravellers.size()));
+  }
+
+  private void setTotalLikes(final ProfileHeaderViewHolder holder) {
+    int likes = 0;
+    for (WormholeTraveller w : wormholeTravellers) {
+      likes += w.getGoods();
+    }
+    holder.tvTotalLikes.setText(String.valueOf(likes));
   }
 
   private void animateUserProfileHeader(ProfileHeaderViewHolder holder) {
@@ -203,7 +235,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
       });
 
     if (lastAnimatedItem < position)
-        lastAnimatedItem = position;
+      lastAnimatedItem = position;
   }
 
   private void animatePhoto(final PhotoViewHolder holder) {
@@ -213,8 +245,8 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     long animationDelay = profileHeaderAnimationStartTime
-            + MAX_PHOTO_ANIMATION_DELAY
-            - System.currentTimeMillis();
+      + MAX_PHOTO_ANIMATION_DELAY
+      - System.currentTimeMillis();
 
     if (profileHeaderAnimationStartTime == 0) {
       animationDelay = holder.getLayoutPosition() * 30 + MAX_PHOTO_ANIMATION_DELAY;
@@ -244,21 +276,43 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     return MIN_ITEMS_COUNT + photos.size();
   }
 
-  static class ProfileHeaderViewHolder extends RecyclerView.ViewHolder {
-    @InjectView(R.id.ivUserProfilePhoto)
-    ImageView ivUserProfilePhoto;
-    @InjectView(R.id.vUserDetails)
-    View vUserDetails;
-    @InjectView(R.id.btnFollow)
-    Button btnFollow;
-    @InjectView(R.id.vUserStats)
-    View vUserStats;
-    @InjectView(R.id.vUserProfileRoot)
-    View vUserProfileRoot;
+  static class ProfileHeaderViewHolder extends RecyclerView.ViewHolder
+               implements View.OnClickListener {
+    @InjectView(R.id.ivUserProfilePhoto) ImageView ivUserProfilePhoto;
+    @InjectView(R.id.vUserDetails) View vUserDetails;
+    @InjectView(R.id.btSendMail) Button btSendMail;
+    @InjectView(R.id.vUserStats) View vUserStats;
+    @InjectView(R.id.vUserProfileRoot) View vUserProfileRoot;
+    @InjectView(R.id.tvUserName) TextView tvUserName;
+    @InjectView(R.id.tvOutline) TextView tvOutline;
+    @InjectView(R.id.tvUserMail) TextView tvUserMail;
+    @InjectView(R.id.tvTotalLikes) TextView tvTotalLikes;
+    @InjectView(R.id.tvPosts) TextView tvPosts;
 
+    private final Typeface TYPEFACE_ROBOTO_LIGHT;
     public ProfileHeaderViewHolder(View view) {
       super(view);
       ButterKnife.inject(this, view);
+      btSendMail.setOnClickListener(this);
+      TYPEFACE_ROBOTO_LIGHT = Utils.getFont(context, Utils.FontType.ROBOTO_LIGHT);
+      tvUserName.setTypeface(TYPEFACE_ROBOTO_LIGHT);
+      tvUserMail.setTypeface(TYPEFACE_ROBOTO_LIGHT);
+      tvOutline.setTypeface(TYPEFACE_ROBOTO_LIGHT);
+      btSendMail.setTypeface(TYPEFACE_ROBOTO_LIGHT);
+      tvPosts.setTypeface(TYPEFACE_ROBOTO_LIGHT);
+      tvTotalLikes.setTypeface(TYPEFACE_ROBOTO_LIGHT);
+    }
+
+    @Override
+    public void onClick(View v) {
+      Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+      sendIntent.setType("plain/text");
+      sendIntent.setData(Uri.parse(user.getMail()));
+      sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
+//      sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "test@gmail.com" });
+      sendIntent.putExtra(Intent.EXTRA_SUBJECT, "大綱");
+      sendIntent.putExtra(Intent.EXTRA_TEXT, "內文");
+      context.startActivity(sendIntent);
     }
   }
 

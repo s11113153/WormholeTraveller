@@ -19,16 +19,16 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize" />
 
-  <ImageButton
-    android:id="@+id/btnCreate"
-    android:layout_width="@dimen/user_profile_btn_size"
-    android:layout_height="@dimen/user_profile_btn_size"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_marginBottom="@dimen/user_profile_margins"
-    android:layout_marginRight="@dimen/user_profile_margins"
-    android:background="@drawable/btn_add_album_default"
-    android:elevation="@dimen/default_elevation"
-    android:src="@drawable/btn_add_album_default"
-    android:textSize="28sp" />
+  <!--<ImageButton-->
+    <!--android:id="@+id/btnCreate"-->
+    <!--android:layout_width="@dimen/user_profile_btn_size"-->
+    <!--android:layout_height="@dimen/user_profile_btn_size"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_marginBottom="@dimen/user_profile_margins"-->
+    <!--android:layout_marginRight="@dimen/user_profile_margins"-->
+    <!--android:background="@drawable/btn_add_album_default"-->
+    <!--android:elevation="@dimen/default_elevation"-->
+    <!--android:src="@drawable/btn_add_album_default"-->
+    <!--android:textSize="28sp" />-->
 </RelativeLayout>
