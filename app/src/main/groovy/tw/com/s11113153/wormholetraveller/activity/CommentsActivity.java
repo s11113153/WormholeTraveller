@@ -119,11 +119,11 @@ public class CommentsActivity extends BaseActivity {
   public void onBackPressed() {
     mContentRoot.animate()
       .translationY(Utils.getScreenHeight(this))
-      .setDuration(Utils.AnimationAttribute.DURATION_SHORT.getVal())
+      .setDuration(200)
       .setListener(new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
-          CommentsActivity.super.onBackPressed();
+          finish();
           overridePendingTransition(0, 0);
         }
       })
@@ -159,6 +159,7 @@ public class CommentsActivity extends BaseActivity {
     User u = UserInfo.getUser(this);
     DataBaseManager.updateComments(wt, u, editText.getText().toString().trim());
     editText.setText("");
+    mAdapter.updateItems();
   }
 
 }

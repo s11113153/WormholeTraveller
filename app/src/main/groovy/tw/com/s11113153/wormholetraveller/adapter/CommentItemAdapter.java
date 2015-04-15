@@ -25,6 +25,7 @@ import butterknife.InjectView;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.db.table.Comments;
 import tw.com.s11113153.wormholetraveller.db.table.User;
+import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 import tw.com.s11113153.wormholetraveller.utils.RoundedTransformation;
 import tw.com.s11113153.wormholetraveller.Utils;
 
@@ -49,8 +50,13 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     this.context = context;
     this.userIconSize = context.getResources().getDimensionPixelSize(R.dimen.iv_user_size);
     this.travelId = travelId;
-    comments = DataSupport.where("wormholetraveller_id=?", String.valueOf(travelId))
-                          .find(Comments.class, true);
+    bindComments();
+  }
+
+  private void bindComments() {
+    //    comments = DataSupport.where("wormholetraveller_id=?", String.valueOf(travelId))
+    //                          .find(Comments.class, true);
+    comments = DataSupport.find(WormholeTraveller.class, travelId, true).getComments();
   }
 
   @Override
@@ -90,7 +96,8 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
       }
     });
 
-    drawable.start();
+    if (drawable != null)
+        drawable.start();
   }
 
   private void bindUserContent(final CommentsViewHolder holder, final int position) {
@@ -126,8 +133,9 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         .start();
     }
   }
+
   public void updateItems() {
-//    itemsCount = 10;
+    bindComments();
     notifyDataSetChanged();
   }
 
