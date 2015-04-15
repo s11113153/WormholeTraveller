@@ -6,12 +6,17 @@ import org.litepal.crud.DataSupport;
  * Created by xuyouren on 15/4/12.
  */
 public class Comments extends DataSupport {
-  private WormholeTraveller wormholeTraveller;
+  private int wormholetraveller_id;
+  private int user_id;
   private String content;
-  private String description;
 
-  public Comments setWormholeTraveller(WormholeTraveller wormholeTraveller) {
-    this.wormholeTraveller = wormholeTraveller;
+  public Comments setWormholetraveller_id(int wormholetraveller_id) {
+    this.wormholetraveller_id = wormholetraveller_id;
+    return this;
+  }
+
+  public Comments setUser_id(int user_id) {
+    this.user_id = user_id;
     return this;
   }
 
@@ -20,20 +25,15 @@ public class Comments extends DataSupport {
     return this;
   }
 
-  public Comments setDescription(String description) {
-    this.description = description;
-    return this;
+  public int getWormholetraveller_id() {
+    return wormholetraveller_id;
   }
 
-  public WormholeTraveller getWormholeTraveller() {
-    return wormholeTraveller;
+  public int getUser_id() {
+    return user_id;
   }
 
   public String getContent() {
     return content;
-  }
-
-  public String getDescription() {
-    return description;
   }
 }

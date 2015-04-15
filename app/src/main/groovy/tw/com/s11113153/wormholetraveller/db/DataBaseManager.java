@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.List;
+
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.db.table.Comments;
 import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 
@@ -150,7 +153,15 @@ public class DataBaseManager {
 
   }
 
-  public static void updateWormholeTraveller(WormholeTraveller w) {
-    w.update(w.getId());
+  public static void updateWormholeTraveller(WormholeTraveller wt) {
+    wt.update(wt.getId());
+  }
+
+  public static void updateComments(WormholeTraveller wt, User u, String content) {
+    Comments comments = new Comments()
+      .setContent(content)
+      .setUser_id(u.getId())
+      .setWormholetraveller_id(wt.getId());
+    comments.save();
   }
 }

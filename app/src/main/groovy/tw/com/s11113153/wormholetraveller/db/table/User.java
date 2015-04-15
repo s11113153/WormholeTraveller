@@ -18,6 +18,7 @@ public class User extends DataSupport {
   private String outline = "what do you thinking ？";
 
   private List<WormholeTraveller> wormholeTravellers = new ArrayList();
+  private List<Comments> comments = new ArrayList();
 
   public User setId(int id) {
     this.id = id;
@@ -59,6 +60,11 @@ public class User extends DataSupport {
     return this;
   }
 
+  public User setComments(List<Comments> comments) {
+    this.comments = comments;
+    return this;
+  }
+
   public int getId() {
     return id;
   }
@@ -89,5 +95,9 @@ public class User extends DataSupport {
 
   public String getOutline() {
     return outline;
+  }
+
+  public List<Comments> getComments() {
+    return comments;
   }
 }

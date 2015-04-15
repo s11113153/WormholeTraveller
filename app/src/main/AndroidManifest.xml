@@ -38,7 +38,7 @@
     <activity android:name=".activity.MainActivity" />
 
     <activity android:name=".activity.CommentsActivity"
-      android:theme="@style/AppTheme.TransparentActivity"/>
+              android:windowSoftInputMode="adjustResize"/>
 
     <activity android:name=".activity.UserProfileActivity"
       android:theme="@style/AppTheme.TransparentActivity"/>

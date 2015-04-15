@@ -21,7 +21,9 @@ import butterknife.OnClick;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
+import tw.com.s11113153.wormholetraveller.db.table.Comments;
 import tw.com.s11113153.wormholetraveller.db.table.User;
+import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
 
@@ -184,14 +186,15 @@ public class MainActivity
   }
 
   @Override
-  public void onCommentsClick(View v, int position) {
-    Log.d(TAG, "" + String.valueOf(position));
+  public void onCommentsClick(View v, int position, int travelId) {
+    Log.d(TAG, "com" + String.valueOf(travelId));
     // ivComments 在整個螢幕的座標
     int[] startingLocation = new int[2];
     v.getLocationOnScreen(startingLocation);
 
     final Intent intent = new Intent(this, CommentsActivity.class);
     intent.putExtra(CommentsActivity.ARG_DRAWING_START_LOCATION, startingLocation[1]);
+    intent.putExtra(CommentsActivity.TRAVEL_ID, travelId);
     startActivity(intent);
 
     // no anim when finish and ready to change activity

@@ -3,11 +3,14 @@ package tw.com.s11113153.wormholetraveller.adapter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.litepal.crud.DataSupport;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +18,13 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.db.table.Comments;
+import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.utils.RoundedTransformation;
 import tw.com.s11113153.wormholetraveller.Utils;
 
@@ -25,70 +32,74 @@ import tw.com.s11113153.wormholetraveller.Utils;
  * Created by xuyouren on 15/3/29.
  */
 public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+  private static final String TAG = CommentItemAdapter.class.getSimpleName();
   final Context context;
-  private int itemsCount = 3;
+//  private int itemsCount = 3;
   private int lastAnimatedPosition = -1;
   private int userIconSize;
 
   private boolean animationsLocked = false;
   private boolean delayEnterAnimation = true;
 
-  public CommentItemAdapter(Context context) {
+  private final int travelId;
+
+  private List<Comments> comments;
+
+  public CommentItemAdapter(Context context, int travelId) {
     this.context = context;
     this.userIconSize = context.getResources().getDimensionPixelSize(R.dimen.iv_user_size);
+    this.travelId = travelId;
+    comments = DataSupport.where("wormholetraveller_id=?", String.valueOf(travelId))
+                          .find(Comments.class, true);
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     final View view = LayoutInflater.from(context).inflate(R.layout.item_comment, parent, false);
-    return new ViewHolder(view);
+    return new CommentsViewHolder(view);
   }
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
     runEnterAnimation(viewHolder.itemView, position);
-    final ViewHolder holder = (ViewHolder) viewHolder;
+    final CommentsViewHolder holder = (CommentsViewHolder) viewHolder;
+    int userId = comments.get(position).getUser_id();
+    User u = DataSupport.find(User.class, userId);
+    Log.e("u = ", "" + u);
+    bindUserProfile(holder, u);
+    bindUserContent(holder, position);
+  }
+
+  private void bindUserProfile(final CommentsViewHolder holder, final User u) {
     final AnimationDrawable drawable = (AnimationDrawable) holder.ivLoading.getBackground();
-    String url = "https://www.facebook.com/xu.y.jen";
-
-    switch (position % 3) {
-      case 0:
-        holder.tvComment.setText("HelloWorld.");
-        break;
-      case 1:
-        url = "http://i.imgur.com/DvpvklR.png";
-        holder.tvComment.setText("Groovy With Android");
-        break;
-      case 2:
-        holder.tvComment.setText("Java is Deprecated");
-        break;
-    }
-
+    String url = u.getIconPath();
     Picasso.with(context)
       .load(url)
       .centerCrop()
       .resize(userIconSize, userIconSize)
       .error(R.mipmap.ic_default_comment_people)
       .transform(new RoundedTransformation()).into(holder.ivUser, new Callback() {
-        @Override
-        public void onSuccess() {
+      @Override
+      public void onSuccess() {
         Utils.clearBackground(holder.ivLoading);
       }
 
-        @Override
-        public void onError() {
+      @Override
+      public void onError() {
         Utils.clearBackground(holder.ivLoading);
       }
-      });
+    });
 
     drawable.start();
   }
 
-
+  private void bindUserContent(final CommentsViewHolder holder, final int position) {
+    holder.tvComment.setText(comments.get(position).getContent());
+  }
 
   @Override
   public int getItemCount() {
-    return itemsCount;
+    return comments.size();
   }
 
   private void runEnterAnimation(View view, int position) {
@@ -116,13 +127,13 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
   }
   public void updateItems() {
-    itemsCount = 10;
+//    itemsCount = 10;
     notifyDataSetChanged();
   }
 
   public void addItem() {
-    itemsCount++;
-    notifyItemInserted(itemsCount - 1);
+//    itemsCount++;
+//    notifyItemInserted(itemsCount - 1);
   }
 
   public void setAnimationsLocked(boolean animationsLocked) {
@@ -133,12 +144,12 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     this.delayEnterAnimation = delayEnterAnimation;
   }
 
-  static class ViewHolder extends RecyclerView.ViewHolder {
+  static class CommentsViewHolder extends RecyclerView.ViewHolder {
     @InjectView(R.id.ivUser)  ImageView ivUser;
     @InjectView(R.id.tvComment) TextView tvComment;
     @InjectView(R.id.ivLoading) ImageView ivLoading;
 
-    private ViewHolder(View view) {
+    private CommentsViewHolder(View view) {
       super(view);
       ButterKnife.inject(this, view);
     }

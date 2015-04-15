@@ -2,6 +2,7 @@ package tw.com.s11113153.wormholetraveller.adapter;
 
 import com.squareup.picasso.Picasso;
 
+import org.codehaus.groovy.ast.stmt.WhileStatement;
 import org.litepal.crud.DataSupport;
 
 import android.animation.Animator;
@@ -343,8 +344,11 @@ public class RecycleItemAdapter
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.ibComments:
-        if (mBottomClickListener != null)
-          mBottomClickListener.onCommentsClick(v, (Integer) v.getTag());
+        if (mBottomClickListener != null) {
+          int position = (Integer) v.getTag();
+          int travelId = wormholeTravellers.get(position).getId();
+          mBottomClickListener.onCommentsClick(v, position, travelId);
+        }
         break;
       case R.id.ibMore:
         if (mBottomClickListener != null)
@@ -571,7 +575,7 @@ public class RecycleItemAdapter
   }
 
   public interface OnBottomClickListener {
-    void onCommentsClick(View v, int position);
+    void onCommentsClick(View v, int position, int travelId);
     void onMoreClick(View v, int position);
     void onProfileClick(View v, User user);
   }
