@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -16,7 +17,8 @@ import tw.com.s11113153.wormholetraveller.adapter.ViewPagerAdapter;
 /**
  * Created by xuyouren on 15/4/21.
  */
-public class ViewPagerActivity extends BaseActivity {
+public class ViewPagerActivity extends BaseActivity
+        implements ViewPagerAdapter.OnViewPagerPosition {
 
   private static final String TRAVEL_ID = "travel_id";
 
@@ -35,11 +37,8 @@ public class ViewPagerActivity extends BaseActivity {
       int travelId = getIntent().getIntExtra(TRAVEL_ID, -1);
       int searchMode = getIntent().getIntExtra(MapsFragment.CURRENT_SEARCH_MODE, -1);
       adapter = new ViewPagerAdapter(this, travelId, searchMode);
-      pager.setAdapter(adapter);
-      indicator.setFadeDelay(300);
-      indicator.setFades(false);
-      indicator.setSelectedColor(getResources().getColor(R.color.style_color_primary));
-      indicator.setViewPager(pager);
+      adapter.setOnViewPagerPosition(this);
+      adapter.animateToTargetPosition();
     }
   }
 
@@ -52,5 +51,15 @@ public class ViewPagerActivity extends BaseActivity {
     i.putExtra(TRAVEL_ID, travelId);
     i.putExtra(MapsFragment.CURRENT_SEARCH_MODE, mode);
     startingActivity.startActivity(i);
+  }
+
+  @Override
+  public void target(int position) {
+    pager.setAdapter(adapter);
+    pager.setCurrentItem(position, true);
+    indicator.setFadeDelay(300);
+    indicator.setFades(false);
+    indicator.setSelectedColor(getResources().getColor(R.color.style_color_primary));
+    indicator.setViewPager(pager);
   }
 }

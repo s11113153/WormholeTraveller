@@ -6,8 +6,10 @@ import org.litepal.crud.DataSupport;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,28 +37,30 @@ public class ViewPagerAdapter extends PagerAdapter {
 
   private int searchMode;
 
-  private final int avatarSize;
+  private final int avatarSize = 96;
 
   private List<WormholeTraveller> travellers;
+
   private WormholeTraveller wormholeTraveller;
+
+  private OnViewPagerPosition onViewPagerPosition;
 
   public ViewPagerAdapter(Context context, int travelId, int searchMode) {
     this.context = context;
     this.searchMode = searchMode;
     this.travelId = travelId;
     this.searchMode = searchMode;
-    this.avatarSize = 96;
 
     wormholeTraveller = DataSupport.find(WormholeTraveller.class, travelId, true);
     if (searchMode == MapsFragment.SEARCH_PEOPLE_TRAVEL)
-      initUserTravelData();
+        initUserTravelData();
   }
 
 
   private void initUserTravelData() {
     User u = wormholeTraveller.getUser();
     travellers = DataSupport.where("user_id =?",
-      String.valueOf(u.getId())).find(WormholeTraveller.class, true);
+        String.valueOf(u.getId())).find(WormholeTraveller.class, true);
   }
 
 
@@ -96,11 +100,31 @@ public class ViewPagerAdapter extends PagerAdapter {
     bindOneData(wt, holder);
   }
 
+  public void animateToTargetPosition() {
+    if (searchMode == MapsFragment.SEARCH_ROUND) {
+      onViewPagerPosition.target(0);
+      return;
+    }
+
+    int targetPosition = 0;
+    for (int i = 0; i < travellers.size(); i++)
+      if (travellers.get(i).getId() == travelId) {
+        targetPosition = i;
+        break;
+      }
+
+    if (onViewPagerPosition != null) {
+      onViewPagerPosition.target(targetPosition);
+      onViewPagerPosition = null;
+    }
+  }
+
   @Override
   public Object instantiateItem(ViewGroup container, int position) {
     View view = View.inflate(context, R.layout.item_viewpager, null);
     PagerViewHolder.setInstance(view);
     PagerViewHolder holder = PagerViewHolder.getInstance();
+
     switch (searchMode) {
       case MapsFragment.SEARCH_ROUND:
         bindOneData(wormholeTraveller, holder);
@@ -151,5 +175,13 @@ public class ViewPagerAdapter extends PagerAdapter {
     public static void setInstance(View view) {
       instance = new PagerViewHolder(view);
     }
+  }
+
+  public void setOnViewPagerPosition(OnViewPagerPosition onViewPagerPosition) {
+    this.onViewPagerPosition = onViewPagerPosition;
+  }
+
+  public interface OnViewPagerPosition {
+    void target(int position);
   }
 }
