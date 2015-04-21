@@ -58,9 +58,9 @@ public class BaseActivity extends ActionBarActivity implements
 
   private LocationRequest mLocationRequest;
 
-  private static int UPDATE_INTERVAL = 10000; // 10 sec
-  private static int FATEST_INTERVAL = 5000; // 5 sec
-  private static int DISPLACEMENT = 10; // 10 meters
+  private static int UPDATE_INTERVAL = 30000; // 30 sec
+  private static int FATEST_INTERVAL = 10000; // 10 sec
+  private static int DISPLACEMENT = 100; // 100 meters
 
   private Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
 

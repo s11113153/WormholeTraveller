@@ -71,7 +71,6 @@ public class CommentItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     final CommentsViewHolder holder = (CommentsViewHolder) viewHolder;
     int userId = comments.get(position).getUser_id();
     User u = DataSupport.find(User.class, userId);
-    Log.e("u = ", "" + u);
     bindUserProfile(holder, u);
     bindUserContent(holder, position);
   }

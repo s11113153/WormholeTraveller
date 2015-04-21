@@ -95,7 +95,7 @@ public class RevealBackgroundView extends View {
     changeState(STATE_FILL_STARTED);
     startLocationX = tapLocationOnScreen[0];
     startLocationY = tapLocationOnScreen[1];
-    Log.e("" + startLocationX, "" + startLocationY);
+    Log.e("startLocationX = " + startLocationX, "startLocationY = " + startLocationY);
     revealAnimator = ObjectAnimator.ofInt(
         this, "currentRadius", 0, getWidth() + getHeight());
     revealAnimator.setDuration(FILL_TILE);

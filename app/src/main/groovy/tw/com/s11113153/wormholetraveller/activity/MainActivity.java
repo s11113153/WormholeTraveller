@@ -1,8 +1,9 @@
 package tw.com.s11113153.wormholetraveller.activity;
 
+import com.google.android.gms.maps.MapFragment;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,22 +17,23 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 
+import java.util.Map;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.UserInfo;
 import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
-import tw.com.s11113153.wormholetraveller.db.table.Comments;
 import tw.com.s11113153.wormholetraveller.db.table.User;
-import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
 
 public class MainActivity
   extends BaseActivity
   implements RecycleItemAdapter.OnBottomClickListener,
-             FeedContextMenu.OnFeedContextMenuItemClickListener,
-             BaseActivity.OnLatLngGetListener {
+  FeedContextMenu.OnFeedContextMenuItemClickListener,
+  BaseActivity.OnLatLngGetListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -66,8 +68,9 @@ public class MainActivity
 
   @Override
   public void get(float lat, float lng) {
-    setUpRecycleAdapter(lat, lng);
-    removeOnLatLngGetListener();
+    if (mAdapter == null)
+      setUpRecycleAdapter(lat, lng);
+    UserInfo.updateUserCurrentLatLng(this, lat, lng);
   }
 
   private void setUpRecycleAdapter(float lat, float lng) {
@@ -226,13 +229,33 @@ public class MainActivity
   }
 
   @Override
-  public void onShow(int feedItem) {
-//    mRecyclerView.smoothScrollToPosition(feedItem);
-//    FeedContextMenuManager.getInstance().hideContextMenu();
-//    Dialog dialog = new Dialog(this, R.style.selectorDialog);
-//    dialog.setContentView(R.layout.dialog_travel);
-//    dialog.show();
+  public void onShowMap(final View v, final int feedItem) {
+    final int travelId = (int)mAdapter.getItemId(feedItem);
+    mRecyclerView.smoothScrollToPosition(feedItem);
+    FeedContextMenuManager.getInstance().hideContextMenu();
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        int[] startingLocation = new int[2];
+        v.getLocationOnScreen(startingLocation);
+        startingLocation[0] += v.getWidth() / 2;
+        MapsFragment.startMapsFromLocation(getFragmentManager(), startingLocation, travelId, MapsFragment.SEARCH_ROUND);
+//        final MapsFragment fragment = new MapsFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putIntArray(MapsFragment.ARG_REVEAL_START_LOCATION, startingLocation);
+//        bundle.putInt(MapsFragment.TRAVEL_ID, travelId);
+//        fragment.setArguments(bundle);
+//        getFragmentManager()
+//          .beginTransaction()
+//          .addToBackStack("")
+//          .add(R.id.root, fragment)
+//          .commit();
+        overridePendingTransition(0, 0);
+      }
+    }, 200);
   }
+
+
 
   @Override
   public void onPlay(int feedItem) {
@@ -250,14 +273,20 @@ public class MainActivity
 
   @Override
   public void onBackPressed() {
-    moveTaskToBack(true);
+    int count = getFragmentManager().getBackStackEntryCount();
+    if (count == 0) {
+      moveTaskToBack(true);
+    } else {
+      MapsFragment.changeMode();
+      getFragmentManager().popBackStack();
+    }
   }
 
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     if (ACTION_SHOW_LOADING_PHOTO.equals(intent.getAction()))
-        showRecycleLoadingItemDelayed();
+      showRecycleLoadingItemDelayed();
   }
 
   private void showRecycleLoadingItemDelayed() {

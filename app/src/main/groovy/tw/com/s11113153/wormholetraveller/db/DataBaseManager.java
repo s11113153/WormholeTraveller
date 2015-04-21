@@ -78,6 +78,7 @@ public class DataBaseManager {
     s11113120.save();
   }
 
+//  http://maps.googleapis.com/maps/api/geocode/json?latlng=22.13816,120.5416&sensor=false&language=zh-TW
   public void createTravel() {
     User userId_1 = DataSupport.find(User.class, 1);
     new WormholeTraveller()
@@ -104,7 +105,7 @@ public class DataBaseManager {
     new WormholeTraveller()
       .setTravelPhotoPath("http://i.imgur.com/iemg6nQ.jpg")
       .setDate(Utils.getDate()).setGoods(685)
-      .setLat(22.53816f).setLng(120.5416f)
+      .setLat(22.83816f).setLng(120.5416f)
       .setUser(userId_2)
       .setTitle("Double Kill").setContent("完成雙殺")
       .save();
@@ -113,7 +114,7 @@ public class DataBaseManager {
     new WormholeTraveller()
       .setTravelPhotoPath("http://i.imgur.com/VSOssOW.jpg")
       .setDate(Utils.getDate()).setGoods(4563)
-      .setLat(22.53816f).setLng(120.5416f)
+      .setLat(22.13816f).setLng(120.5416f)
       .setUser(userId_3)
       .setTitle("Triple Kill").setContent("人品爆發")
       .save();
@@ -122,7 +123,7 @@ public class DataBaseManager {
     new WormholeTraveller()
       .setTravelPhotoPath("http://i.imgur.com/vWVsQIi.jpg")
       .setDate(Utils.getDate()).setGoods(1525)
-      .setLat(22.53816f).setLng(120.5416f)
+      .setLat(22.63816f).setLng(121.0416f)
       .setUser(userId_4)
       .setTitle("Quadra Kill").setContent("尾刀王")
       .save();
@@ -130,7 +131,7 @@ public class DataBaseManager {
     new WormholeTraveller()
       .setTravelPhotoPath("http://i.imgur.com/vWVsQIi.jpg")
       .setDate(Utils.getDate()).setGoods(362)
-      .setLat(22.53816f).setLng(120.5416f)
+      .setLat(22.53816f).setLng(121.1416f)
       .setUser(userId_1)
       .setTitle("Penta Kill").setContent("Good Hand")
       .save();

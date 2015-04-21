@@ -2,7 +2,6 @@ package tw.com.s11113153.wormholetraveller.adapter;
 
 import com.squareup.picasso.Picasso;
 
-import org.codehaus.groovy.ast.stmt.WhileStatement;
 import org.litepal.crud.DataSupport;
 
 import android.animation.Animator;
@@ -28,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +35,6 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnTouch;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.db.DataBaseManager;
@@ -93,25 +89,22 @@ public class RecycleItemAdapter
   private List<WormholeTraveller> wormholeTravellers = new ArrayList();
 
   private float curLat;
-
   private float curLng;
-  private static Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
-  private static Typeface TYPEFACE_ROBOTO_THIN;
 
-  private final int SCREEN_WIDTH;
+  private static Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
+  private static Typeface TYPEFACE_ROBOTO_LIGHT;
 
   public RecycleItemAdapter(Context context, float lat, float lng) {
     this.context = context;
     loadingViewSize = (int)Utils.doPx(context, Utils.PxType.DP_TO_PX, 200);
     curLat = lat;
     curLng = lng;
-    updateTravel();
+    bindTravel();
     TYPEFACE_ROBOTO_BOLD_ITALIC = Utils.getFont(context, Utils.FontType.ROBOTO_BOLD_ITALIC);
-    TYPEFACE_ROBOTO_THIN = Utils.getFont(context, Utils.FontType.ROBOTO_LIGHT);
-    SCREEN_WIDTH = Utils.getScreenWidth(context);
+    TYPEFACE_ROBOTO_LIGHT = Utils.getFont(context, Utils.FontType.ROBOTO_LIGHT);
   }
 
-  private void updateTravel() {
+  private void bindTravel() {
     Log.e("curLat" + curLat, "curLng" + curLng);
     List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
     for (WormholeTraveller wt : travellers) {
@@ -218,7 +211,7 @@ public class RecycleItemAdapter
     bindIsLike(holder, wt.isLike());
     bindTitle(holder, wt);
     bindDate(holder, wt);
-    bindAdress(holder, wt);
+    bindAddress(holder, wt);
     bindContent(holder, wt);
   }
 
@@ -251,7 +244,7 @@ public class RecycleItemAdapter
     holder.tvDate.setText(wt.getDate());
   }
 
-  private void bindAdress(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
+  private void bindAddress(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
     String address;
     address = wt.getAddress();
     if (address == null) {
@@ -304,6 +297,11 @@ public class RecycleItemAdapter
     });
   }
 
+  @Override
+  public long getItemId(int position) {
+    Log.e("t", ": " + wormholeTravellers.get(position).getTitle());
+    return wormholeTravellers.get(position).getId();
+  }
 
   @Override
   public int getItemCount() {
@@ -413,7 +411,7 @@ public class RecycleItemAdapter
       tvTitle.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
       tvDate.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
       tvAddress.setTypeface(TYPEFACE_ROBOTO_BOLD_ITALIC);
-      tvContent.setTypeface(TYPEFACE_ROBOTO_THIN);
+      tvContent.setTypeface(TYPEFACE_ROBOTO_LIGHT);
     }
   }
 

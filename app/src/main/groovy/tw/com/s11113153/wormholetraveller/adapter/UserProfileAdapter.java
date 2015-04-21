@@ -56,7 +56,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   private final int cellSize;
   private final int avatarSize;
 
-  private final String profilePhoto;
+//  private final String profilePhoto;
   private final List<String> photos = new ArrayList();
 
   private boolean lockedAnimations = false;
@@ -71,7 +71,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     this.context = context;
     this.cellSize = Utils.getScreenWidth(context) / 3;
     this.avatarSize = 300;
-    this.profilePhoto = context.getString(R.string.user_profile_photo);
+//    this.profilePhoto = profilePhoto.getString(R.string.user_profile_photo);
 //    this.photos = Arrays.asList(context.getResources().getStringArray(R.array.user_photos));
     this.user = user;
     wormholeTravellers = DataSupport.find(User.class, user.getId(), true).getWormholeTravellers();

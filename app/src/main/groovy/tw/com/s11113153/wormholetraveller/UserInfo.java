@@ -1,5 +1,7 @@
 package tw.com.s11113153.wormholetraveller;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -22,9 +24,15 @@ public class UserInfo {
   private static final String ICON_PATH = "iconPath";
   private static final String OUTLINE = "outline";
 
+  private static final String LAT = "lat";
+  private static final String LNG = "lng";
+
+  private static SharedPreferences getSharedPrefByUser(Context context) {
+    return context.getSharedPreferences(USER, Context.MODE_PRIVATE);
+  }
 
   public static void setUser(Context context, User user) {
-    SharedPreferences sharedPref = context.getSharedPreferences(USER, Context.MODE_PRIVATE);
+    SharedPreferences sharedPref = getSharedPrefByUser(context);
     SharedPreferences.Editor editor = sharedPref.edit();
     editor.putInt(ID, user.getId());
     editor.putString(NAME, user.getName());
@@ -37,7 +45,7 @@ public class UserInfo {
   }
 
   public static User getUser(Context context) {
-    SharedPreferences sharedPref = context.getSharedPreferences(USER, Context.MODE_PRIVATE);
+    SharedPreferences sharedPref = getSharedPrefByUser(context);
     User user = new User();
     user.setId(sharedPref.getInt(ID, -1))
         .setName(sharedPref.getString(NAME, ""))
@@ -47,5 +55,20 @@ public class UserInfo {
         .setOutline(sharedPref.getString(OUTLINE, ""))
         .setIconPath(sharedPref.getString(ICON_PATH, ""));
     return user;
+  }
+
+  public static void updateUserCurrentLatLng(Context context, float lat, float lng) {
+    SharedPreferences sharedPref =getSharedPrefByUser(context);
+    SharedPreferences.Editor editor = sharedPref.edit();
+    editor.putFloat(LAT, lat);
+    editor.putFloat(LNG, lng);
+    editor.apply();
+  }
+
+  public static LatLng getUserCurrentLatLng(Context context) {
+    SharedPreferences sharedPref = getSharedPrefByUser(context);
+    float lat = sharedPref.getFloat(LAT, -1);
+    float lng = sharedPref.getFloat(LNG, -1);
+    return new LatLng(lat, lng);
   }
 }
