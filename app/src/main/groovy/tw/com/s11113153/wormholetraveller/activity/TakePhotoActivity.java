@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
@@ -51,6 +52,8 @@ public class TakePhotoActivity
   private static final String TAG = TakePhotoActivity.class.getSimpleName();
 
   public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
+
+  private static final int PORTRAIT = 90;
 
   private static final Interpolator ACCELERATE_INTERPOLATOR = new AccelerateInterpolator();
   private static final Interpolator DECELERATE_INTERPOLATOR = new DecelerateInterpolator();
@@ -90,7 +93,7 @@ public class TakePhotoActivity
     setContentView(R.layout.activity_take_photo);
     updateState(STATE_TAKE_PHOTO);
     setUpRevealBackground(savedInstanceState);
-    setUpPhotoFilters();
+//    setUpPhotoFilters();
 
     vUpperPanel.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
       @Override
@@ -106,7 +109,9 @@ public class TakePhotoActivity
 
   @OnClick(R.id.btnAccept)
   void onAcceptClick() {
-    PublishActivity.openWithPhotoUrl(this, Uri.fromFile(photoPath));
+    if (photoPath != null) {
+      PublishActivity.openWithPhotoUrl(TakePhotoActivity.this, Uri.fromFile(photoPath));
+    }
   }
 
   @Override
@@ -138,11 +143,10 @@ public class TakePhotoActivity
   }
 
   private void setUpPhotoFilters() {
-    PhotoFiltersAdapter adapter = new PhotoFiltersAdapter(this);
+    PhotoFiltersAdapter photoFiltersAdapter = new PhotoFiltersAdapter(this);
     rvFilters.setHasFixedSize(true);
-    rvFilters.setAdapter(adapter);
-    rvFilters.setLayoutManager(
-      new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    rvFilters.setAdapter(photoFiltersAdapter);
+    rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
   }
 
   private void updateState(@PhotoState int state) {
@@ -237,11 +241,17 @@ public class TakePhotoActivity
     @Override
     public Camera.Parameters adjustPreviewParameters(Camera.Parameters parameters) {
       for(Camera.Size size : parameters.getSupportedPictureSizes())
-        if (size.height <=2000 && size.width <= 2000) {
+        if (size.height <=1200 && size.width <= 1200) {
           previewSize = size;
           break;
         }
       return super.adjustPreviewParameters(parameters);
+    }
+
+    @Override
+    public Camera.Parameters adjustPictureParameters(PictureTransaction xact, Camera.Parameters parameters) {
+      parameters.setRotation(90);
+      return super.adjustPictureParameters(xact, parameters);
     }
 
     @Override
@@ -269,9 +279,13 @@ public class TakePhotoActivity
 
   @Override
   public void onBackPressed() {
-    if (currentState == STATE_SETUP_PHOTO)
-        updateState(STATE_TAKE_PHOTO);
-    else
-        super.onBackPressed();
+    if (currentState == STATE_SETUP_PHOTO) {
+      btnTakePhoto.setEnabled(true);
+      vUpperPanel.showNext();
+      updateState(STATE_TAKE_PHOTO);
+    }
+    else {
+      super.onBackPressed();
+    }
   }
 }

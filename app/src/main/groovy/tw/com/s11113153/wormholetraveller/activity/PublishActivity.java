@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
@@ -53,10 +54,12 @@ public class PublishActivity extends BaseActivity {
   private void init(Bundle savedInstanceState) {
     getToolbar().setNavigationIcon(getResources().getDrawable(R.mipmap.ic_back));
     photoSize = (int)Utils.doPx(this, Utils.PxType.DP_TO_PX, 96);
-    if (savedInstanceState == null)
+    if (savedInstanceState == null) {
       photoUri = getIntent().getParcelableExtra(ARG_TAKEN_PHOTO_URI);
-    else
+    }
+    else {
       photoUri = savedInstanceState.getParcelable(ARG_TAKEN_PHOTO_URI);
+    }
 
     ivPhoto.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
       @Override
@@ -87,7 +90,7 @@ public class PublishActivity extends BaseActivity {
         }
         @Override
         public void onError() {
-          Toast.makeText(PublishActivity.this, "Error", Toast.LENGTH_LONG).show();
+          Toast.makeText(PublishActivity.this, "Load Error", Toast.LENGTH_LONG).show();
         }
       });
   }

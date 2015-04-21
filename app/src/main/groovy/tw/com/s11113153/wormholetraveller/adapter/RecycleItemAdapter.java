@@ -178,6 +178,7 @@ public class RecycleItemAdapter
         bindDefaultRecycleItem(holder, position);
         break;
       case VIEW_TYPE_LOADER:
+        bindDefaultRecycleItem(holder, position);
         bindLoadingRecycleItem(holder);
         break;
     }

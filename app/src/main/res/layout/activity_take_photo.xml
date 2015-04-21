@@ -56,14 +56,14 @@
         android:paddingRight="16dp"
         android:paddingLeft="16dp"
         android:gravity="center_vertical"
-        android:background="#111111"
+        android:background="@color/btn_context_menu_normal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageButton
           android:id="@+id/btnBack"
-          android:layout_width="40dp"
-          android:layout_height="40dp"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:background="@drawable/btn_context_menu"
           android:src="@mipmap/ic_back"/>
 
@@ -99,8 +99,8 @@
 
         <ImageButton
           android:id="@+id/btnAccept"
-          android:layout_width="40dp"
-          android:layout_height="40dp"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:background="@drawable/btn_context_menu"
           android:src="@mipmap/ic_next" />
       </LinearLayout>
