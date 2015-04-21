@@ -16,11 +16,11 @@
       android:layout_margin="12dp" />
 
     <TextView
+      android:id="@+id/tvName"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:layout_weight="1"
-      android:text="哀木涕"
       android:textColor="@color/style_color_primary"
       android:textSize="16sp"
       android:textStyle="bold" />
@@ -36,7 +36,7 @@
 
   <View
     android:layout_width="match_parent"
-    android:layout_height="1dp"
+    android:layout_height="2dp"
     android:layout_gravity="bottom"
-    android:background="@color/style_color_primary_thin_color" />
+    android:background="@color/style_color_primary_deep_dark" />
 </FrameLayout>

@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
  * Created by xuyouren on 15/4/7.
  */
 public class DrawerLayoutInstaller {
-  public static final int DEFAULT_LEFT_DRAWER_WIDTH_DP = 160;
+  public static final int DEFAULT_LEFT_DRAWER_WIDTH_DP = 120;
 
   public static DrawerBuilder from(Activity activity) {
     return new DrawerBuilder(activity);

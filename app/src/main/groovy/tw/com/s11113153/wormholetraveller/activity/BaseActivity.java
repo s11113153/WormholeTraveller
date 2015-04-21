@@ -99,7 +99,7 @@ public class BaseActivity extends ActionBarActivity implements
     mDrawerLayout = DrawerLayoutInstaller.from(this)
       .drawerRoot(R.layout.drawer_root)
       .drawerLeftView(menuView)
-      .drawerLeftWidth((int) Utils.doPx(this, Utils.PxType.DP_TO_PX, 300))
+      .drawerLeftWidth((int) Utils.doPx(this, Utils.PxType.DP_TO_PX, 50))
       .withNavigationIconToggler(getToolbar())
       .build();
   }
