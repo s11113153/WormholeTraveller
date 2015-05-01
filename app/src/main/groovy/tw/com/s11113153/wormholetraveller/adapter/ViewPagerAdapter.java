@@ -6,10 +6,8 @@ import org.litepal.crud.DataSupport;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -43,7 +41,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
   private WormholeTraveller wormholeTraveller;
 
-  private OnViewPagerPosition onViewPagerPosition;
+  private OnViewPagerListener onViewPagerListener;
 
   public ViewPagerAdapter(Context context, int travelId, int searchMode) {
     this.context = context;
@@ -55,7 +53,6 @@ public class ViewPagerAdapter extends PagerAdapter {
     if (searchMode == MapsFragment.SEARCH_PEOPLE_TRAVEL)
         initUserTravelData();
   }
-
 
   private void initUserTravelData() {
     User u = wormholeTraveller.getUser();
@@ -100,9 +97,9 @@ public class ViewPagerAdapter extends PagerAdapter {
     bindOneData(wt, holder);
   }
 
-  public void animateToTargetPosition() {
+  private void animateToTargetPosition() {
     if (searchMode == MapsFragment.SEARCH_ROUND) {
-      onViewPagerPosition.target(0);
+      onViewPagerListener.target(0);
       return;
     }
 
@@ -113,9 +110,9 @@ public class ViewPagerAdapter extends PagerAdapter {
         break;
       }
 
-    if (onViewPagerPosition != null) {
-      onViewPagerPosition.target(targetPosition);
-      onViewPagerPosition = null;
+    if (onViewPagerListener != null) {
+      onViewPagerListener.target(targetPosition);
+      onViewPagerListener = null;
     }
   }
 
@@ -177,11 +174,12 @@ public class ViewPagerAdapter extends PagerAdapter {
     }
   }
 
-  public void setOnViewPagerPosition(OnViewPagerPosition onViewPagerPosition) {
-    this.onViewPagerPosition = onViewPagerPosition;
+  public void setOnViewPagerListener(OnViewPagerListener onViewPagerListener) {
+    this.onViewPagerListener = onViewPagerListener;
+    animateToTargetPosition();
   }
 
-  public interface OnViewPagerPosition {
+  public interface OnViewPagerListener {
     void target(int position);
   }
 }

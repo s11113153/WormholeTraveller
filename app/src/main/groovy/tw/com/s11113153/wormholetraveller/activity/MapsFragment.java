@@ -10,13 +10,18 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import com.squareup.picasso.Picasso;
 
 import org.litepal.crud.DataSupport;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +37,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -110,6 +116,7 @@ public class MapsFragment
   public @interface SearchMode {}
 
   public static void changeMode() {
+    DrawPolyline.getInstance().deleteInstance();
     switch (searchMode) {
       case SEARCH_ROUND :
         searchMode = SEARCH_PEOPLE_TRAVEL;
@@ -120,7 +127,7 @@ public class MapsFragment
     }
   }
 
-  static private class SelectMarker {
+  private static class SelectMarker {
     private User user;
     private WormholeTraveller wormholeTraveller;
     private static SelectMarker instance;
@@ -146,6 +153,40 @@ public class MapsFragment
       return wormholeTraveller;
     }
   }
+
+  private static class DrawPolyline {
+    private static DrawPolyline instance;
+    private static List<LatLng> polylineList = new ArrayList();
+
+    private DrawPolyline() {
+      polylineList.clear();
+    }
+
+    public static DrawPolyline getInstance() {
+      if (instance == null)
+        instance = new DrawPolyline();
+      return instance;
+    }
+
+    private void addLatLng(@SearchMode int searchMode, LatLng latLng) {
+      if (searchMode == SEARCH_PEOPLE_TRAVEL)
+        polylineList.add(latLng);
+    }
+
+    public void drawPolyline(Context context, GoogleMap map) {
+      if (polylineList.size() < 2 || searchMode != SEARCH_PEOPLE_TRAVEL) return;
+      map.addPolyline(
+        new PolylineOptions()
+          .color(context.getResources().getColor(R.color.style_color_primary_dark))
+          .width(8).addAll(polylineList)
+      );
+    }
+
+    public void deleteInstance() {
+      instance = null;
+    }
+  }
+
 
   public static void startMapsFromLocation(
     FragmentManager fragmentManager,
@@ -288,6 +329,8 @@ public class MapsFragment
       .position(latLng)
       .icon(BitmapDescriptorFactory.defaultMarker((BitmapDescriptorFactory.HUE_GREEN)));
     Marker marker = getMap().addMarker(markerOptions);
+
+    DrawPolyline.getInstance().addLatLng(searchMode, latLng);
   }
 
   private void initOtherTravel() {
@@ -308,8 +351,14 @@ public class MapsFragment
         .position(latLng)
         .icon(bitmap);
       getMap().addMarker(ms);
+
+      DrawPolyline.getInstance().addLatLng(searchMode, latLng);
     }
+
+    DrawPolyline.getInstance().drawPolyline(getActivity(), getMap());
   }
+
+
 
   private void infoWindow(Marker marker) {
     tvTitle.setText(marker.getTitle());
