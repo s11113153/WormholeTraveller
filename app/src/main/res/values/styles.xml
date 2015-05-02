@@ -50,5 +50,4 @@
     <item name="android:textColor">@color/style_color_primary</item>
     <item name="android:textSize">12sp</item>
   </style>
-
 </resources>

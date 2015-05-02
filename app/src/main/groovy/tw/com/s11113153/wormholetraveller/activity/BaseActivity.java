@@ -243,12 +243,16 @@ public class BaseActivity extends ActionBarActivity implements
 
   public void setOnLatLngGetListener(OnLatLngGetListener onLatLngGetListener) {
     mOnLatLngGetListener = onLatLngGetListener;
+    if (mGoogleApiClient.isConnected()) startLocationUpdates();
   }
 
   public void removeOnLatLngGetListener() {
     if (mOnLatLngGetListener != null)
         mOnLatLngGetListener = null;
-    stopLocationUpdates();
+
+    if (mGoogleApiClient.isConnected())
+        stopLocationUpdates();
+
     mGoogleApiClient.disconnect();
   }
 

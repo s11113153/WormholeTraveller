@@ -285,8 +285,9 @@ public class MainActivity
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
-    if (ACTION_SHOW_LOADING_PHOTO.equals(intent.getAction()))
+    if (ACTION_SHOW_LOADING_PHOTO.equals(intent.getAction())) {
       showRecycleLoadingItemDelayed();
+    }
   }
 
   private void showRecycleLoadingItemDelayed() {
@@ -297,5 +298,6 @@ public class MainActivity
         mAdapter.showLoadingView();
       }
     }, 500);
+    mAdapter.updateItems(false);
   }
 }

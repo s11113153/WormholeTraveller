@@ -2,6 +2,8 @@ package tw.com.s11113153.wormholetraveller.db.table;
 
 import org.litepal.crud.DataSupport;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

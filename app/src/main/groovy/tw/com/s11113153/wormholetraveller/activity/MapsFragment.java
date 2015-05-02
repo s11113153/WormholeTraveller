@@ -174,6 +174,11 @@ public class MapsFragment
     }
 
     public void drawPolyline(Context context, GoogleMap map) {
+      for (int i = 0; i < polylineList.size(); i++) {
+        LatLng latLng = polylineList.get(i);
+        Log.e(TAG, "i = " + i + ", " + String.valueOf(latLng.toString()));
+      }
+
       if (polylineList.size() < 2 || searchMode != SEARCH_PEOPLE_TRAVEL) return;
       map.addPolyline(
         new PolylineOptions()
@@ -238,8 +243,6 @@ public class MapsFragment
     getMap().getUiSettings().setRotateGesturesEnabled(false);
 
     bindTravelData(searchMode);
-    initMainTravel();
-    initOtherTravel();
   }
 
   private void setUpRevealBackground(Bundle savedInstanceState) {
@@ -281,7 +284,7 @@ public class MapsFragment
 
   private void bindTravelData(int mode) {
     wormholeTravellerList.clear();
-    int i = 2;
+    int i = 1;
     if (mode == SEARCH_ROUND) {
       LatLng userCurrentLatLng = UserInfo.getUserCurrentLatLng(getActivity());
       List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
@@ -290,7 +293,8 @@ public class MapsFragment
         float lng = wt.getLng();
         double distance = Utils.calculateDistance(
           userCurrentLatLng.latitude, userCurrentLatLng.longitude, lat, lng);
-        if (distance <= 500) {
+        Log.e(TAG, "" + String.valueOf(wt.getId()));
+        if (distance <= 500 && wt.isShow()) {
           if (wt.getId() == mainTravelId) {
             wormholeTravellerList.put(MARKER_Id_0, wt);
           } else {
@@ -298,22 +302,25 @@ public class MapsFragment
           }
         }
       }
-      if (wormholeTravellerList.size() > 0)
-        initMainTravel();
     }
     else if (mode == SEARCH_PEOPLE_TRAVEL) {
       User u = SelectMarker.getInstance().getUser();
       List<WormholeTraveller> travellers =
         DataSupport.where("user_Id=?", String.valueOf(u.getId())).find(WormholeTraveller.class, true);
       for (WormholeTraveller wt : travellers) {
+        if (!wt.isShow()) continue;
+
         if (wt.getId() == mainTravelId) {
           wormholeTravellerList.put(MARKER_Id_0, wt);
         } else {
-          wormholeTravellerList.put(MARKER_Id + String.valueOf(i), wt);
+          wormholeTravellerList.put(MARKER_Id + String.valueOf(i++), wt);
         }
       }
-      if (wormholeTravellerList.size() > 0)
-        initMainTravel();
+    }
+
+    if (wormholeTravellerList.size() > 0) {
+      initMainTravel();
+      initOtherTravel();
     }
   }
 
@@ -321,7 +328,7 @@ public class MapsFragment
     WormholeTraveller mainWt = wormholeTravellerList.get(MARKER_Id_0);
     LatLng latLng = new LatLng(mainWt.getLat(), mainWt.getLng());
     CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
-    CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
+    CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
     getMap().moveCamera(center);
     getMap().animateCamera(zoom);
     MarkerOptions markerOptions = new MarkerOptions()
@@ -344,6 +351,8 @@ public class MapsFragment
     for (Map.Entry entry : wormholeTravellerList.entrySet()) {
       if (entry.getKey().equals(MARKER_Id_0)) continue;
 
+      Log.e(TAG, "" + String.valueOf("" + entry.getKey()));
+
       WormholeTraveller wt = (WormholeTraveller) entry.getValue();
       MarkerOptions ms = new MarkerOptions();
       LatLng latLng = new LatLng(wt.getLat(), wt.getLng());
@@ -357,8 +366,6 @@ public class MapsFragment
 
     DrawPolyline.getInstance().drawPolyline(getActivity(), getMap());
   }
-
-
 
   private void infoWindow(Marker marker) {
     tvTitle.setText(marker.getTitle());

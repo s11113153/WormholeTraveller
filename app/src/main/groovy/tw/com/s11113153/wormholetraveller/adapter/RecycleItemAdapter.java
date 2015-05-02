@@ -1,5 +1,6 @@
 package tw.com.s11113153.wormholetraveller.adapter;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.litepal.crud.DataSupport;
@@ -105,17 +106,18 @@ public class RecycleItemAdapter
   }
 
   private void bindTravel() {
-    Log.e("curLat" + curLat, "curLng" + curLng);
+    wormholeTravellers.clear();
+    int i = 1;
     List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
     for (WormholeTraveller wt : travellers) {
       float lat = wt.getLat();
       float lng = wt.getLng();
       double distance = Utils.calculateDistance(curLat, curLng, lat, lng);
-      Log.e("lat" + lat, "lng" + lng);
-      Log.e("distance", ": " + distance);
-      if (distance <= 500) {
+      if (distance <= 500 && wt.isShow()) {
         wormholeTravellers.add(wt);
       }
+      Log.e(""+i, "" + wt.getUser());
+      i++;
     }
     Log.e("wt.size = ", "" + wormholeTravellers.size());
   }
@@ -203,10 +205,11 @@ public class RecycleItemAdapter
 
     WormholeTraveller wt = wormholeTravellers.get(position);
     User user = wt.getUser();
-    if (wt.getTravelPhotoPath().equals("")) {
+    if (wt.getTravelPhotoPath() == null) {
       holder.ivFeedCenter.setImageDrawable(null);
       return;
     }
+
     bindWormholeTraveller(holder, wt);
     bindUserProfile(holder, user);
     bindIsLike(holder, wt.isLike());
@@ -221,10 +224,12 @@ public class RecycleItemAdapter
   }
 
   private void bindWormholeTraveller(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
-    Picasso.with(context)
-      .load(wt.getTravelPhotoPath())
-      .fit()
-      .into(holder.ivFeedCenter);
+    if (wt.getTravelPhotoPath() != null) {
+      Picasso.with(context)
+        .load(wt.getTravelPhotoPath())
+        .fit()
+        .into(holder.ivFeedCenter);
+    }
   }
 
   private void bindUserProfile(final RecycleItemViewHolder holder, final User user) {
@@ -277,25 +282,27 @@ public class RecycleItemAdapter
         return true;
       }
     });
-    holder.vSendingProgress.setOnLoadingFinishedListener(new SendingProgressView.OnLoadingFinishedListener() {
-      @Override
-      public void onLoadingFinished() {
-        holder.vSendingProgress.animate().scaleY(0).scaleX(0).setDuration(2000).setStartDelay(100);
+    holder.vSendingProgress.setOnLoadingFinishedListener(
+      new SendingProgressView.OnLoadingFinishedListener() {
+        @Override
+        public void onLoadingFinished() {
+          holder.vSendingProgress.animate().scaleY(0).scaleX(0).setDuration(2000)
+            .setStartDelay(100);
 
-        holder.vProgressBg.animate().alpha(0.f).setDuration(200).setStartDelay(100)
-          .setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-              showLoadingView = false;
-              holder.vSendingProgress.setScaleX(1);
-              holder.vSendingProgress.setScaleY(1);
-              holder.vProgressBg.setAlpha(1);
-              notifyItemChanged(0);
-            }
-          })
-          .start();
-      }
-    });
+          holder.vProgressBg.animate().alpha(0.f).setDuration(200).setStartDelay(100)
+            .setListener(new AnimatorListenerAdapter() {
+              @Override
+              public void onAnimationEnd(Animator animation) {
+                showLoadingView = false;
+                holder.vSendingProgress.setScaleX(1);
+                holder.vSendingProgress.setScaleY(1);
+                holder.vProgressBg.setAlpha(1);
+                notifyItemChanged(0);
+              }
+            })
+            .start();
+        }
+      });
   }
 
   @Override
@@ -509,10 +516,8 @@ public class RecycleItemAdapter
    * update Items. don't play animation
    * */
   public void updateItems(boolean animated) {
-//    itemsCount = 10;
-    /* TODO */
+    bindTravel();
     animateItems = animated;
-//    fillLikesWithRandomValues();
     notifyDataSetChanged();
   }
 
