@@ -8,11 +8,18 @@
     android:icon="@mipmap/ic_line_article"
     android:title="line article"
     app:showAsAction="always"
-    android:visible="true"/>
+    android:visible="false"/>
   <item
     android:id="@+id/action_square_article"
     android:icon="@mipmap/ic_square_article"
     android:title="square article"
     app:showAsAction="always"
     android:visible="false"/>
+
+  <item
+    android:id="@+id/action_search_category"
+    android:icon="@mipmap/ic_search_category"
+    android:title="search category"
+    app:showAsAction="always"
+    android:visible="true"/>
 </menu>

@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -305,14 +306,19 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onClick(View v) {
-      Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-      sendIntent.setType("plain/text");
-      sendIntent.setData(Uri.parse(user.getMail()));
-      sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
+      try {
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+        sendIntent.setType("plain/text");
+        sendIntent.setData(Uri.parse(user.getMail()));
+        sendIntent
+          .setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
 //      sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "test@gmail.com" });
-      sendIntent.putExtra(Intent.EXTRA_SUBJECT, "大綱");
-      sendIntent.putExtra(Intent.EXTRA_TEXT, "內文");
-      context.startActivity(sendIntent);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "大綱");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "內文");
+        context.startActivity(sendIntent);
+      } catch (Exception e) {
+        Toast.makeText(context, "Gmail App not found", Toast.LENGTH_LONG).show();
+      }
     }
   }
 
