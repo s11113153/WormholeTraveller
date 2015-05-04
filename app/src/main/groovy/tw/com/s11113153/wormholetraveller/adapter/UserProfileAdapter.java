@@ -76,9 +76,19 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //    this.profilePhoto = profilePhoto.getString(R.string.user_profile_photo);
 //    this.photos = Arrays.asList(context.getResources().getStringArray(R.array.user_photos));
     this.user = user;
-    wormholeTravellers = DataSupport.find(User.class, user.getId(), true).getWormholeTravellers();
-    for (WormholeTraveller w : wormholeTravellers)
+
+//    wormholeTravellers = DataSupport.find(User.class, user.getId(), true).getWormholeTravellers();
+//    for (WormholeTraveller w : wormholeTravellers) {
+//      photos.add(w.getTravelPhotoPath());
+//    }
+    wormholeTravellers = DataSupport
+      .where("user_id=?", String.valueOf(user.getId()))
+      .order("id desc")
+      .find(WormholeTraveller.class, true);
+
+    for (WormholeTraveller w : wormholeTravellers) {
       photos.add(w.getTravelPhotoPath());
+    }
   }
 
   @Override
