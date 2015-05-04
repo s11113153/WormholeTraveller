@@ -18,8 +18,8 @@ import tw.com.s11113153.wormholetraveller.view.RevealBackgroundView;
  * Created by xuyouren on 15/4/3.
  */
 public class UserProfileActivity
-            extends BaseActivity
-            implements RevealBackgroundView.OnStateChangeListener {
+  extends BaseActivity
+  implements RevealBackgroundView.OnStateChangeListener {
 
   private static final String TAG = UserProfileActivity.class.getSimpleName();
 
@@ -41,7 +41,7 @@ public class UserProfileActivity
   }
 
   public static void startUserProfileFromLocation(
-          int[] startingLocation, Activity startingActivity, User user
+    int[] startingLocation, Activity startingActivity, User user
   ) {
     final Intent intent = new Intent(startingActivity, UserProfileActivity.class);
     intent.putExtra(ARG_REVEAL_START_LOCATION, startingLocation);
@@ -49,10 +49,11 @@ public class UserProfileActivity
     mUser = user;
   }
 
-
   private void setUpUserProfileGrid() {
+    userPhotosAdapter = new UserProfileAdapter(this, mUser);
+    rvUserProfile.setAdapter(userPhotosAdapter);
     final StaggeredGridLayoutManager layoutManager
-                = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+      = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
     rvUserProfile.setLayoutManager(layoutManager);
     rvUserProfile.setOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
@@ -83,8 +84,6 @@ public class UserProfileActivity
   @Override
   public void onStateChange(int state) {
     if (RevealBackgroundView.STATE_FINISHED == state) {
-      userPhotosAdapter = new UserProfileAdapter(this, mUser);
-      rvUserProfile.setAdapter(userPhotosAdapter);
       rvUserProfile.setVisibility(View.VISIBLE);
     } else
       rvUserProfile.setVisibility(View.INVISIBLE);
