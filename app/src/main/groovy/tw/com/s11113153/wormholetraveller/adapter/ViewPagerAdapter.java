@@ -56,8 +56,11 @@ public class ViewPagerAdapter extends PagerAdapter {
 
   private void initUserTravelData() {
     User u = wormholeTraveller.getUser();
-    travellers = DataSupport.where("user_id =?",
-        String.valueOf(u.getId())).find(WormholeTraveller.class, true);
+    /**旅程目前只支援當天**/
+    String mainDate = wormholeTraveller.getDate().split(" ")[0];
+    travellers = DataSupport.where("user_id =? and date Like ?",
+        String.valueOf(u.getId()), mainDate + "%").find(WormholeTraveller.class, true);
+
   }
 
 

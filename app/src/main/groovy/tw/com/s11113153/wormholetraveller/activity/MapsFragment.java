@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,10 +175,10 @@ public class MapsFragment
     }
 
     public void drawPolyline(Context context, GoogleMap map) {
-      for (int i = 0; i < polylineList.size(); i++) {
-        LatLng latLng = polylineList.get(i);
-        Log.e(TAG, "i = " + i + ", " + String.valueOf(latLng.toString()));
-      }
+//      for (int i = 0; i < polylineList.size(); i++) {
+//        LatLng latLng = polylineList.get(i);
+//        Log.e(TAG, "i = " + i + ", " + String.valueOf(latLng.toString()));
+//      }
 
       if (polylineList.size() < 2 || searchMode != SEARCH_PEOPLE_TRAVEL) return;
       map.addPolyline(
@@ -293,7 +294,7 @@ public class MapsFragment
         float lng = wt.getLng();
         double distance = Utils.calculateDistance(
           userCurrentLatLng.latitude, userCurrentLatLng.longitude, lat, lng);
-        Log.e(TAG, "" + String.valueOf(wt.getId()));
+//        Log.e(TAG, "" + String.valueOf(wt.getId()));
         if (distance <= 500 && wt.isShow()) {
           if (wt.getId() == mainTravelId) {
             wormholeTravellerList.put(MARKER_Id_0, wt);
@@ -316,6 +317,29 @@ public class MapsFragment
           wormholeTravellerList.put(MARKER_Id + String.valueOf(i++), wt);
         }
       }
+
+      /**以下是過濾旅行為當天**/
+      Log.e(TAG, "woSize : " + String.valueOf(wormholeTravellerList.size()));
+      String mainDate = wormholeTravellerList.get(MARKER_Id_0).getDate().split(" ")[0];
+      List<String> removeList = new ArrayList();
+      for (int j = 1; j < wormholeTravellerList.size(); j++) {
+        WormholeTraveller w = wormholeTravellerList.get(MARKER_Id + j);
+        String date = w.getDate().split(" ")[0];
+        if (!mainDate.equals(date)) {
+          removeList.add(MARKER_Id + j);
+          Log.e(MARKER_Id + j, "remove" + w.getTitle());
+        } else {
+          Log.e(MARKER_Id + j, "noRemove" + w.getTitle());
+        }
+      }
+      for (String s : removeList) {
+        wormholeTravellerList.remove(s);
+      }
+      List<WormholeTraveller> temp = new ArrayList(wormholeTravellerList.values());
+      wormholeTravellerList.clear();
+      for (int k = 0; k < temp.size(); k++) {
+        wormholeTravellerList.put(MARKER_Id + k, temp.get(k));
+      }
     }
 
     if (wormholeTravellerList.size() > 0) {
@@ -324,11 +348,15 @@ public class MapsFragment
     }
   }
 
+  private void searchSpecificData(double distance, WormholeTraveller wt) {
+
+  }
+
   private void initMainTravel() {
     WormholeTraveller mainWt = wormholeTravellerList.get(MARKER_Id_0);
     LatLng latLng = new LatLng(mainWt.getLat(), mainWt.getLng());
     CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
-    CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+    CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
     getMap().moveCamera(center);
     getMap().animateCamera(zoom);
     MarkerOptions markerOptions = new MarkerOptions()
@@ -351,7 +379,7 @@ public class MapsFragment
     for (Map.Entry entry : wormholeTravellerList.entrySet()) {
       if (entry.getKey().equals(MARKER_Id_0)) continue;
 
-      Log.e(TAG, "" + String.valueOf("" + entry.getKey()));
+//      Log.e(TAG, "" + String.valueOf("" + entry.getKey()));
 
       WormholeTraveller wt = (WormholeTraveller) entry.getValue();
       MarkerOptions ms = new MarkerOptions();
