@@ -2,10 +2,7 @@ package tw.com.s11113153.wormholetraveller.db.table;
 
 import org.litepal.crud.DataSupport;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +12,7 @@ public class WormholeTraveller extends DataSupport {
   private int id;
   private User user;
   private String travelPhotoPath; // 拍照時可能不是Path
-  private boolean like = false;
+  private boolean isLike;
   private float lat;
   private float lng;
   private String date;
@@ -42,8 +39,8 @@ public class WormholeTraveller extends DataSupport {
     return this;
   }
 
-  public WormholeTraveller setLike(boolean like) {
-    this.like = like;
+  public WormholeTraveller setLike(boolean isLike) {
+    this.isLike = isLike;
     return this;
   }
 
@@ -105,7 +102,7 @@ public class WormholeTraveller extends DataSupport {
   }
 
   public boolean isLike() {
-    return like;
+    return isLike;
   }
 
   public int getGoods() {

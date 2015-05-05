@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import java.util.List;
-
 import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.db.table.Comments;
 import tw.com.s11113153.wormholetraveller.db.table.User;
@@ -261,7 +259,7 @@ public class DataBaseManager {
       .setTitle("曾文青年活動中心")
       .setAddress("台南市楠西區密枝里70之1號")
       .setLng(120.496480f).setLat(23.217708f)
-      .setTravelPhotoPath("http://i.imgur.com/iXt4ZeB")
+      .setTravelPhotoPath("http://i.imgur.com/7aEapWu.jpg")
       .save();
 
 

@@ -1,6 +1,5 @@
 package tw.com.s11113153.wormholetraveller.adapter;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.litepal.crud.DataSupport;
@@ -9,6 +8,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,8 +68,6 @@ public class RecycleItemAdapter
   private boolean animateItems = false;
 
   private final Map<RecyclerView.ViewHolder, AnimatorSet> likeAnimations = new HashMap();
-
-  private final ArrayList<Integer> likedPositions = new ArrayList();
 
   private Context context;
 
@@ -116,10 +115,8 @@ public class RecycleItemAdapter
       if (distance <= 500 && wt.isShow()) {
         wormholeTravellers.add(wt);
       }
-      Log.e(""+i, "" + wt.getUser());
       i++;
     }
-    Log.e("wt.size = ", "" + wormholeTravellers.size());
   }
 
 
@@ -212,7 +209,6 @@ public class RecycleItemAdapter
 
     bindWormholeTraveller(holder, wt);
     bindUserProfile(holder, user);
-    bindIsLike(holder, wt.isLike());
     bindTitle(holder, wt);
     bindDate(holder, wt);
     bindAddress(holder, wt);
@@ -261,15 +257,14 @@ public class RecycleItemAdapter
     holder.tvAddress.setText(address);
   }
 
-  /** 若已經點讚，變成紅愛心，並移除該愛心事件 **/
-  private void bindIsLike(RecycleItemViewHolder holder, boolean b) {
-    if (b) {
-      holder.ibLike.setImageResource(R.mipmap.ic_like_red);
-      holder.ibLike.setOnClickListener(null);
-    }
-    else
-      holder.ibLike.setImageResource(R.mipmap.ic_like_white);
-  }
+//  /** 若已經點讚，變成紅愛心，並移除該愛心事件 **/
+//  private void bindIsLike(RecycleItemViewHolder holder, boolean b) {
+//    if (!b) {
+//      holder.ibLike.setImageResource(R.mipmap.ic_like_red);
+//    }
+//    else
+//      holder.ibLike.setImageResource(R.mipmap.ic_like_white);
+//  }
 
   private void bindLoadingRecycleItem(final RecycleItemViewHolder holder) {
 //    holder.ivFeedCenter.setImageResource(R.drawable.ic_launcher);
@@ -362,11 +357,10 @@ public class RecycleItemAdapter
         break;
       case R.id.ibLike: {
         RecycleItemViewHolder holder = (RecycleItemViewHolder) v.getTag();
-        if (!likedPositions.contains(holder.getLayoutPosition())) {
-          likedPositions.add(holder.getLayoutPosition());
-          updateLikesCounter(holder, true);
-          updateHeartButton(holder, true);
-        }
+//        if (!likedPositions.contains(holder.getLayoutPosition())) {
+//          likedPositions.add(holder.getLayoutPosition());
+        updateHeartButton(holder, true);
+//        }
       } break;
 
       case R.id.ivFeedCenter: {
@@ -429,8 +423,12 @@ public class RecycleItemAdapter
    *                  false,  initial Likes value
    */
   private void updateLikesCounter(RecycleItemViewHolder holder, boolean animated) {
-    int likesCount = wormholeTravellers.get(holder.getLayoutPosition()).getGoods();
-    if (animated) likesCount += 1;
+    WormholeTraveller wt = wormholeTravellers.get(holder.getLayoutPosition());
+    int likesCount = wt.getGoods();
+    if (animated) {
+      if (wt.isLike()) likesCount += 1;
+      else likesCount -= 1;
+    }
 
     /**
      *  param2 == 1, use one(quantity) and set value
@@ -445,18 +443,27 @@ public class RecycleItemAdapter
     if (animated) {
       holder.tsLikesCounter.setText(likesCountText);
       WormholeTraveller w = wormholeTravellers.get(holder.getLayoutPosition());
-      w.setLike(true).setGoods(likesCount);
+      wt.setGoods(likesCount);
       DataBaseManager.updateWormholeTraveller(w);
     } else {
       holder.tsLikesCounter.setCurrentText(likesCountText);
     }
   }
 
-
-
   private void updateHeartButton(final RecycleItemViewHolder holder, boolean animated) {
     if (animated) {
       if (!likeAnimations.containsKey(holder)) {
+
+        final WormholeTraveller wt = wormholeTravellers.get(holder.getLayoutPosition());
+        final boolean isLike = wt.isLike();
+        ContentValues values = new ContentValues();
+        values.put("islike", !isLike);
+        DataSupport.update(WormholeTraveller.class, values, wt.getId());
+
+        WormholeTraveller tmp = DataSupport.find(WormholeTraveller.class, wt.getId(), true);
+        wormholeTravellers.remove(holder.getLayoutPosition());
+        wormholeTravellers.add(holder.getLayoutPosition(), tmp);
+
         AnimatorSet animatorSet = new AnimatorSet();
         likeAnimations.put(holder, animatorSet);
 
@@ -474,7 +481,13 @@ public class RecycleItemAdapter
         bounceAnimY.addListener(new AnimatorListenerAdapter() {
           @Override
           public void onAnimationStart(Animator animation) {
-            holder.ibLike.setImageResource(R.mipmap.ic_like_red);
+            updateLikesCounter(holder, true);
+            if (!isLike) {
+              holder.ibLike.setImageResource(R.mipmap.ic_like_red);
+            }
+            else {
+              holder.ibLike.setImageResource(R.mipmap.ic_like_white);
+            }
           }
         });
 
@@ -491,11 +504,19 @@ public class RecycleItemAdapter
       }
     }
     else {
-      if (likedPositions.contains(holder.getLayoutPosition())) {
+      boolean isLike = wormholeTravellers.get(holder.getLayoutPosition()).isLike();
+      Log.e("index " + holder.getLayoutPosition(), "" + isLike + ", title = " +
+        wormholeTravellers.get(holder.getLayoutPosition()).getTitle());
+      if (isLike)
         holder.ibLike.setImageResource(R.mipmap.ic_like_red);
-      } else {
+      else
         holder.ibLike.setImageResource(R.mipmap.ic_like_white);
-      }
+
+//      if (likedPositions.contains(holder.getLayoutPosition())) {
+//        holder.ibLike.setImageResource(R.mipmap.ic_like_red);
+//      } else {
+//        holder.ibLike.setImageResource(R.mipmap.ic_like_white);
+//      }
     }
   }
 
