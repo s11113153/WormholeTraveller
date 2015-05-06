@@ -11,6 +11,7 @@ import android.animation.ObjectAnimator;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -363,10 +365,13 @@ public class RecycleItemAdapter
       } break;
 
       case R.id.ivFeedCenter: {
+        RecycleItemViewHolder holder = (RecycleItemViewHolder) v.getTag();
+        animateDeleteTravel(holder);
+
 //        RecycleItemAdapter.ViewHolder holder = (RecycleItemAdapter.ViewHolder) v.getTag();
 //        if (!likedPositions.contains(holder.getLayoutPosition())) {
 //          likedPositions.add(holder.getLayoutPosition());
-//          animatePhotoLike(holder);
+//          adnimatePhotoLike(holder);
 //          updateLikesCounter(holder, true);
 //          updateHeartButton(holder, false);
 //        }
@@ -393,7 +398,7 @@ public class RecycleItemAdapter
     @InjectView(R.id.ibLike) ImageButton ibLike;
     @InjectView(R.id.ibMore) ImageButton ibMore;
     @InjectView(R.id.vBgLike) View vBgLike;
-    @InjectView(R.id.ivPersonTravel) ImageView ivPersonTravel;
+    @InjectView(R.id.ivTrashCan) ImageView ivTrashCan;
     @InjectView(R.id.tsLikesCounter) TextSwitcher tsLikesCounter;
     @InjectView(R.id.ivUserProfile) ImageView ivUserProfile;
     @InjectView(R.id.vImageRoot) FrameLayout vImageRoot;
@@ -534,7 +539,7 @@ public class RecycleItemAdapter
   private void resetLikeAnimationState(RecycleItemViewHolder holder) {
     likeAnimations.remove(holder);
     holder.vBgLike.setVisibility(View.GONE);
-    holder.ivPersonTravel.setVisibility(View.GONE);
+    holder.ivTrashCan.setVisibility(View.GONE);
   }
 
 //  /** people of one article, set Like Value **/
@@ -553,16 +558,16 @@ public class RecycleItemAdapter
     notifyDataSetChanged();
   }
 
-  private void animatePhotoLike(final RecycleItemViewHolder holder) {
+  private void animateDeleteTravel(final RecycleItemViewHolder holder) {
     if (!likeAnimations.containsKey(holder)) {
       holder.vBgLike.setVisibility(View.VISIBLE);
-      holder.ivPersonTravel.setVisibility(View.VISIBLE);
+      holder.ivTrashCan.setVisibility(View.VISIBLE);
 
       holder.vBgLike.setScaleY(0.1f);
       holder.vBgLike.setScaleX(0.1f);
       holder.vBgLike.setAlpha(1f);
-      holder.ivPersonTravel.setScaleY(0.1f);
-      holder.ivPersonTravel.setScaleX(0.1f);
+      holder.ivTrashCan.setScaleY(0.1f);
+      holder.ivTrashCan.setScaleX(0.1f);
 
       AnimatorSet animatorSet = new AnimatorSet();
       likeAnimations.put(holder, animatorSet);
@@ -578,17 +583,17 @@ public class RecycleItemAdapter
       bgAlphaAnim.setStartDelay(150);
       bgAlphaAnim.setInterpolator(DECCELERATE_INTERPOLATOR);
 
-      ObjectAnimator imgScaleUpYAnim = ObjectAnimator.ofFloat(holder.ivPersonTravel, "scaleY", 0.1f, 1f);
+      ObjectAnimator imgScaleUpYAnim = ObjectAnimator.ofFloat(holder.ivTrashCan, "scaleY", 0.1f, 1f);
       imgScaleUpYAnim.setDuration(300);
       imgScaleUpYAnim.setInterpolator(DECCELERATE_INTERPOLATOR);
-      ObjectAnimator imgScaleUpXAnim = ObjectAnimator.ofFloat(holder.ivPersonTravel, "scaleX", 0.1f, 1f);
+      ObjectAnimator imgScaleUpXAnim = ObjectAnimator.ofFloat(holder.ivTrashCan, "scaleX", 0.1f, 1f);
       imgScaleUpXAnim.setDuration(300);
       imgScaleUpXAnim.setInterpolator(DECCELERATE_INTERPOLATOR);
 
-      ObjectAnimator imgScaleDownYAnim = ObjectAnimator.ofFloat(holder.ivPersonTravel, "scaleY", 1f, 0f);
+      ObjectAnimator imgScaleDownYAnim = ObjectAnimator.ofFloat(holder.ivTrashCan, "scaleY", 1f, 0f);
       imgScaleDownYAnim.setDuration(300);
       imgScaleDownYAnim.setInterpolator(ACCELERATE_INTERPOLATOR);
-      ObjectAnimator imgScaleDownXAnim = ObjectAnimator.ofFloat(holder.ivPersonTravel, "scaleX", 1f, 0f);
+      ObjectAnimator imgScaleDownXAnim = ObjectAnimator.ofFloat(holder.ivTrashCan, "scaleX", 1f, 0f);
       imgScaleDownXAnim.setDuration(300);
       imgScaleDownXAnim.setInterpolator(ACCELERATE_INTERPOLATOR);
 
@@ -599,10 +604,17 @@ public class RecycleItemAdapter
         @Override
         public void onAnimationEnd(Animator animation) {
           resetLikeAnimationState(holder);
+          int wtId = wormholeTravellers.get(holder.getLayoutPosition()).getId();
+          deleteTravel(wtId);
         }
       });
       animatorSet.start();
     }
+  }
+
+  private void deleteTravel(int wtId) {
+    if (onDeleteTravelListener != null)
+        onDeleteTravelListener.onDelete(wtId);
   }
 
   public void showLoadingView() {
@@ -614,5 +626,16 @@ public class RecycleItemAdapter
     void onCommentsClick(View v, int position, int travelId);
     void onMoreClick(View v, int position);
     void onProfileClick(View v, User user);
+  }
+
+  private OnDeleteTravelListener onDeleteTravelListener;
+
+  public void setOnDeleteTravelListener(
+    OnDeleteTravelListener onDeleteTravelListener) {
+    this.onDeleteTravelListener = onDeleteTravelListener;
+  }
+
+  public interface OnDeleteTravelListener {
+    void onDelete(int wtId);
   }
 }

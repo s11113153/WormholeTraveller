@@ -103,7 +103,7 @@ public class SendingProgressView extends View {
   }
 
   private void setupSimulateProgressAnimator() {
-    simulateProgressAnimator = ObjectAnimator.ofFloat(this, "currentProgress", 0, 100).setDuration(2000);
+    simulateProgressAnimator = ObjectAnimator.ofFloat(this, "currentProgress", 0, 100).setDuration(1000);
     simulateProgressAnimator.setInterpolator(new AccelerateInterpolator());
     simulateProgressAnimator.addListener(new AnimatorListenerAdapter() {
       @Override

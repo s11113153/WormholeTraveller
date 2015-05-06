@@ -27,6 +27,7 @@ import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.adapter.GlobalMenuAdapter;
 import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
 import tw.com.s11113153.wormholetraveller.db.table.User;
+import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
 import tw.com.s11113153.wormholetraveller.view.GlobalMenuView;
@@ -35,7 +36,8 @@ public class MainActivity
   extends BaseActivity
   implements RecycleItemAdapter.OnBottomClickListener,
   FeedContextMenu.OnFeedContextMenuItemClickListener,
-  BaseActivity.OnLatLngGetListener {
+  BaseActivity.OnLatLngGetListener,
+  RecycleItemAdapter.OnDeleteTravelListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -78,6 +80,7 @@ public class MainActivity
   private void setUpRecycleAdapter(float lat, float lng) {
     mAdapter = new RecycleItemAdapter(this, lat, lng);
     mAdapter.setOnBottomClickListener(this);
+    mAdapter.setOnDeleteTravelListener(this);
 
     // 提高使用者效能體驗
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this) {
@@ -296,13 +299,27 @@ public class MainActivity
   }
 
   private void showRecycleLoadingItemDelayed() {
+    mRecyclerView.smoothScrollToPosition(0);
+    mAdapter.showLoadingView();
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {
-        mRecyclerView.smoothScrollToPosition(0);
-        mAdapter.showLoadingView();
+        mAdapter.updateItems(false);
       }
-    }, 500);
-    mAdapter.updateItems(false);
+    }, 2000);
+  }
+
+  @Override
+  public void onDelete(final int wtId) {
+    mRecyclerView.smoothScrollToPosition(0);
+    mAdapter.showLoadingView();
+
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        WormholeTraveller.delete(WormholeTraveller.class, wtId);
+        mAdapter.updateItems(false);
+      }
+    }, 2000);
   }
 }

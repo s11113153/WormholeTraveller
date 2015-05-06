@@ -93,6 +93,9 @@ public class GlobalMenuView extends ListView implements View.OnClickListener {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
+          case ITEM_FAVORITE:
+            //do nothing
+            break;
           case ITEM_LOG_OUT:
             doLogOut();
             break;

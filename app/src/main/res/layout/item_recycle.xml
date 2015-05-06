@@ -71,12 +71,13 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_like_circle_background" />
       <ImageView
-        android:id="@+id/ivPersonTravel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/ivTrashCan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="center"
+        android:layout_gravity="center"
         android:visibility="gone"
-        android:src="@mipmap/ic_person_travel"/>
+        android:src="@mipmap/ic_trash_can"/>
     </FrameLayout>
 
     <ScrollView
