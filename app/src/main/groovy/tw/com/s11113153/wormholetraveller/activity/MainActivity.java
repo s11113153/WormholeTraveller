@@ -56,6 +56,8 @@ public class MainActivity
 
   private static boolean loadAnimation;
 
+  private float lat, lng;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -72,8 +74,11 @@ public class MainActivity
 
   @Override
   public void get(float lat, float lng) {
-    if (mAdapter == null)
+    this.lat = lat;
+    this.lng = lng;
+    if (mAdapter == null) {
       setUpRecycleAdapter(lat, lng);
+    }
     UserInfo.updateUserCurrentLatLng(this, lat, lng);
   }
 
@@ -305,6 +310,8 @@ public class MainActivity
       @Override
       public void run() {
         mAdapter.updateItems(false);
+//        mAdapter = new RecycleItemAdapter(MainActivity.this, lat ,lng);
+//        mRecyclerView.setAdapter(mAdapter);
       }
     }, 2000);
   }
@@ -319,6 +326,8 @@ public class MainActivity
       public void run() {
         WormholeTraveller.delete(WormholeTraveller.class, wtId);
         mAdapter.updateItems(false);
+//        mAdapter = new RecycleItemAdapter(MainActivity.this, lat ,lng);
+//        mRecyclerView.setAdapter(mAdapter);
       }
     }, 2000);
   }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -50,6 +51,8 @@ public class ViewPagerAdapter extends PagerAdapter {
     this.searchMode = searchMode;
 
     wormholeTraveller = DataSupport.find(WormholeTraveller.class, travelId, true);
+
+    Log.e("travelID = ", "" + travelId);
     if (searchMode == MapsFragment.SEARCH_PEOPLE_TRAVEL)
         initUserTravelData();
   }

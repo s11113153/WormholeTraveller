@@ -38,11 +38,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -96,11 +99,13 @@ public class MapsFragment
 
   public static final String TRAVEL_ID = "travelId";
 
-  private HashMap<String, WormholeTraveller> wormholeTravellerList = new LinkedHashMap();
+  private Map<String, WormholeTraveller> wormholeTravellerList = new LinkedHashMap();
   private static final String MARKER_Id = "m";
   private static final String MARKER_Id_0 = "m0";
 
   private static int mainTravelId;
+
+  private static final int SEARCH_DISTANCE = 500;
 
   @InjectView(R.id.vRevealBackground) RevealBackgroundView vRevealBackground;
 
@@ -295,7 +300,7 @@ public class MapsFragment
         double distance = Utils.calculateDistance(
           userCurrentLatLng.latitude, userCurrentLatLng.longitude, lat, lng);
 //        Log.e(TAG, "" + String.valueOf(wt.getId()));
-        if (distance <= 10 && wt.isShow()) {
+        if (distance <= SEARCH_DISTANCE && wt.isShow()) {
           if (wt.getId() == mainTravelId) {
             wormholeTravellerList.put(MARKER_Id_0, wt);
           } else {
@@ -306,40 +311,61 @@ public class MapsFragment
     }
     else if (mode == SEARCH_PEOPLE_TRAVEL) {
       User u = SelectMarker.getInstance().getUser();
-      List<WormholeTraveller> travellers =
-        DataSupport.where("user_Id=?", String.valueOf(u.getId())).find(WormholeTraveller.class, true);
-      for (WormholeTraveller wt : travellers) {
-        if (!wt.isShow()) continue;
+      WormholeTraveller wt = SelectMarker.getInstance().getWormholeTraveller();
+      String mainDate = wt.getDate().split(" ")[0];
 
-        if (wt.getId() == mainTravelId) {
-          wormholeTravellerList.put(MARKER_Id_0, wt);
-        } else {
-          wormholeTravellerList.put(MARKER_Id + String.valueOf(i++), wt);
-        }
+      List<WormholeTraveller> travellers = DataSupport.where("user_id =? and date Like ? and id !=?",
+        String.valueOf(u.getId()), mainDate + "%", String.valueOf(wt.getId())).find(WormholeTraveller.class, true);
+
+      wormholeTravellerList.put(MARKER_Id_0, wt);
+      int j = 1;
+      for (WormholeTraveller traveller: travellers) {
+        wormholeTravellerList.put(MARKER_Id + j, traveller);
+        j++;
       }
 
-      /**以下是過濾旅行為當天**/
-      Log.e(TAG, "woSize : " + String.valueOf(wormholeTravellerList.size()));
-      String mainDate = wormholeTravellerList.get(MARKER_Id_0).getDate().split(" ")[0];
-      List<String> removeList = new ArrayList();
-      for (int j = 1; j < wormholeTravellerList.size(); j++) {
-        WormholeTraveller w = wormholeTravellerList.get(MARKER_Id + j);
-        String date = w.getDate().split(" ")[0];
-        if (!mainDate.equals(date)) {
-          removeList.add(MARKER_Id + j);
-          Log.e(MARKER_Id + j, "remove" + w.getTitle());
-        } else {
-          Log.e(MARKER_Id + j, "noRemove" + w.getTitle());
-        }
+      for (Map.Entry entry : wormholeTravellerList.entrySet()) {
+        Log.e("()" + entry.getKey().toString(), "" +((WormholeTraveller)entry.getValue()).getTitle());
       }
-      for (String s : removeList) {
-        wormholeTravellerList.remove(s);
-      }
-      List<WormholeTraveller> temp = new ArrayList(wormholeTravellerList.values());
-      wormholeTravellerList.clear();
-      for (int k = 0; k < temp.size(); k++) {
-        wormholeTravellerList.put(MARKER_Id + k, temp.get(k));
-      }
+
+//      User u = SelectMarker.getInstance().getUser();
+//      List<WormholeTraveller> travellers =
+//        DataSupport.where("user_Id=?", String.valueOf(u.getId())).find(WormholeTraveller.class, true);
+//      for (WormholeTraveller wt : travellers) {
+//        if (!wt.isShow()) continue;
+//
+//        if (wt.getId() == mainTravelId) {
+//          wormholeTravellerList.put(MARKER_Id_0, wt);
+//        } else {
+//          wormholeTravellerList.put(MARKER_Id + String.valueOf(i++), wt);
+//        }
+//      }
+//
+//      /**以下是過濾旅行為當天**/
+//      Log.e(TAG, "woSize : " + String.valueOf(wormholeTravellerList.size()));
+//      String mainDate = wormholeTravellerList.get(MARKER_Id_0).getDate().split(" ")[0];
+//      List<String> removeList = new ArrayList();
+//      for (int j = 1; j < wormholeTravellerList.size(); j++) {
+//        WormholeTraveller w = wormholeTravellerList.get(MARKER_Id + j);
+//        String date = w.getDate().split(" ")[0];
+//        if (!mainDate.equals(date)) {
+//          removeList.add(MARKER_Id + j);
+//          Log.e(MARKER_Id + j, "remove" + w.getTitle());
+//        } else {
+//          Log.e(MARKER_Id + j, "noRemove" + w.getTitle());
+//        }
+//      }
+//      for (String s : removeList) {
+//        wormholeTravellerList.remove(s);
+//      }
+//
+//      List<WormholeTraveller> temp = new ArrayList(wormholeTravellerList.values());
+//      wormholeTravellerList.clear();
+//      for (int k = 0; k < temp.size(); k++) {
+//        wormholeTravellerList.put(MARKER_Id + k, temp.get(k));
+//        Log.e("k = " + k, "title = " + wormholeTravellerList.get(MARKER_Id + k).getTitle());
+//        Log.e("", "" + wormholeTravellerList.get(MARKER_Id + k).getUser().getName());
+//      }
     }
 
     if (wormholeTravellerList.size() > 0) {
@@ -348,21 +374,17 @@ public class MapsFragment
     }
   }
 
-  private void searchSpecificData(double distance, WormholeTraveller wt) {
-
-  }
-
   private void initMainTravel() {
     WormholeTraveller mainWt = wormholeTravellerList.get(MARKER_Id_0);
     LatLng latLng = new LatLng(mainWt.getLat(), mainWt.getLng());
     CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
-    CameraUpdate zoom = CameraUpdateFactory.zoomTo(9);
+    CameraUpdate zoom = CameraUpdateFactory.zoomTo(12);
     getMap().moveCamera(center);
     getMap().animateCamera(zoom);
     MarkerOptions markerOptions = new MarkerOptions()
       .title(mainWt.getTitle())
       .position(latLng)
-      .icon(BitmapDescriptorFactory.defaultMarker((BitmapDescriptorFactory.HUE_GREEN)));
+      .icon(BitmapDescriptorFactory.defaultMarker((BitmapDescriptorFactory.HUE_BLUE)));
     Marker marker = getMap().addMarker(markerOptions);
 
     DrawPolyline.getInstance().addLatLng(searchMode, latLng);
@@ -430,8 +452,7 @@ public class MapsFragment
   }
 
   private void setSelectMark(Marker mark) {
-    String title = mark.getTitle();
-    WormholeTraveller wt = DataSupport.where("title=?", title).find(WormholeTraveller.class, true).get(0);
+    WormholeTraveller wt = wormholeTravellerList.get(mark.getId());
     SelectMarker select = SelectMarker.getInstance();
     select.setWormholeTraveller(wt);
     select.setUser(wt.getUser());

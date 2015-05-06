@@ -95,6 +95,8 @@ public class RecycleItemAdapter
   private static Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
   private static Typeface TYPEFACE_ROBOTO_LIGHT;
 
+  private static final int SEARCH_DISTANCE = 500;
+
   public RecycleItemAdapter(Context context, float lat, float lng) {
     this.context = context;
     loadingViewSize = (int)Utils.doPx(context, Utils.PxType.DP_TO_PX, 200);
@@ -107,16 +109,15 @@ public class RecycleItemAdapter
 
   private void bindTravel() {
     wormholeTravellers.clear();
-    int i = 1;
-    List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
+    List<WormholeTraveller> travellers = //= DataSupport.findAll(WormholeTraveller.class, true);
+    DataSupport.order("date desc").find(WormholeTraveller.class, true);
     for (WormholeTraveller wt : travellers) {
       float lat = wt.getLat();
       float lng = wt.getLng();
       double distance = Utils.calculateDistance(curLat, curLng, lat, lng);
-      if (distance <= 10 && wt.isShow()) {
+      if (distance <= SEARCH_DISTANCE && wt.isShow()) {
         wormholeTravellers.add(wt);
       }
-      i++;
     }
   }
 
@@ -163,8 +164,6 @@ public class RecycleItemAdapter
     return holder;
   }
 
-
-
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
     /* TODO */
@@ -210,13 +209,19 @@ public class RecycleItemAdapter
 
     bindWormholeTraveller(holder, wt);
     bindUserProfile(holder, user);
+    bindContent(holder, wt);
     bindTitle(holder, wt);
     bindDate(holder, wt);
     bindAddress(holder, wt);
-    bindContent(holder, wt);
+  }
+
+  private void bindTitle(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
+//    Log.e(TAG, holder.tvTitle.getId() + ", bindTitle: " + holder.getLayoutPosition() + "," + wt.getTitle() + ", " + wt.getContent());
+    holder.tvTitle.setText(wt.getTitle());
   }
 
   private void bindContent(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
+//    Log.e(TAG, holder.tvContent.getId() + ", bindContent: " + holder.getLayoutPosition() + "," + wt.getTitle() + ", " + wt.getContent());
     holder.tvContent.setText(wt.getContent());
   }
 
@@ -237,10 +242,6 @@ public class RecycleItemAdapter
       .centerCrop()
       .transform(new CircleTransformation())
       .into(holder.ivUserProfile);
-  }
-
-  private void bindTitle(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
-    holder.tvTitle.setText(wt.getTitle());
   }
 
   private void bindDate(final RecycleItemViewHolder holder, final WormholeTraveller wt) {
@@ -521,8 +522,6 @@ public class RecycleItemAdapter
     }
     else {
       boolean isLike = wormholeTravellers.get(holder.getLayoutPosition()).isLike();
-      Log.e("index " + holder.getLayoutPosition(), "" + isLike + ", title = " +
-        wormholeTravellers.get(holder.getLayoutPosition()).getTitle());
       if (isLike)
         holder.ibLike.setImageResource(R.mipmap.ic_like_red);
       else

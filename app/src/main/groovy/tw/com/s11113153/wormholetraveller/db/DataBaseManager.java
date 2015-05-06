@@ -294,16 +294,6 @@ public class DataBaseManager {
       .setContent("溪水涼涼的很舒服")
       .save();
 
-    new WormholeTraveller()
-      .setUser(userId3)
-      .setDate("2013-12-01 15:10:33").setGoods(472).setShow(true)
-      .setTitle("涼山瀑布")
-      .setAddress("屏東縣瑪家鄉")
-      .setLng(120.644608f).setLat(22.682496f)
-      .setTravelPhotoPath("http://i.imgur.com/LXChQmy.jpg")
-      .setContent("溪水涼涼的很舒服")
-      .save();
-
     //---new
     new WormholeTraveller()
       .setUser(userId1)
@@ -390,7 +380,7 @@ public class DataBaseManager {
       .setDate("2015-05-02 08:26:53").setGoods(114).setShow(true)
       .setTitle("大崗山")
       .setAddress("高雄市阿蓮區復安路")
-      .setLng(120.344960f).setLat(22.859741f)
+      .setLng(120.346960f).setLat(22.857741f)
       .setTravelPhotoPath("http://i.imgur.com/VTyZtIX.jpg")
       .setContent("空氣很新鮮")
       .save();
@@ -410,7 +400,7 @@ public class DataBaseManager {
       .setDate("2015-05-02 14:21:53").setGoods(84).setShow(true)
       .setTitle("阿公店水庫風景區管理處")
       .setAddress("台灣高雄市燕巢區工程路1號")
-      .setLng(120.356302f).setLat(22.803323f)
+      .setLng(120.357302f).setLat(22.805323f)
       .setTravelPhotoPath("http://i.imgur.com/7uZFGDo.jpg")
       .setContent("阿公店水庫以防洪為主，兼具灌溉、給水等多方面的功能，其天然的湖光山色更是具備觀光潛力。")
       .save();
@@ -420,7 +410,7 @@ public class DataBaseManager {
       .setDate("2015-05-02 16:41:53").setGoods(134).setShow(true)
       .setTitle("烏山頂泥火山自然保留區")
       .setAddress("高雄市燕巢區金山村")
-      .setLng(120.405938f).setLat(22.796038f)
+      .setLng(120.407938f).setLat(22.796038f)
       .setTravelPhotoPath("http://i.imgur.com/Gs5Elt7.jpg")
       .setContent("")
       .save();
@@ -440,7 +430,7 @@ public class DataBaseManager {
       .setDate("2015-05-03 10:16:53").setGoods(124).setShow(true)
       .setTitle("烏山頂泥火山自然保留區")
       .setAddress("高雄市燕巢區金山村")
-      .setLng(120.405938f).setLat(22.796038f)
+      .setLng(120.405938f).setLat(22.799038f)
       .setTravelPhotoPath("http://i.imgur.com/Gs5Elt7.jpg")
       .setContent("")
       .save();
@@ -450,7 +440,7 @@ public class DataBaseManager {
       .setDate("2015-05-03 14:17:33").setGoods(492).setShow(true)
       .setTitle("新養女湖")
       .setAddress("高雄市燕巢區金山村")
-      .setLng(120.406285f).setLat(22.804886f)
+      .setLng(120.406285f).setLat(22.806886f)
       .setTravelPhotoPath("http://i.imgur.com/VSOssOW.jpg")
       .setContent("新養女湖的地型屬泥火山型中的噴泥塘是一個標準的噴泥盆，湖形略呈圓形，真徑約4-6公尺噴出物稀如黑水，所以無法凝結成丘，就形成一個水池狀分布，夾帶隆隆噴發聲，老遠就聽的到，傳說是很久以前，養女湖附近的農家有個叫阿秀的養女與張姓青年相戀，後來被養母強迫嫁給殘癈的異姓哥哥，但阿秀死也不答應，便與張姓青年雙雙投湖，所以得其名。因為其噴泥的聲音就像熱水滾開的聲音一樣，所以還有一個別名為「滾水湖」。\n")
       .save();
@@ -460,7 +450,7 @@ public class DataBaseManager {
       .setDate("2015-05-03 16:16:53").setGoods(124).setShow(true)
       .setTitle("雞冠山")
       .setAddress("高雄市燕巢區金山里麒麟巷")
-      .setLng(120.395924f).setLat(22.807066f)
+      .setLng(120.395924f).setLat(22.809066f)
       .setTravelPhotoPath("http://i.imgur.com/AmOd9ih.jpg")
       .setContent("岩層斜插入天，頂端裂成許多缺口，好似一把斜放的大鋸齒，山形像極了公雞頭上的大肉冠，無怪乎被人稱為「雞冠山」")
       .save();
