@@ -51,7 +51,7 @@ import tw.com.s11113153.wormholetraveller.view.SendingProgressView;
  */
 public class RecycleItemAdapter
   extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-  implements View.OnClickListener , View.OnTouchListener {
+  implements View.OnClickListener , View.OnTouchListener, View.OnLongClickListener {
 
   private static final String TAG = RecycleItemAdapter.class.getSimpleName();
 
@@ -138,7 +138,7 @@ public class RecycleItemAdapter
       case VIEW_TYPE_DEFAULT:
         holder.ibComments.setOnClickListener(this);
         holder.ibMore.setOnClickListener(this);
-        holder.ivFeedCenter.setOnClickListener(this);
+        holder.ivFeedCenter.setOnLongClickListener(this);
         holder.ibLike.setOnClickListener(this);
         holder.ivUserProfile.setOnClickListener(this);
         holder.scroll.setOnTouchListener(this);
@@ -365,18 +365,18 @@ public class RecycleItemAdapter
 //        }
       } break;
 
-      case R.id.ivFeedCenter: {
-        RecycleItemViewHolder holder = (RecycleItemViewHolder) v.getTag();
-        animateDeleteTravel(holder);
-
-//        RecycleItemAdapter.ViewHolder holder = (RecycleItemAdapter.ViewHolder) v.getTag();
-//        if (!likedPositions.contains(holder.getLayoutPosition())) {
-//          likedPositions.add(holder.getLayoutPosition());
-//          adnimatePhotoLike(holder);
-//          updateLikesCounter(holder, true);
-//          updateHeartButton(holder, false);
-//        }
-      } break;
+//      case R.id.ivFeedCenter: {
+//        RecycleItemViewHolder holder = (RecycleItemViewHolder) v.getTag();
+//        animateDeleteTravel(holder);
+//
+////        RecycleItemAdapter.ViewHolder holder = (RecycleItemAdapter.ViewHolder) v.getTag();
+////        if (!likedPositions.contains(holder.getLayoutPosition())) {
+////          likedPositions.add(holder.getLayoutPosition());
+////          adnimatePhotoLike(holder);
+////          updateLikesCounter(holder, true);
+////          updateHeartButton(holder, false);
+////        }
+//      } break;
 
       case R.id.ivUserProfile: {
         if (mBottomClickListener != null) {
@@ -387,6 +387,16 @@ public class RecycleItemAdapter
         break;
       }
     }
+  }
+
+  @Override
+  public boolean onLongClick(View v) {
+    if (v.getId() == R.id.ivFeedCenter) {
+      RecycleItemViewHolder holder = (RecycleItemViewHolder) v.getTag();
+      animateDeleteTravel(holder);
+      return true;
+    }
+    return false;
   }
 
   public void setOnBottomClickListener(OnBottomClickListener bottomClickListener) {
