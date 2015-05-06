@@ -28,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,7 +111,7 @@ public class RecycleItemAdapter
       float lat = wt.getLat();
       float lng = wt.getLng();
       double distance = Utils.calculateDistance(curLat, curLng, lat, lng);
-      if (distance <= 500 && wt.isShow()) {
+      if (distance <= 10 && wt.isShow()) {
         wormholeTravellers.add(wt);
       }
       i++;
@@ -450,19 +449,31 @@ public class RecycleItemAdapter
     }
   }
 
+  private void updateIsLikeState(boolean isLike, long id) {
+    ContentValues values = new ContentValues();
+    values.put("islike", isLike);
+    DataSupport.update(WormholeTraveller.class, values, id);
+  }
+
+  private void updateWormholeTravellers(int wtId, int position) {
+    WormholeTraveller updateWt = DataSupport.find(WormholeTraveller.class, wtId, true);
+    wormholeTravellers.remove(position);
+    wormholeTravellers.add(position, updateWt);
+  }
+
+  /**
+   * (1) 更新資料庫 isLike
+   * (2) 更新目前的 wt ArrayList（因為 isLike 已經改變了）
+   **/
   private void updateHeartButton(final RecycleItemViewHolder holder, boolean animated) {
     if (animated) {
       if (!likeAnimations.containsKey(holder)) {
 
         final WormholeTraveller wt = wormholeTravellers.get(holder.getLayoutPosition());
         final boolean isLike = wt.isLike();
-        ContentValues values = new ContentValues();
-        values.put("islike", !isLike);
-        DataSupport.update(WormholeTraveller.class, values, wt.getId());
 
-        WormholeTraveller tmp = DataSupport.find(WormholeTraveller.class, wt.getId(), true);
-        wormholeTravellers.remove(holder.getLayoutPosition());
-        wormholeTravellers.add(holder.getLayoutPosition(), tmp);
+        updateIsLikeState(!isLike, wt.getId());
+        updateWormholeTravellers(wt.getId(), holder.getLayoutPosition());
 
         AnimatorSet animatorSet = new AnimatorSet();
         likeAnimations.put(holder, animatorSet);

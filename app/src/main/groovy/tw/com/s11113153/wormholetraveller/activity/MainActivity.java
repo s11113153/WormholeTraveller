@@ -24,10 +24,12 @@ import butterknife.OnClick;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.UserInfo;
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.adapter.GlobalMenuAdapter;
 import tw.com.s11113153.wormholetraveller.adapter.RecycleItemAdapter;
 import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenu;
 import tw.com.s11113153.wormholetraveller.view.FeedContextMenuManager;
+import tw.com.s11113153.wormholetraveller.view.GlobalMenuView;
 
 public class MainActivity
   extends BaseActivity

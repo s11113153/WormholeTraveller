@@ -2,18 +2,24 @@ package tw.com.s11113153.wormholetraveller.view;
 
 import com.squareup.picasso.Picasso;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import tw.com.s11113153.wormholetraveller.UserInfo;
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.activity.SignUpActivity2;
 import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.utils.CircleTransformation;
 import tw.com.s11113153.wormholetraveller.adapter.GlobalMenuAdapter;
@@ -27,6 +33,10 @@ public class GlobalMenuView extends ListView implements View.OnClickListener {
   private OnHeaderClickListener mOnHeaderClickListener;
 
   private GlobalMenuAdapter mGlobalMenuAdapter;
+
+  private static final int ITEM_FAVORITE = 1;
+  private static final int ITEM_LOG_OUT = 2;
+
 
   @Optional
   @InjectView(R.id.ivUserProfilePhoto) ImageView mIvUserProfilePhoto;
@@ -79,6 +89,27 @@ public class GlobalMenuView extends ListView implements View.OnClickListener {
 
     addHeaderView(vHeader);
     vHeader.setOnClickListener(this);
+    setOnItemClickListener(new OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+          case ITEM_LOG_OUT:
+            doLogOut();
+            break;
+        }
+      }
+    });
+  }
+
+  private void doLogOut() {
+    User user = UserInfo.getUser(getContext());
+    user.setPassword("");
+    user.setAccount("");
+    UserInfo.setUser(getContext(), user);
+    ((Activity)getContext()).finish();
+    getContext().startActivity(
+      new Intent(getContext(), SignUpActivity2.class)
+    );
   }
 
   @Override

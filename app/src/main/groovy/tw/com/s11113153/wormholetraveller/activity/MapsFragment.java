@@ -295,7 +295,7 @@ public class MapsFragment
         double distance = Utils.calculateDistance(
           userCurrentLatLng.latitude, userCurrentLatLng.longitude, lat, lng);
 //        Log.e(TAG, "" + String.valueOf(wt.getId()));
-        if (distance <= 500 && wt.isShow()) {
+        if (distance <= 10 && wt.isShow()) {
           if (wt.getId() == mainTravelId) {
             wormholeTravellerList.put(MARKER_Id_0, wt);
           } else {

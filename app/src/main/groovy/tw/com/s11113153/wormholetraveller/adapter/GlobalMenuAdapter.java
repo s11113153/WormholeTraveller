@@ -1,6 +1,8 @@
 package tw.com.s11113153.wormholetraveller.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import tw.com.s11113153.wormholetraveller.R;
+import tw.com.s11113153.wormholetraveller.Utils;
 
 /**
  * Created by xuyouren on 15/4/6.
@@ -29,14 +32,20 @@ public class GlobalMenuAdapter extends ArrayAdapter<GlobalMenuAdapter.GlobalMenu
 
   private final List<GlobalMenuItem> mMenuItems = new ArrayList();
 
+  private static Typeface TYPE_FACE_ROBOTO_BOLD_ITALIC;
+
+
   public GlobalMenuAdapter(Context context) {
     super(context, 0);
+    TYPE_FACE_ROBOTO_BOLD_ITALIC = Utils.getFont(context, Utils.FontType.ROBOTO_BOLD_ITALIC);
+
     mInflater = LayoutInflater.from(context);
     setUpMenuItems();
   }
 
   private void setUpMenuItems() {
     mMenuItems.add(new GlobalMenuItem(R.mipmap.ic_global_favorite, "Favorite"));
+    mMenuItems.add(new GlobalMenuItem(R.mipmap.ic_logout, "LogOut"));
     mMenuItems.add(new GlobalMenuItem(0, "About"));
     notifyDataSetChanged();
   }
@@ -67,10 +76,10 @@ public class GlobalMenuAdapter extends ArrayAdapter<GlobalMenuAdapter.GlobalMenu
   }
 
   @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
+  public View getView(final int position, View convertView, ViewGroup parent) {
     switch (getItemViewType(position)) {
       case TYPE_MENU_ITEM:
-        MenuItemViewHolder holder;
+        final MenuItemViewHolder holder;
         if (convertView == null) {
           convertView = mInflater.inflate(R.layout.item_global_menu, parent, false);
           holder = new MenuItemViewHolder(convertView);
@@ -104,6 +113,7 @@ public class GlobalMenuAdapter extends ArrayAdapter<GlobalMenuAdapter.GlobalMenu
 
     public MenuItemViewHolder(View view) {
       ButterKnife.inject(this, view);
+      tvLabel.setTypeface(TYPE_FACE_ROBOTO_BOLD_ITALIC);
     }
   }
 
