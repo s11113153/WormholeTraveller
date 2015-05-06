@@ -95,7 +95,7 @@ public class RecycleItemAdapter
   private static Typeface TYPEFACE_ROBOTO_BOLD_ITALIC;
   private static Typeface TYPEFACE_ROBOTO_LIGHT;
 
-  private static final int SEARCH_DISTANCE = 500;
+  private static final int SEARCH_DISTANCE = 10;
 
   public RecycleItemAdapter(Context context, float lat, float lng) {
     this.context = context;

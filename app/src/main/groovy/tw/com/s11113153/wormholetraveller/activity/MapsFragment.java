@@ -105,7 +105,7 @@ public class MapsFragment
 
   private static int mainTravelId;
 
-  private static final int SEARCH_DISTANCE = 500;
+  private static final int SEARCH_DISTANCE = 10;
 
   @InjectView(R.id.vRevealBackground) RevealBackgroundView vRevealBackground;
 
