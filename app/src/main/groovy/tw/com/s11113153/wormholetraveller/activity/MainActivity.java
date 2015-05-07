@@ -252,7 +252,7 @@ public class MainActivity
         int[] startingLocation = new int[2];
         v.getLocationOnScreen(startingLocation);
         startingLocation[0] += v.getWidth() / 2;
-        MapsFragment.startMapsFromLocation(getFragmentManager(), startingLocation, travelId, MapsFragment.SEARCH_ROUND);
+        MapsFragment.startMapsFromLocation(getFragmentManager(), startingLocation, travelId, MapsFragment.SEARCH_ROUND, false);
 //        final MapsFragment fragment = new MapsFragment();
 //        Bundle bundle = new Bundle();
 //        bundle.putIntArray(MapsFragment.ARG_REVEAL_START_LOCATION, startingLocation);

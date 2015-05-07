@@ -107,6 +107,8 @@ public class MapsFragment
 
   private static final int SEARCH_DISTANCE = 10;
 
+  private static boolean isInit = false;
+
   @InjectView(R.id.vRevealBackground) RevealBackgroundView vRevealBackground;
 
   @InjectView(R.id.ivFeedCenter) ImageView ivFeedCenter;
@@ -203,7 +205,8 @@ public class MapsFragment
     FragmentManager fragmentManager,
     int[] startingLocation,
     int travelId,
-    @SearchMode int mode
+    @SearchMode int mode,
+    boolean isInit
   ) {
     searchMode = mode;
     final MapsFragment fragment = new MapsFragment();
@@ -215,6 +218,7 @@ public class MapsFragment
       .addToBackStack("")
       .add(R.id.root, fragment)
       .commit();
+    MapsFragment.isInit = isInit;
   }
 
   @Override
@@ -283,6 +287,7 @@ public class MapsFragment
     handler = null;
   }
 
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -292,21 +297,47 @@ public class MapsFragment
     wormholeTravellerList.clear();
     int i = 1;
     if (mode == SEARCH_ROUND) {
-      LatLng userCurrentLatLng = UserInfo.getUserCurrentLatLng(getActivity());
-      List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
-      for (WormholeTraveller wt : travellers) {
-        float lat = wt.getLat();
-        float lng = wt.getLng();
-        double distance = Utils.calculateDistance(
-          userCurrentLatLng.latitude, userCurrentLatLng.longitude, lat, lng);
+      if (!isInit) {
+        LatLng userCurrentLatLng = UserInfo.getUserCurrentLatLng(getActivity());
+        List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
+        for (WormholeTraveller wt : travellers) {
+          float lat = wt.getLat();
+          float lng = wt.getLng();
+          double distance = Utils.calculateDistance(
+            userCurrentLatLng.latitude, userCurrentLatLng.longitude, lat, lng);
 //        Log.e(TAG, "" + String.valueOf(wt.getId()));
-        if (distance <= SEARCH_DISTANCE && wt.isShow()) {
-          if (wt.getId() == mainTravelId) {
-            wormholeTravellerList.put(MARKER_Id_0, wt);
-          } else {
-            wormholeTravellerList.put(MARKER_Id + String.valueOf(i++), wt);
+          if (distance <= SEARCH_DISTANCE && wt.isShow()) {
+            if (wt.getId() == mainTravelId) {
+              wormholeTravellerList.put(MARKER_Id_0, wt);
+            } else {
+              wormholeTravellerList.put(MARKER_Id + String.valueOf(i++), wt);
+            }
           }
         }
+        isInit = true;
+      } else {
+        SelectMarker selectMarker = SelectMarker.getInstance();
+        float curLat = selectMarker.getWormholeTraveller().getLat();
+        float curLng = selectMarker.getWormholeTraveller().getLng();
+
+        List<WormholeTraveller> travellers = DataSupport.findAll(WormholeTraveller.class, true);
+        for (WormholeTraveller wt : travellers) {
+          float lat = wt.getLat();
+          float lng = wt.getLng();
+          double distance = Utils.calculateDistance(curLat, curLng, lat, lng);
+          Log.e(wt.getTitle(), "距離：" + distance);
+          if (distance <= SEARCH_DISTANCE && wt.isShow()) {
+            if (wt.getId() == selectMarker.getWormholeTraveller().getId()) {
+              wormholeTravellerList.put(MARKER_Id_0, wt);
+            } else {
+              wormholeTravellerList.put(MARKER_Id + String.valueOf(i++), wt);
+            }
+          }
+        }
+      }
+
+      for (Map.Entry entry : wormholeTravellerList.entrySet()) {
+        Log.e("()" + entry.getKey().toString(), "" +((WormholeTraveller)entry.getValue()).getTitle());
       }
     }
     else if (mode == SEARCH_PEOPLE_TRAVEL) {
@@ -324,9 +355,7 @@ public class MapsFragment
         j++;
       }
 
-      for (Map.Entry entry : wormholeTravellerList.entrySet()) {
-        Log.e("()" + entry.getKey().toString(), "" +((WormholeTraveller)entry.getValue()).getTitle());
-      }
+
 
 //      User u = SelectMarker.getInstance().getUser();
 //      List<WormholeTraveller> travellers =
@@ -456,6 +485,7 @@ public class MapsFragment
     SelectMarker select = SelectMarker.getInstance();
     select.setWormholeTraveller(wt);
     select.setUser(wt.getUser());
+    mainTravelId = wt.getId();
   }
 
   private class InfoWindowLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
@@ -506,11 +536,11 @@ public class MapsFragment
     int travelId = select.getWormholeTraveller().getId();
     switch (searchMode) {
       case SEARCH_ROUND:
-        startMapsFromLocation(getFragmentManager(), startingLocation, travelId, SEARCH_PEOPLE_TRAVEL);
+        startMapsFromLocation(getFragmentManager(), startingLocation, travelId, SEARCH_PEOPLE_TRAVEL, true);
         break;
       case SEARCH_PEOPLE_TRAVEL:
         changeMode();
-        startMapsFromLocation(getFragmentManager(), startingLocation, travelId, SEARCH_ROUND);
+        startMapsFromLocation(getFragmentManager(), startingLocation, travelId, SEARCH_ROUND, true);
         break;
     }
   }
