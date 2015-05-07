@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -19,7 +20,7 @@ import tw.com.s11113153.wormholetraveller.view.RevealBackgroundView;
  */
 public class UserProfileActivity
   extends BaseActivity
-  implements RevealBackgroundView.OnStateChangeListener {
+  implements RevealBackgroundView.OnStateChangeListener, UserProfileAdapter.OnMenuOptionClickListener {
 
   private static final String TAG = UserProfileActivity.class.getSimpleName();
 
@@ -32,6 +33,7 @@ public class UserProfileActivity
 
   private static User mUser;
 
+  private static StaggeredGridLayoutManager layoutManager;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -51,9 +53,9 @@ public class UserProfileActivity
 
   private void setUpUserProfileGrid() {
     userPhotosAdapter = new UserProfileAdapter(this, mUser);
+    userPhotosAdapter.setOnMenuOptionClickListener(this);
     rvUserProfile.setAdapter(userPhotosAdapter);
-    final StaggeredGridLayoutManager layoutManager
-      = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+    layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
     rvUserProfile.setLayoutManager(layoutManager);
     rvUserProfile.setOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
@@ -87,5 +89,22 @@ public class UserProfileActivity
       rvUserProfile.setVisibility(View.VISIBLE);
     } else
       rvUserProfile.setVisibility(View.INVISIBLE);
+  }
+
+  private static final int PHOTO_START_INDEX = 2;
+
+  @Override
+  public void onMenuOptionClick(View v) {
+    switch (v.getId()) {
+      case R.id.btnGrid:
+        layoutManager.setSpanCount(3);
+        break;
+      case R.id.btnList:
+        layoutManager.setSpanCount(1);
+        break;
+    }
+    userPhotosAdapter.setLockedAnimations(true);
+    userPhotosAdapter.notifyItemRangeChanged(PHOTO_START_INDEX, userPhotosAdapter.getItemCount());
+//    userPhotosAdapter.notifyDataSetChanged();
   }
 }

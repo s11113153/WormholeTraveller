@@ -5,6 +5,8 @@ import com.squareup.picasso.Picasso;
 
 import org.litepal.crud.DataSupport;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -22,6 +24,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.Utils;
+import tw.com.s11113153.wormholetraveller.activity.MapsFragment;
+import tw.com.s11113153.wormholetraveller.activity.ViewPagerActivity;
 import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.db.table.WormholeTraveller;
 import tw.com.s11113153.wormholetraveller.utils.CircleTransformation;
@@ -57,7 +63,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   private final int cellSize;
   private final int avatarSize;
 
-//  private final String profilePhoto;
+  //  private final String profilePhoto;
   private final List<String> photos = new ArrayList();
 
   private boolean lockedAnimations = false;
@@ -68,10 +74,18 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
   private List<WormholeTraveller> wormholeTravellers;
 
+  private static final int STATE_GRID = 0;
+  private static final int STATE_LIST = 1;
+
+  private static int SELECT_STATE;
+
   public UserProfileAdapter(Context context, User user) {
     this.context = context;
     this.cellSize = Utils.getScreenWidth(context) / 3;
     this.avatarSize = 300;
+
+    this.SELECT_STATE = STATE_GRID;
+
 
 //    this.profilePhoto = profilePhoto.getString(R.string.user_profile_photo);
 //    this.photos = Arrays.asList(context.getResources().getStringArray(R.array.user_photos));
@@ -119,13 +133,13 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         view.setLayoutParams(params);
         return new ProfileOptionsViewHolder(view);
       case TYPE_PHOTO:
-          view = layoutInflater.inflate(R.layout.item_photo, parent, false);
-          params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-          params.height = cellSize;
-          params.width = cellSize;
-          params.setFullSpan(false);
-          view.setLayoutParams(params);
-          return new PhotoGridViewHolder(view);
+        view = layoutInflater.inflate(R.layout.item_photo_2, parent, false);
+//          params = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+//          params.height = cellSize;
+//          params.width = cellSize;
+//          params.setFullSpan(false);
+//          view.setLayoutParams(params);
+        return new PhotoViewHolder(view);
       default:
         Log.e(TAG, "" + String.valueOf("onCreateViewHolder viewType is error"));
         return null;
@@ -143,7 +157,11 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         bindProfileOptions((ProfileOptionsViewHolder)holder);
         break;
       case TYPE_PHOTO:
-        bindPhoto((PhotoGridViewHolder)holder, position);
+        if (SELECT_STATE == STATE_GRID)
+          bindPhotoGrid((PhotoViewHolder) holder, position);
+        else if (SELECT_STATE == STATE_LIST) {
+          bindPhotoList((PhotoViewHolder) holder, position);
+        }
         break;
     }
   }
@@ -194,10 +212,10 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     holder.vUserDetails.setTranslationY(-holder.vUserDetails.getHeight());
     holder.vUserStats.setAlpha(0);
 
-    holder.vUserProfileRoot.animate().translationY(0).setDuration(500).setInterpolator(INTERPOLATOR);
-    holder.ivUserProfilePhoto.animate().translationY(0).setDuration(800).setStartDelay(0).setInterpolator(INTERPOLATOR);
-    holder.vUserDetails.animate().translationY(0).setDuration(800).setStartDelay(0).setInterpolator(INTERPOLATOR);
-    holder.vUserStats.animate().alpha(1).setDuration(200).setStartDelay(800).setInterpolator(INTERPOLATOR).start();
+    holder.vUserProfileRoot.animate().translationY(0).setDuration(800).setInterpolator(INTERPOLATOR);
+    holder.ivUserProfilePhoto.animate().translationY(0).setDuration(1000).setStartDelay(0).setInterpolator(INTERPOLATOR);
+    holder.vUserDetails.animate().translationY(0).setDuration(1000).setStartDelay(0).setInterpolator(INTERPOLATOR);
+    holder.vUserStats.animate().alpha(1).setDuration(200).setStartDelay(1000).setInterpolator(INTERPOLATOR).start();
   }
 
   private void bindProfileOptions(final ProfileOptionsViewHolder holder) {
@@ -232,7 +250,19 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
       .setInterpolator(INTERPOLATOR).start();
   }
 
-  private void bindPhoto(final PhotoGridViewHolder holder, int position) {
+  private void bindPhotoGrid(final PhotoViewHolder holder, final int position) {
+    holder.flRoot.setVisibility(View.VISIBLE);
+    holder.linearArticle.setVisibility(View.GONE);
+    holder.vImageRoot.setVisibility(View.GONE);
+    holder.scroll.setVisibility(View.GONE);
+    holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        WormholeTraveller wt = wormholeTravellers.get(position - MIN_ITEMS_COUNT);
+        ViewPagerActivity.startViewPager(context, wt.getId(), MapsFragment.SEARCH_ROUND);
+      }
+    });
+
     Picasso.with(context)
       .load(photos.get(position - MIN_ITEMS_COUNT))
       .resize(cellSize, cellSize)
@@ -252,7 +282,59 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
       lastAnimatedItem = position;
   }
 
-  private void animatePhoto(final PhotoGridViewHolder holder) {
+  private void bindPhotoList(final PhotoViewHolder holder, final int position) {
+    holder.flRoot.setVisibility(View.GONE);
+    holder.linearArticle.setVisibility(View.VISIBLE);
+    holder.vImageRoot.setVisibility(View.VISIBLE);
+    holder.scroll.setVisibility(View.VISIBLE);
+
+    final WormholeTraveller wt = wormholeTravellers.get(position - MIN_ITEMS_COUNT);
+    holder.tvAddress.setText(wt.getAddress());
+    holder.tvTitle.setText(wt.getTitle());
+    holder.tvDate.setText(wt.getDate());
+    holder.tvContent.setText(wt.getContent());
+    holder.ivFeedCenter.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        WormholeTraveller.delete(WormholeTraveller.class, wt.getId());
+        Toast.makeText(context, String.valueOf("delete" + wt.getTitle()), Toast.LENGTH_LONG).show();
+        wormholeTravellers.clear();
+        photos.clear();
+        wormholeTravellers = DataSupport
+          .where("user_id=?", String.valueOf(user.getId()))
+          .order("id desc")
+          .find(WormholeTraveller.class, true);
+
+        for (WormholeTraveller w : wormholeTravellers) {
+          photos.add(w.getTravelPhotoPath());
+        }
+        notifyItemRangeChanged(2, 2 + wormholeTravellers.size());
+        return true;
+      }
+    });
+
+    Picasso.with(context)
+      .load(user.getIconPath())
+      .resize(96, 96)
+      .placeholder(R.drawable.img_circle_placeholder)
+      .centerCrop()
+      .transform(new CircleTransformation())
+      .into(holder.ivUserProfile);
+
+
+    Picasso.with(context)
+      .load(photos.get(position - MIN_ITEMS_COUNT))
+//      .resize(cellSize, cellSize)
+      .fit()
+      .into(holder.ivFeedCenter);
+
+    if (lastAnimatedItem < position)
+      lastAnimatedItem = position;
+  }
+
+
+
+  private void animatePhoto(final PhotoViewHolder holder) {
     if (lockedAnimations) return;
     if (lastAnimatedItem == holder.getLayoutPosition()) {
       setLockedAnimations(true);
@@ -291,7 +373,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   }
 
   static class ProfileHeaderViewHolder extends RecyclerView.ViewHolder
-               implements View.OnClickListener {
+    implements View.OnClickListener {
     @InjectView(R.id.ivUserProfilePhoto) ImageView ivUserProfilePhoto;
     @InjectView(R.id.vUserDetails) View vUserDetails;
     @InjectView(R.id.btSendMail) Button btSendMail;
@@ -324,9 +406,8 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.setType("plain/text");
         sendIntent.setData(Uri.parse(user.getMail()));
-        sendIntent
-          .setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
-//      sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "test@gmail.com" });
+        sendIntent.setClassName("com.google.android.gm",
+          "com.google.android.gm.ComposeActivityGmail");
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, "大綱");
         sendIntent.putExtra(Intent.EXTRA_TEXT, "內文");
         context.startActivity(sendIntent);
@@ -341,7 +422,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     implements View.OnClickListener {
     @InjectView(R.id.btnGrid) ImageButton btnGrid;
     @InjectView(R.id.btnList) ImageButton btnList;
-    @InjectView(R.id.btnMap) ImageButton btnMap;
+//    @InjectView(R.id.btnMap) ImageButton btnMap;
     @InjectView(R.id.vUnderline) View vUnderline;
     @InjectView(R.id.vButtons) View vButtons;
 
@@ -350,7 +431,7 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
       ButterKnife.inject(this, view);
       btnGrid.setOnClickListener(this);
       btnList.setOnClickListener(this);
-      btnMap.setOnClickListener(this);
+//      btnMap.setOnClickListener(this);
     }
 
     @Override
@@ -362,28 +443,40 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
       int nextLocation[] = new int[2];
 
+      final int state;
+
       switch (v.getId()) {
         case R.id.btnGrid:
           btnGrid.getLocationOnScreen(nextLocation);
+          state = STATE_GRID;
           break;
         case R.id.btnList:
           btnList.getLocationOnScreen(nextLocation);
+          state = STATE_LIST;
           break;
-        case R.id.btnMap:
-          btnMap.getLocationOnScreen(nextLocation);
-          break;
+//        case R.id.btnMap:
+//          btnMap.getLocationOnScreen(nextLocation);
+//          state = STATE_MAP;
+//          break;
         default:
           return;
       }
 
       int next = nextLocation[0];
 
-      if (isChange(cur, next)) {
-        vUnderline.animate()
-          .translationX(next)
-          .setStartDelay(0) // 必須設定，否則會延遲時間開始
-          .setInterpolator(new DecelerateInterpolator());
-      }
+
+
+      vUnderline.animate()
+        .translationX(next)
+        .setStartDelay(0) // 必須設定，否則會延遲時間開始
+        .setInterpolator(new DecelerateInterpolator()).setListener(new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+          SELECT_STATE = state;
+          if (onMenuOptionClickListener != null)
+            onMenuOptionClickListener.onMenuOptionClick(v);
+        }
+      });
     }
 
     private boolean isChange(int cur, int next) {
@@ -395,13 +488,31 @@ public class UserProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
   }
 
-  static class PhotoGridViewHolder extends RecyclerView.ViewHolder {
+  static class PhotoViewHolder extends RecyclerView.ViewHolder {
     @InjectView(R.id.flRoot) FrameLayout flRoot;
     @InjectView(R.id.ivPhoto) ImageView ivPhoto;
-
-    public PhotoGridViewHolder(View view) {
+    @InjectView(R.id.ivUserProfile) ImageView ivUserProfile;
+    @InjectView(R.id.tvTitle) TextView tvTitle;
+    @InjectView(R.id.tvAddress) TextView tvAddress;
+    @InjectView(R.id.tvDate) TextView tvDate;
+    @InjectView(R.id.ivFeedCenter) ImageView ivFeedCenter;
+    @InjectView(R.id.tvContent) TextView tvContent;
+    @InjectView(R.id.linearArticle) LinearLayout linearArticle;
+    @InjectView(R.id.vImageRoot) FrameLayout vImageRoot;
+    @InjectView(R.id.scroll) ScrollView scroll;
+    public PhotoViewHolder(View view) {
       super(view);
       ButterKnife.inject(this, view);
     }
+  }
+
+  private static OnMenuOptionClickListener onMenuOptionClickListener = null;
+
+  public void setOnMenuOptionClickListener(OnMenuOptionClickListener clickListener) {
+    this.onMenuOptionClickListener = clickListener;
+  }
+
+  public interface OnMenuOptionClickListener {
+    void onMenuOptionClick(View v);
   }
 }

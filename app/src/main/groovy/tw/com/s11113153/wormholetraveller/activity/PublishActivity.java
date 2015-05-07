@@ -199,6 +199,7 @@ public class PublishActivity extends BaseActivity
       .setDate(publish_date)
       .setLat(publish_lat)
       .setLng(publish_lng)
+      .setAddress(publish_address)
       .setUser(user)
       .setTitle(title)
       .setShow(show)

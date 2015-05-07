@@ -331,4 +331,11 @@ public class MainActivity
       }
     }, 2000);
   }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (mAdapter != null)
+        mAdapter.updateItems(false);
+  }
 }

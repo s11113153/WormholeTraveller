@@ -6,24 +6,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import tw.com.s11113153.wormholetraveller.R;
 import tw.com.s11113153.wormholetraveller.UserInfo;
-import tw.com.s11113153.wormholetraveller.Utils;
 import tw.com.s11113153.wormholetraveller.activity.SignUpActivity2;
+import tw.com.s11113153.wormholetraveller.adapter.GlobalMenuAdapter;
 import tw.com.s11113153.wormholetraveller.db.table.User;
 import tw.com.s11113153.wormholetraveller.utils.CircleTransformation;
-import tw.com.s11113153.wormholetraveller.adapter.GlobalMenuAdapter;
-import tw.com.s11113153.wormholetraveller.R;
 
 /**
  * Created by xuyouren on 15/4/4.
