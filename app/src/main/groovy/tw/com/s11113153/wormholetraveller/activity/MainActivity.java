@@ -68,8 +68,10 @@ public class MainActivity
       loadAnimation = true;
       Log.v(TAG, "" + String.valueOf("savedInstanceState == null"));
     }
-    else
-      mAdapter.updateItems(false);
+    else {
+      if (mAdapter != null)
+        mAdapter.updateItems(false);
+    }
   }
 
   @Override
