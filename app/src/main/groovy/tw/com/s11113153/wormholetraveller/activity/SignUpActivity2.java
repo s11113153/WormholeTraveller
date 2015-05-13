@@ -50,6 +50,8 @@ public class SignUpActivity2 extends Activity {
     setFontType();
     DataBaseManager.open().InitialSample(this);
     IsLogin();
+    mEtAccount.setText("s11113153");
+    mEtPassword.setText("123456");
   }
 
   @OnClick(R.id.btnLogin)

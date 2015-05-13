@@ -58,10 +58,12 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
     <ImageView
+      android:visibility="gone"
       android:layout_width="@dimen/sign_up_icon_size"
       android:layout_height="@dimen/sign_up_icon_size"
       android:src="@mipmap/ic_email"/>
     <com.rengwuxian.materialedittext.MaterialEditText
+      android:visibility="gone"
       android:gravity="bottom"
       android:id="@+id/etMail"
       android:layout_marginLeft="24dp"
